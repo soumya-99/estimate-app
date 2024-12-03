@@ -465,7 +465,7 @@ function CartScreen() {
                 onFailure={onDialogFailure}
                 onSuccess={() => onDialogSuccessChange(product)}>
                 <View style={styles.modalContainer}>
-                    <View style={{ alignItems: "center" }}>
+                    {/* <View style={{ alignItems: "center" }}>
                         <View>
                             <Text
                                 variant="titleLarge"
@@ -473,9 +473,9 @@ function CartScreen() {
                                 {product?.item_name}
                             </Text>
                         </View>
-                    </View>
+                    </View> */}
 
-                    <View
+                    {/* <View
                         style={{
                             borderWidth: 1,
                             borderColor: theme.colors.primary,
@@ -508,9 +508,9 @@ function CartScreen() {
                                 <Text variant="labelMedium">{product?.unit_name || ""}</Text>
                             </View>
                         )}
-                    </View>
+                    </View> */}
 
-                    <View
+                    {/* <View
                         style={
                             receiptSettings?.price_type === "A" && {
                                 borderWidth: 1,
@@ -551,9 +551,9 @@ function CartScreen() {
                                 </View>
                             )}
                         </View>
-                    </View>
+                    </View> */}
 
-                    {receiptSettings?.stock_flag === "Y" && (
+                    {/* {receiptSettings?.stock_flag === "Y" && (
                         <View
                             style={{
                                 borderWidth: 1,
@@ -573,9 +573,9 @@ function CartScreen() {
                                 <Text variant="labelMedium">{updatedStock || stock}</Text>
                             </View>
                         </View>
-                    )}
+                    )} */}
 
-                    {receiptSettings?.gst_flag === "Y" && (
+                    {/* {receiptSettings?.gst_flag === "Y" && (
                         <View
                             style={{
                                 borderWidth: 1,
@@ -609,9 +609,9 @@ function CartScreen() {
                                 </View>
                             </View>
                         </View>
-                    )}
+                    )} */}
 
-                    <View
+                    {/* <View
                         style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
@@ -655,6 +655,26 @@ function CartScreen() {
                                     />
                                 </View>
                             )}
+                    </View> */}
+
+                    <View
+                        style={
+                            receiptSettings?.discount_flag === "Y" &&
+                                receiptSettings?.discount_position !== "B"
+                                ? { width: "50%" }
+                                : { width: "100%" }
+                        }>
+                        <InputPaper
+                            selectTextOnFocus
+                            label={`Quantity (${(receiptSettings?.unit_flag === "Y" && product?.unit_name) ||
+                                ""
+                                })`}
+                            onChangeText={(txt: number) => setQuantity(txt)}
+                            value={quantity}
+                            keyboardType="numeric"
+                            autoFocus={true}
+                            mode="outlined"
+                        />
                     </View>
                     {addedProductsList.some(i => i.item_id === product?.item_id) &&
                         <View
@@ -692,7 +712,7 @@ const styles = StyleSheet.create({
 
     modalContainer: {
         justifyContent: "space-between",
-        minHeight: normalize(230),
+        // minHeight: normalize(230),
         height: "auto",
     },
 

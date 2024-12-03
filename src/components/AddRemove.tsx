@@ -10,16 +10,17 @@ type AddRemoveProps = {
     value: number
     isAddDisabled?: boolean
     onChange?: (e: any) => void
+    isIndividualProductScreen?: boolean
 }
 
-const AddRemove = ({ add, remove, value, isAddDisabled, onChange }: AddRemoveProps) => {
+const AddRemove = ({ add, remove, value, isAddDisabled, onChange, isIndividualProductScreen = false }: AddRemoveProps) => {
     const theme = usePaperColorScheme()
 
     return (
         <View style={{
             flexDirection: "row",
             position: "absolute",
-            left: 152,
+            left: !isIndividualProductScreen ? 152 : 142,
             justifyContent: "center",
             alignItems: "center",
             alignSelf: "center"
@@ -27,10 +28,10 @@ const AddRemove = ({ add, remove, value, isAddDisabled, onChange }: AddRemovePro
             <IconButton style={{
                 borderTopRightRadius: 6,
                 borderBottomRightRadius: 6
-            }} icon="minus-thick" onPress={remove} mode="contained" iconColor={theme.colors.onErrorContainer} containerColor={theme.colors.errorContainer} size={20} />
+            }} icon="minus-thick" onPress={remove} mode="contained" iconColor={theme.colors.onErrorContainer} containerColor={theme.colors.errorContainer} size={isIndividualProductScreen ? 30 : 20} />
             <View style={{
-                width: normalize(40),
-                height: "75%",
+                width: !isIndividualProductScreen ? normalize(40) : normalize(45),
+                height: !isIndividualProductScreen ? "75%" : "80%",
                 justifyContent: "center",
                 alignItems: "center",
                 alignSelf: "center",
@@ -50,7 +51,7 @@ const AddRemove = ({ add, remove, value, isAddDisabled, onChange }: AddRemovePro
             <IconButton disabled={isAddDisabled} style={{
                 borderBottomLeftRadius: 6,
                 borderTopLeftRadius: 6
-            }} icon="plus-thick" onPress={add} mode="contained" iconColor={theme.colors.onVanillaTertiaryContainer} containerColor={theme.colors.vanillaTertiaryContainer} size={20} />
+            }} icon="plus-thick" onPress={add} mode="contained" iconColor={theme.colors.onVanillaTertiaryContainer} containerColor={theme.colors.vanillaTertiaryContainer} size={isIndividualProductScreen ? 30 : 20} />
         </View>
     )
 }

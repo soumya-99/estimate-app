@@ -402,7 +402,7 @@ function HomeScreen() {
             imgDark={hillsDark}
             borderRadius={30}
             blur={10}>
-            Welcome Back, {loginStore.company_name}!
+            Welcome Back, Estimate!
           </HeaderImage>
         </View>
 
@@ -485,12 +485,12 @@ function HomeScreen() {
                   key={i}
                   title={`Bill ${item?.receipt_no}`}
                   description={`₹${item?.net_amt}`}
-                  onPress={() => {
-                    loginStore?.mode !== "C"
-                      ? handleRecentBillListClick(item?.receipt_no)
-                      : handleBillListClickCalculatorMode(item?.receipt_no)
-                  }
-                  }
+                  // onPress={() => {
+                  //   loginStore?.mode !== "C"
+                  //     ? handleRecentBillListClick(item?.receipt_no)
+                  //     : handleBillListClickCalculatorMode(item?.receipt_no)
+                  // }
+                  onPress={() => null}
                   left={props => <List.Icon {...props} icon="basket" />}
                 // right={props => (
                 //   <List.Icon {...props} icon="download" />
@@ -498,7 +498,7 @@ function HomeScreen() {
                 />
               ))}
             </View>
-            <View>
+            {/* <View>
               <Button
                 textColor={theme.colors.onPinkContainer}
                 onPress={() =>
@@ -510,7 +510,7 @@ function HomeScreen() {
                 }>
                 ALL BILLS
               </Button>
-            </View>
+            </View> */}
           </SurfacePaper>
         </View>
       </ScrollView>
@@ -591,7 +591,7 @@ function HomeScreen() {
               )
             }
             extended={isExtended}
-            animateFrom="left"
+            animateFrom="right"
             iconMode="dynamic"
             customStyle={[styles.fabStyle, { backgroundColor: theme.colors.peachContainer }]}
           />

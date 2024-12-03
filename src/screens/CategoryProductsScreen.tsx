@@ -421,6 +421,7 @@ function CategoryProductsScreen() {
                                                 // /> */}
 
                                                 <TouchableRipple
+                                                    key={i}
                                                     onPress={() => {
                                                         console.log(">>>>>>>>>>>>>>", item)
                                                         navigation.dispatch(CommonActions.navigate({

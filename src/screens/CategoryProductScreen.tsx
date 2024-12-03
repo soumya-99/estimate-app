@@ -21,7 +21,7 @@ import { AppStore } from "../context/AppContext"
 import { CategoriesScreenRouteProp, CategoryProductScreenRouteProp } from "../models/route_types"
 import useCategoryItems from "../hooks/api/useCategoryItems"
 import { CategoryItemListCredentials, ItemsData, StockSearchCredentials } from "../models/api_types"
-import normalize, { SCREEN_HEIGHT } from "react-native-normalize"
+import normalize, { SCREEN_HEIGHT, SCREEN_WIDTH } from "react-native-normalize"
 import AddRemove from "../components/AddRemove"
 import useStockSearch from "../hooks/api/useStockSearch"
 import DialogBox from "../components/DialogBox"
@@ -266,6 +266,8 @@ function CategoryProductScreen() {
             prevData?.filter((item, index) => item.item_id !== product.item_id),
         )
 
+        navigation.goBack()
+
         setVisible(!visible)
     }
 
@@ -388,44 +390,44 @@ function CategoryProductScreen() {
                     paddingBottom: normalize(10),
                     maxHeight: SCREEN_HEIGHT / 2
                 }}>
-                    {
-                        categoryWiseItems?.length !== 0
-                            ?
-                            <ScrollView style={{
-                                // borderWidth: 2,
-                                // borderColor: theme.colors.vanillaSecondary,
-                                // borderStyle: "dashed",
-                                // borderRadius: 20,
-                                padding: 10,
-                            }} nestedScrollEnabled>
-                                <View style={{
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                    gap: 10,
-                                    justifyContent: "space-evenly",
-                                    marginBottom: 25
-                                }}>
-                                    {
-                                        [params?.product]?.map((item, i) => {
-                                            // console.log("GGGGGGGGGGGGGGGGG", getQuantity(item?.item_id))
-                                            console.log("TTTTTTTTTTTTTTTTT", item)
-                                            return (
-                                                <View key={i} style={{ width: "100%" }}>
-                                                    <List.Item
-                                                        onPress={() => productDetails(item)}
-                                                        title={({ ellipsizeMode }) => <Text style={{
-                                                            width: "58%"
-                                                        }} numberOfLines={1} ellipsizeMode="tail">{item?.item_name}</Text>}
-                                                        description={`₹${item?.price}`}
-                                                        right={props => {
-                                                            return <AddRemove value={getQuantity(item?.item_id)} add={() => add(item)} remove={() => remove(item)} key={item?.item_id} isAddDisabled={receiptSettings?.stock_flag === "Y" && getQuantity(item?.item_id) === item?.stock} onChange={txt => setQuantity(txt)} />
-                                                        }}
-                                                        descriptionStyle={{
-                                                            color: theme.colors.green
-                                                        }}
-                                                    />
+                    <ScrollView style={{
+                        // borderWidth: 2,
+                        // borderColor: theme.colors.vanillaSecondary,
+                        // borderStyle: "dashed",
+                        // borderRadius: 20,
+                        padding: 10,
+                    }} nestedScrollEnabled>
+                        <View style={{
+                            flexDirection: "row",
+                            flexWrap: "wrap",
+                            gap: 10,
+                            justifyContent: "space-evenly",
+                            marginBottom: 25
+                        }}>
+                            {
+                                [params?.product]?.map((item, i) => {
+                                    // console.log("GGGGGGGGGGGGGGGGG", getQuantity(item?.item_id))
+                                    console.log("TTTTTTTTTTTTTTTTT", item)
+                                    return (
+                                        <View key={i} style={{ width: "100%" }}>
+                                            <List.Item
+                                                style={{
+                                                    paddingVertical: 20
+                                                }}
+                                                onPress={() => productDetails(item)}
+                                                title={({ ellipsizeMode }) => <Text variant="titleLarge" style={{
+                                                    width: "58%"
+                                                }} numberOfLines={1} ellipsizeMode="tail">{item?.item_name}</Text>}
+                                                description={`₹${item?.price}`}
+                                                right={props => {
+                                                    return <AddRemove value={getQuantity(item?.item_id)} add={() => add(item)} remove={() => remove(item)} key={item?.item_id} isAddDisabled={receiptSettings?.stock_flag === "Y" && getQuantity(item?.item_id) === item?.stock} onChange={txt => setQuantity(txt)} isIndividualProductScreen />
+                                                }}
+                                                descriptionStyle={{
+                                                    color: theme.colors.green
+                                                }}
+                                            />
 
-                                                    {/* <TouchableRipple
+                                            {/* <TouchableRipple
                                                     onPress={() => {
                                                         console.log(">>>>>>>>>>>>>>", item)
                                                         navigation.dispatch(CommonActions.navigate(""))
@@ -457,32 +459,31 @@ function CategoryProductScreen() {
                                                         </View>
                                                     </View>
                                                 </TouchableRipple> */}
-                                                    <Divider />
-                                                </View>
-                                            )
-                                        })
-                                    }
-                                </View>
-                            </ScrollView>
+                                            <Divider />
+                                        </View>
+                                    )
+                                })
+                            }
+                        </View>
 
-                            : <SurfacePaper
-                                borderRadiusEnabled
-                                backgroundColor={theme.colors.vanillaTertiaryContainer}
-                                elevation={2}
-                                paddingEnabled
-                                smallWidthEnabled
-                                style={{ padding: 15 }}>
-                                <Text
-                                    variant="titleLarge"
-                                    style={{
-                                        alignSelf: "center",
-                                        textAlign: "center",
-                                        color: theme.colors.onVanillaTertiaryContainer,
-                                    }}>
-                                    No items found in this category.
-                                </Text>
-                            </SurfacePaper>
-                    }
+                        <View style={{
+                            width: SCREEN_WIDTH / 1.22,
+                            height: "auto",
+                            backgroundColor: theme.colors.vanillaContainer,
+                            padding: 10,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                            borderRadius: 25
+                        }}>
+                            <Text variant="headlineLarge" style={{
+                                color: theme.colors.onVanillaContainer
+                            }}>Price: {params?.product?.price} × {getQuantity(params?.product?.item_id)} = ₹{+params?.product?.price * +getQuantity(params?.product?.item_id)}</Text>
+                            <Text variant="headlineLarge" style={{
+                                color: theme.colors.onVanillaContainer
+                            }}>MRP: ₹{params?.product?.price}</Text>
+                        </View>
+                    </ScrollView>
 
                 </View>
             </ScrollView>
@@ -504,7 +505,7 @@ function CategoryProductScreen() {
                 onFailure={onDialogFailure}
                 onSuccess={() => onDialogSuccessChange(product)}>
                 <View style={styles.modalContainer}>
-                    <View style={{ alignItems: "center" }}>
+                    {/* <View style={{ alignItems: "center" }}>
                         <View>
                             <Text
                                 variant="titleLarge"
@@ -512,9 +513,9 @@ function CategoryProductScreen() {
                                 {product?.item_name}
                             </Text>
                         </View>
-                    </View>
+                    </View> */}
 
-                    <View
+                    {/* <View
                         style={{
                             borderWidth: 1,
                             borderColor: theme.colors.primary,
@@ -528,7 +529,6 @@ function CategoryProductScreen() {
                                 justifyContent: "space-between",
                                 alignItems: "center",
                                 padding: 5,
-                                // borderBottomWidth: 1,
                                 borderColor: theme.colors.primary,
                             }}>
                             <Text variant="labelMedium">PRODUCT ID</Text>
@@ -547,9 +547,9 @@ function CategoryProductScreen() {
                                 <Text variant="labelMedium">{product?.unit_name || ""}</Text>
                             </View>
                         )}
-                    </View>
+                    </View> */}
 
-                    <View
+                    {/* <View
                         style={
                             receiptSettings?.price_type === "A" && {
                                 borderWidth: 1,
@@ -590,9 +590,9 @@ function CategoryProductScreen() {
                                 </View>
                             )}
                         </View>
-                    </View>
+                    </View> */}
 
-                    {receiptSettings?.stock_flag === "Y" && (
+                    {/* {receiptSettings?.stock_flag === "Y" && (
                         <View
                             style={{
                                 borderWidth: 1,
@@ -612,9 +612,9 @@ function CategoryProductScreen() {
                                 <Text variant="labelMedium">{updatedStock || stock}</Text>
                             </View>
                         </View>
-                    )}
+                    )} */}
 
-                    {receiptSettings?.gst_flag === "Y" && (
+                    {/* {receiptSettings?.gst_flag === "Y" && (
                         <View
                             style={{
                                 borderWidth: 1,
@@ -648,9 +648,9 @@ function CategoryProductScreen() {
                                 </View>
                             </View>
                         </View>
-                    )}
+                    )} */}
 
-                    <View
+                    {/* <View
                         style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
@@ -694,6 +694,25 @@ function CategoryProductScreen() {
                                     />
                                 </View>
                             )}
+                    </View> */}
+                    <View
+                        style={
+                            receiptSettings?.discount_flag === "Y" &&
+                                receiptSettings?.discount_position !== "B"
+                                ? { width: "50%" }
+                                : { width: "100%" }
+                        }>
+                        <InputPaper
+                            selectTextOnFocus
+                            label={`Quantity (${(receiptSettings?.unit_flag === "Y" && product?.unit_name) ||
+                                ""
+                                })`}
+                            onChangeText={(txt: number) => setQuantity(txt)}
+                            value={quantity}
+                            keyboardType="numeric"
+                            autoFocus={true}
+                            mode="outlined"
+                        />
                     </View>
                     {addedProductsList.some(i => i.item_id === product?.item_id) &&
                         <View
@@ -731,7 +750,7 @@ const styles = StyleSheet.create({
 
     modalContainer: {
         justifyContent: "space-between",
-        minHeight: normalize(230),
+        // minHeight: normalize(230),
         height: "auto",
     },
 

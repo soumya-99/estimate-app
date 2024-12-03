@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface SynergicBillingAppTests : XCTestCase
+@interface EstimateAppTests : XCTestCase
 
 @end
 
-@implementation SynergicBillingAppTests
+@implementation EstimateAppTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

@@ -58,7 +58,7 @@ const CustomerDetailsFillScreen = () => {
     receiptSettings?.gst_type,
   )
 
-  const { printReceipt, printReceiptWithoutGst } = useBluetoothPrint()
+  const { printReceiptT } = useBluetoothPrint()
   const {
     grandTotalCalculate,
     grandTotalWithGSTCalculate,
@@ -260,18 +260,18 @@ const CustomerDetailsFillScreen = () => {
               phone: customerMobileNumber,
               receipt_no: receiptNumber,
             }
-            sendBillSms(sendBillSmsCreds)
-              .then(res => {
-                if (res?.suc === 1) {
-                  ToastAndroid.show("SMS Sent to customer.", ToastAndroid.SHORT)
-                }
-              })
-              .catch(err => {
-                ToastAndroid.show(
-                  "Some error occurred while sending bill sms.",
-                  ToastAndroid.SHORT,
-                )
-              })
+            // sendBillSms(sendBillSmsCreds)
+            //   .then(res => {
+            //     if (res?.suc === 1) {
+            //       ToastAndroid.show("SMS Sent to customer.", ToastAndroid.SHORT)
+            //     }
+            //   })
+            //   .catch(err => {
+            //     ToastAndroid.show(
+            //       "Some error occurred while sending bill sms.",
+            //       ToastAndroid.SHORT,
+            //     )
+            //   })
           }
         } else {
           Alert.alert("Fail", "Something Went Wrong!")
@@ -285,10 +285,10 @@ const CustomerDetailsFillScreen = () => {
 
   const handlePrintReceipt = async (printFlag = false) => {
     // pass conditonal grand total after - now just written net_total
-    if (discountBillwise > params?.net_total) {
-      ToastAndroid.show("Enter valid Bill Discount!", ToastAndroid.SHORT)
-      return
-    }
+    // if (discountBillwise > params?.net_total) {
+    //   ToastAndroid.show("Enter valid Bill Discount!", ToastAndroid.SHORT)
+    //   return
+    // }
 
     if (receiptSettings?.rcv_cash_flag === "Y") {
       if (
@@ -331,31 +331,20 @@ const CustomerDetailsFillScreen = () => {
 
 
     const receiptFunction =
-      receiptSettings?.gst_flag === "N" ? printReceiptWithoutGst : printReceipt
+      receiptSettings?.gst_flag === "N" ? printReceiptT : printReceiptT
 
     if (printFlag) {
       if (receiptSettings?.rcpt_type !== "S") {
         receiptFunction(
           params?.added_products,
           params?.net_total,
-          //@ts-ignore
-          // parseFloat(params?.total_discount),
-          receiptSettings?.discount_position !== "B"
-            //@ts-ignore
-            ? parseFloat(params?.total_discount)
-            : receiptSettings?.discount_type === "A"
-              //@ts-ignore
-              ? parseFloat(discountBillwise)
-              //@ts-ignore
-              : parseFloat((params?.net_total * discountBillwise) / 100),
+          0, // discount
           cashAmount,
           finalCashAmount,
           customerName,
           customerMobileNumber,
           receiptNumber,
           checked,
-          kotNumber,
-          params?.table_no
         )
 
         console.log(
@@ -400,6 +389,149 @@ const CustomerDetailsFillScreen = () => {
     setIsDisabled(false)
   }
 
+  // const handlePrintReceipt = async (printFlag = false) => {
+  //   // pass conditonal grand total after - now just written net_total
+  //   if (discountBillwise > params?.net_total) {
+  //     ToastAndroid.show("Enter valid Bill Discount!", ToastAndroid.SHORT)
+  //     return
+  //   }
+
+  //   if (receiptSettings?.rcv_cash_flag === "Y") {
+  //     if (
+  //       checked === "C" &&
+  //       (cashAmount === undefined || cashAmount === 0 || finalCashAmount < 0)
+  //     ) {
+  //       ToastAndroid.show("Add valid cash amount.", ToastAndroid.SHORT)
+  //       return
+  //     }
+  //   }
+
+  //   if (
+  //     checked === "R" &&
+  //     (cashAmount === undefined || finalCashAmount > 0)
+  //   ) {
+  //     ToastAndroid.show("Add valid cash amount.", ToastAndroid.SHORT)
+  //     return
+  //   }
+
+  //   if (checked === "R" && finalCashAmount === 0) {
+  //     ToastAndroid.show("Changing Payment mode to Cash...", ToastAndroid.SHORT)
+  //     setChecked(() => "C")
+  //     return
+  //   }
+
+  //   if (checked === "R" && customerMobileNumber.length < 10) {
+  //     ToastAndroid.show("Valid Mobile Number is mandatory for Credit Mode.", ToastAndroid.SHORT)
+  //     return
+  //   }
+
+  //   // if (customerMobileNumber.length === 0) {
+  //   //   ToastAndroid.show("Customer mobile is mandatory.", ToastAndroid.SHORT)
+  //   //   return
+  //   // }
+
+  //   setIsDisabled(true)
+  //   setIsLoading(true)
+  //   await handleSendSaleData()
+  //   console.log("Sending data and printing receipts...")
+
+
+  //   const receiptFunction =
+  //     receiptSettings?.gst_flag === "N" ? printReceiptWithoutGst : printReceipt
+
+  //   if (printFlag) {
+  //     if (receiptSettings?.rcpt_type !== "S") {
+  //       receiptFunction(
+  //         params?.added_products,
+  //         params?.net_total,
+  //         //@ts-ignore
+  //         // parseFloat(params?.total_discount),
+  //         receiptSettings?.discount_position !== "B"
+  //           //@ts-ignore
+  //           ? parseFloat(params?.total_discount)
+  //           : receiptSettings?.discount_type === "A"
+  //             //@ts-ignore
+  //             ? parseFloat(discountBillwise)
+  //             //@ts-ignore
+  //             : parseFloat((params?.net_total * discountBillwise) / 100),
+  //         cashAmount,
+  //         finalCashAmount,
+  //         customerName,
+  //         customerMobileNumber,
+  //         receiptNumber,
+  //         checked,
+  //         kotNumber,
+  //         params?.table_no
+  //       )
+
+  //       console.log(
+  //         "=================+++++++++++++++++++ params?.added_products",
+  //         params?.added_products,
+  //       )
+  //       console.log(
+  //         "=================+++++++++++++++++++ params?.net_total",
+  //         params?.net_total,
+  //       )
+  //       console.log(
+  //         "=================+++++++++++++++++++ parseFloat(params?.total_discount)",
+  //         //@ts-ignore
+  //         parseFloat(params?.total_discount),
+  //       )
+  //       console.log("=================+++++++++++++++++++ cashAmount", cashAmount)
+  //       console.log(
+  //         "=================+++++++++++++++++++ finalCashAmount",
+  //         finalCashAmount,
+  //       )
+  //       console.log(
+  //         "=================+++++++++++++++++++ customerName",
+  //         customerName,
+  //       )
+  //       console.log(
+  //         "=================+++++++++++++++++++ customerMobileNumber",
+  //         customerMobileNumber,
+  //       )
+  //       console.log(
+  //         "=================+++++++++++++++++++ receiptNumber",
+  //         receiptNumber,
+  //       )
+  //       console.log("=================+++++++++++++++++++ checked", checked)
+  //     }
+  //   }
+
+
+
+  //   itemsContextStorage.clearAll()
+
+  //   setIsLoading(false)
+  //   setIsDisabled(false)
+  // }
+
+  // const handlePrintReceipt = async (flag?: boolean) => {
+  //   console.log(flag)
+  //   printReceiptT(
+  //     params?.added_products,
+  //     params?.net_total,
+  //     //@ts-ignore
+  //     // parseFloat(params?.total_discount),
+  //     receiptSettings?.discount_position !== "B"
+  //       //@ts-ignore
+  //       ? parseFloat(params?.total_discount)
+  //       : receiptSettings?.discount_type === "A"
+  //         //@ts-ignore
+  //         ? parseFloat(discountBillwise)
+  //         //@ts-ignore
+  //         : parseFloat((params?.net_total * discountBillwise) / 100),
+  //     cashAmount,
+  //     finalCashAmount,
+  //     customerName,
+  //     customerMobileNumber,
+  //     receiptNumber,
+  //     checked,
+  //     kotNumber,
+  //     params?.table_no
+  //   )
+  // }
+
   return (
     <SafeAreaView>
       <ScrollView keyboardShouldPersistTaps="handled">
@@ -424,14 +556,17 @@ const CustomerDetailsFillScreen = () => {
 
           <View style={{
             backgroundColor: theme.colors.surfaceVariant,
-            borderRadius: 40,
+            borderRadius: 35,
             width: SCREEN_WIDTH / 1.15,
             alignSelf: "center",
             marginTop: normalize(-8),
-            height: "auto",
-            paddingVertical: normalize(15)
+            padding: 10,
+            // height: "auto",
+            // paddingVertical: normalize(15),
+            justifyContent: "center",
+            alignItems: "center"
           }}>
-            {receiptSettings?.discount_flag === "Y" && receiptSettings?.discount_position === "B" && (
+            {/* {receiptSettings?.discount_flag === "Y" && receiptSettings?.discount_position === "B" && (
               <View
                 style={{
                   paddingHorizontal: SCREEN_WIDTH / 20,
@@ -449,7 +584,7 @@ const CustomerDetailsFillScreen = () => {
                   mode="flat"
                 />
               </View>
-            )}
+            )} */}
             <NetTotalButton
               width={290}
               disabled
@@ -457,13 +592,14 @@ const CustomerDetailsFillScreen = () => {
               textColor={theme.colors.surfaceVariant}
               addedProductsList={params?.added_products}
               netTotal={params?.net_total}
-              totalDiscount={
-                receiptSettings?.discount_position !== "B"
-                  ? params?.total_discount
-                  : receiptSettings?.discount_type === "A"
-                    ? discountBillwise
-                    : (params?.net_total * discountBillwise) / 100
-              }
+              // totalDiscount={
+              //   receiptSettings?.discount_position !== "B"
+              //     ? params?.total_discount
+              //     : receiptSettings?.discount_type === "A"
+              //       ? discountBillwise
+              //       : (params?.net_total * discountBillwise) / 100
+              // }
+              totalDiscount={0}
             />
           </View>
 
@@ -474,6 +610,7 @@ const CustomerDetailsFillScreen = () => {
               width: SCREEN_WIDTH / 1.15,
               alignSelf: "center",
               marginTop: normalize(10),
+              marginBottom: normalize(10),
             }}>
             <View style={{ justifyContent: "center" }}>
               <View
