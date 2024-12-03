@@ -416,8 +416,9 @@ function CategoryProductScreen() {
                                                 }}
                                                 onPress={() => productDetails(item)}
                                                 title={({ ellipsizeMode }) => <Text variant="titleLarge" style={{
-                                                    width: "58%"
-                                                }} numberOfLines={1} ellipsizeMode="tail">{item?.item_name}</Text>}
+                                                    width: "50%",
+                                                    flexWrap: "wrap"
+                                                }} numberOfLines={3} ellipsizeMode="tail">{item?.item_name}</Text>}
                                                 description={`₹${item?.price}`}
                                                 right={props => {
                                                     return <AddRemove value={getQuantity(item?.item_id)} add={() => add(item)} remove={() => remove(item)} key={item?.item_id} isAddDisabled={receiptSettings?.stock_flag === "Y" && getQuantity(item?.item_id) === item?.stock} onChange={txt => setQuantity(txt)} isIndividualProductScreen />
@@ -471,8 +472,9 @@ function CategoryProductScreen() {
                             height: "auto",
                             backgroundColor: theme.colors.vanillaContainer,
                             padding: 10,
+                            paddingHorizontal: 20,
                             justifyContent: "center",
-                            alignItems: "center",
+                            alignItems: "flex-start",
                             alignSelf: "center",
                             borderRadius: 25
                         }}>
