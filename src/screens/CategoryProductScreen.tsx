@@ -412,14 +412,15 @@ function CategoryProductScreen() {
                                         <View key={i} style={{ width: "100%" }}>
                                             <List.Item
                                                 style={{
-                                                    paddingVertical: 20
+                                                    paddingVertical: 10
                                                 }}
                                                 onPress={() => productDetails(item)}
                                                 title={({ ellipsizeMode }) => <Text variant="titleLarge" style={{
                                                     width: "50%",
-                                                    flexWrap: "wrap"
+                                                    flexWrap: "wrap",
+                                                    // right: 12
                                                 }} numberOfLines={3} ellipsizeMode="tail">{item?.item_name}</Text>}
-                                                description={`₹${item?.price}`}
+                                                description={<Text variant="bodyMedium" style={{ color: theme.colors.vanilla, flexWrap: "wrap" }}>₹{item?.price}</Text>}
                                                 right={props => {
                                                     return <AddRemove value={getQuantity(item?.item_id)} add={() => add(item)} remove={() => remove(item)} key={item?.item_id} isAddDisabled={receiptSettings?.stock_flag === "Y" && getQuantity(item?.item_id) === item?.stock} onChange={txt => setQuantity(txt)} isIndividualProductScreen />
                                                 }}
@@ -484,6 +485,9 @@ function CategoryProductScreen() {
                             <Text variant="headlineLarge" style={{
                                 color: theme.colors.onVanillaContainer
                             }}>MRP: ₹{params?.product?.price}</Text>
+                            <Text variant="headlineLarge" style={{
+                                color: theme.colors.onVanillaContainer
+                            }}>Category: {params?.categoryName}</Text>
                         </View>
                     </ScrollView>
 

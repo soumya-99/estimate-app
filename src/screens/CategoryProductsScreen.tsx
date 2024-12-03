@@ -428,7 +428,8 @@ function CategoryProductsScreen() {
                                                             name: navigationRoutes.categoryProductScreen,
                                                             params: {
                                                                 // category_id: item?.catg_id,
-                                                                product: item
+                                                                product: item,
+                                                                categoryName: params?.category_name
                                                             }
                                                         }))
                                                         // productDetails(item)

@@ -20,6 +20,7 @@ type RootStackParamList = {
   }
   CategoryProductScreen: {
     product: ItemsData
+    categoryName: string
   }
   CameraScreen: {
     barcode: string,

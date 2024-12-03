@@ -20,7 +20,7 @@ const AddRemove = ({ add, remove, value, isAddDisabled, onChange, isIndividualPr
         <View style={{
             flexDirection: "row",
             position: "absolute",
-            left: !isIndividualProductScreen ? 152 : 142,
+            left: !isIndividualProductScreen ? 152 : 135,
             justifyContent: "center",
             alignItems: "center",
             alignSelf: "center"

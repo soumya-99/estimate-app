@@ -1826,16 +1826,16 @@ export const useBluetoothPrint = () => {
 
     // let { totalCGST_5, totalCGST_12, totalCGST_18, totalCGST_28, totalSGST_5, totalSGST_12, totalSGST_18, totalSGST_28, totalGST } = gstFilterationAndTotals(addedProducts)
 
-    let gstTotals = gstFilterationAndTotals(
-      addedProducts,
-      receiptSettings?.gst_type,
-    )
-    let { totalGST } = gstTotals // Destructure totalGST for separate handling
+    // let gstTotals = gstFilterationAndTotals(
+    //   addedProducts,
+    //   receiptSettings?.gst_type,
+    // )
+    // let { totalGST } = gstTotals // Destructure totalGST for separate handling
 
     // Filter keys for CGST and SGST display
-    const gstKeys = Object.keys(gstTotals).filter(
-      key => key.includes("totalCGST") || key.includes("totalSGST"),
-    )
+    // const gstKeys = Object.keys(gstTotals).filter(
+    //   key => key.includes("totalCGST") || key.includes("totalSGST"),
+    // )
 
     let totalQuantities: number = 0
     // let totalAmountAfterDiscount: number = 0
@@ -1862,7 +1862,7 @@ export const useBluetoothPrint = () => {
       `[L]ROUND OFF[R]${roundingOffCalculate(netTotal, 0)}\n`;
 
     if (paymentMode === "C") {
-      text += `[L]Cash Received[R]${cashAmount}\n` +
+      text += `[L]CASH RECEIVED[R]${cashAmount}\n` +
         `[L]RETURN[R]${returnedAmt}\n`;
     }
     if (paymentMode === "R") {
