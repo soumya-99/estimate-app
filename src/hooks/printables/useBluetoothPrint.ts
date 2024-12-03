@@ -1856,7 +1856,7 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
 
-      `[L]Item[C]Qty[R]Amount\n` +
+      // `[L]Item[C]Qty[R]Amount\n` +
       `[L]${addedProducts?.length}[C]${totalQuantities}[R]${netTotal?.toFixed(2)}\n` +
       `[C]=============================\n` +
       `[L]ROUND OFF[R]${roundingOffCalculate(netTotal, 0)}\n`;
