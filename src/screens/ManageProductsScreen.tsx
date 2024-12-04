@@ -4,6 +4,7 @@ import {
   StyleSheet,
   PixelRatio,
   ToastAndroid,
+  Alert,
 } from "react-native"
 import React, { useContext, useEffect, useState } from "react"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -30,6 +31,8 @@ import AnimatedFABPaper from "../components/AnimatedFABPaper"
 import useAddItem from "../hooks/api/useAddItem"
 import MenuPaper from "../components/MenuPaper"
 import { AppStoreContext } from "../models/custom_types"
+// import * as ImagePicker from 'react-native-image-picker'
+import ButtonPaper from "../components/ButtonPaper"
 
 export default function ManageProductsScreen() {
   const theme = usePaperColorScheme()
@@ -118,6 +121,36 @@ export default function ManageProductsScreen() {
     if (query === "") setFilteredItems(() => [])
   }
 
+
+  ///////////////////////////////////////////////////
+  ///////////////////////////////////////////////////
+  ///////////////////////////////////////////////////
+
+  // const [imageUri, setImageUri] = useState<string | null>(null);
+  // const [imageData, setImageData] = useState<string | null>(null);
+
+
+
+  // const handleChoosePhoto = () => {
+  //   ImagePicker.launchImageLibrary({ mediaType: 'photo' }, (response) => {
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (response.errorMessage) {
+  //       console.log('ImagePicker Error: ', response.errorMessage);
+  //     } else if (response.assets && response.assets.length > 0) {
+  //       const asset = response.assets[0];
+  //       if (asset.fileSize && asset.fileSize > 20480) {
+  //         Alert.alert('Error', 'Image size exceeds 20KB. Please choose a smaller image.');
+  //       } else {
+  //         setImageUri(asset.uri);
+  //         setImageData(asset.base64 || null);
+  //       }
+  //     }
+  //   });
+  // };
+
+
+
   const handleUpdateProductDetails = async () => {
     let editedItemObject: ItemEditRequestCredentials = {
       comp_id: loginStore?.comp_id,
@@ -131,6 +164,7 @@ export default function ManageProductsScreen() {
       catg_id: categoryId,
       // unit_name: unitName
       item_name: productName,
+      // item_img: imageData
     }
 
     await editItem(editedItemObject)
@@ -445,7 +479,7 @@ export default function ManageProductsScreen() {
               alignItems: "center",
               gap: 5,
             }}>
-            <View style={{ width: "50%" }}>
+            <View style={{ width: "100%", gap: 5 }}>
               <InputPaper
                 label="Price"
                 onChangeText={(txt: number) => setPrice(txt)}
@@ -453,8 +487,13 @@ export default function ManageProductsScreen() {
                 keyboardType="numeric"
                 mode="outlined"
               />
+              <View style={{ width: "100%" }}>
+                <ButtonPaper mode="outlined" onPress={() => null}>
+                  Add Photo
+                </ButtonPaper>
+              </View>
             </View>
-            <View style={{ width: "50%" }}>
+            {/* <View style={{ width: "50%" }}>
               <InputPaper
                 label={
                   receiptSettings?.discount_type === "A"
@@ -466,7 +505,7 @@ export default function ManageProductsScreen() {
                 keyboardType="numeric"
                 mode="outlined"
               />
-            </View>
+            </View> */}
           </View>
           <View
             style={{
@@ -476,7 +515,7 @@ export default function ManageProductsScreen() {
               gap: 5,
             }}>
             {/* {receiptSettings?.gst_flag === "Y" && ( */}
-            <View style={{ width: "50%" }}>
+            {/* <View style={{ width: "50%" }}>
               <InputPaper
                 label="CGST (%)"
                 onChangeText={(txt: number) => setCGST(txt)}
@@ -484,11 +523,11 @@ export default function ManageProductsScreen() {
                 keyboardType="numeric"
                 mode="outlined"
               />
-            </View>
+            </View> */}
             {/* )} */}
 
             {/* {receiptSettings?.gst_flag === "Y" && ( */}
-            <View style={{ width: "50%" }}>
+            {/* <View style={{ width: "50%" }}>
               <InputPaper
                 label="SGST (%)"
                 onChangeText={(txt: number) => setSGST(txt)}
@@ -496,7 +535,7 @@ export default function ManageProductsScreen() {
                 keyboardType="numeric"
                 mode="outlined"
               />
-            </View>
+            </View> */}
             {/* )} */}
           </View>
         </View>

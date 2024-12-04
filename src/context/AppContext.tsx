@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useRef, useState } from "react"
 import { AppState, Alert, ToastAndroid } from "react-native"
 import FastImage from 'react-native-fast-image'
-import { itemsContextStorage, loginStorage, productStorage } from "../storage/appStorage"
+import { ezetapStorage, itemsContextStorage, loginStorage, productStorage } from "../storage/appStorage"
 import { fileStorage } from "../storage/appStorage"
 import useReceiptSettings from "../hooks/api/useReceiptSettings"
 import useLogin from "../hooks/api/useLogin"
@@ -20,6 +20,7 @@ import useLogout from "../hooks/api/useLogout"
 import useCategories from "../hooks/api/useCategories"
 import useSendOtp2 from "../hooks/api/useSendOtp2"
 import { AppStoreContext } from "../models/custom_types"
+import RNEzetapSdk from "react-native-ezetap-sdk"
 
 export const AppStore = createContext<AppStoreContext>(null)
 
@@ -44,6 +45,56 @@ const AppContext = ({ children }) => {
   const { getOtp } = useSendOtp2()
   const { fetchCategories } = useCategories()
 
+  const initRazorpay = async () => {
+    var withAppKey =
+      '{"userName":' +
+      "9903044748" +
+      ',"demoAppKey":"a40c761a-b664-4bc6-ab5a-bf073aa797d5","prodAppKey":"a40c761a-b664-4bc6-ab5a-bf073aa797d5","merchantName":"SYNERGIC_SOFTEK_SOLUTIONS","appMode":"DEMO","currencyCode":"INR","captureSignature":false,"prepareDevice":false}'
+    var response = await RNEzetapSdk.initialize(withAppKey)
+    console.log("XXXXXXXXXXCCCCCCCCCCCCCC========RES", response)
+    // var jsonData = JSON.parse(response)
+    // setRazorpayInitializationJson(jsonData)
+    ezetapStorage.set("ezetap-initialization-json", response)
+  }
+
+  const init = async () => {
+    console.log(
+      "PPPPPPPPPPPPKKKKKKKKKKKKK",
+      ezetapStorage.contains("ezetap-initialization-json"),
+      ezetapStorage.getString("ezetap-initialization-json"),
+    )
+    // if (!ezetapStorage.contains("ezetap-initialization-json")) {
+    await initRazorpay()
+
+    var res = await RNEzetapSdk.prepareDevice()
+    console.warn("RAZORPAY===PREPARE DEVICE", res)
+    // }
+  }
+
+  useEffect(() => {
+    init()
+  }, [])
+
+  // useEffect(() => {
+  //   const handleAppStateChange = (nextAppState) => {
+  //     if (nextAppState === 'background') {
+  //       console.log('App has gone to the background!');
+
+  //       // ezetapStorage.clearAll()
+  //     } else if (nextAppState === 'inactive') {
+  //       console.log('App is closing!');
+
+  //       // ezetapStorage.clearAll()
+  //     }
+  //   };
+
+  //   const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, []);
+
   const handleLogin = async (loginText: string) => {
     setFlagOtp(!flagOtp)
     await login(loginText)
@@ -64,17 +115,17 @@ const AppContext = ({ children }) => {
           }
 
           loginStorage.set("login-data", JSON.stringify(loginData?.msg))
-          getOtp(otpCreds)
-            .then(res => {
-              setOtp(res?.otp)
-            })
-            .catch(err => {
-              ToastAndroid.show(
-                "Some error while sending otp.",
-                ToastAndroid.SHORT,
-              )
-              console.log("ERRR OTP: ", err)
-            })
+          // getOtp(otpCreds)
+          //   .then(res => {
+          //     setOtp(res?.otp)
+          //   })
+          //   .catch(err => {
+          //     ToastAndroid.show(
+          //       "Some error while sending otp.",
+          //       ToastAndroid.SHORT,
+          //     )
+          //     console.log("ERRR OTP: ", err)
+          //   })
 
           // loginStorage.set("login-data", JSON.stringify(loginData?.msg))
         }

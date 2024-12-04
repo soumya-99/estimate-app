@@ -36,6 +36,7 @@ import { logo, logoDark, flower2, flower2Dark } from "../resources/images"
 import ReportButtonsWrapper from "../components/ReportButtonsWrapper"
 import slikCut from "../resources/images/test_images/sc.jpg"
 import { ADDRESSES } from "../config/api_list"
+import { BASE_URL } from "../config/config"
 
 function CategoryProductsScreen() {
     const theme = usePaperColorScheme()
@@ -443,7 +444,7 @@ function CategoryProductsScreen() {
                                                             padding: 5
                                                         }}>
                                                             <Image
-                                                                source={slikCut}
+                                                                source={item?.item_img ? { uri: `${BASE_URL}${item?.item_img}` } : slikCut}
                                                                 style={{ height: 80, width: 80 }}
                                                             />
                                                         </View>
@@ -454,7 +455,7 @@ function CategoryProductsScreen() {
                                                                 color: theme.colors.onPrimaryContainer,
                                                                 fontWeight: "800",
                                                                 fontSize: 13
-                                                            }} numberOfLines={1} ellipsizeMode="tail">{item?.item_name?.length > 9 ? `${item?.item_name?.substring(0, 9)}...` : item?.item_name}</Text>
+                                                            }} numberOfLines={1} ellipsizeMode="tail">{item?.item_name?.length > 8 ? `${item?.item_name?.substring(0, 8)}...` : item?.item_name}</Text>
                                                             <Text variant="bodySmall" style={{
                                                                 color: theme.colors.secondary,
                                                                 fontWeight: "800"

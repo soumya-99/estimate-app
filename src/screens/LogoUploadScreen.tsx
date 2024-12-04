@@ -1,9 +1,9 @@
 import { StyleSheet, ScrollView, SafeAreaView, View, Image } from "react-native"
-import {
-  ImageLibraryOptions,
-  ImagePickerResponse,
-  launchImageLibrary,
-} from "react-native-image-picker"
+// import {
+//   ImageLibraryOptions,
+//   ImagePickerResponse,
+//   launchImageLibrary,
+// } from "react-native-image-picker"
 
 import HeaderImage from "../components/HeaderImage"
 import { blurReport, blurReportDark } from "../resources/images"
@@ -25,45 +25,45 @@ function LogoUploadScreen() {
   const showDialog = () => setVisible(true)
   const hideDialog = () => setVisible(false)
 
-  const selectLogo = () => {
-    const options: ImageLibraryOptions = {
-      mediaType: "photo",
-      includeBase64: true,
-    }
+  // const selectLogo = () => {
+  //   const options: ImageLibraryOptions = {
+  //     mediaType: "photo",
+  //     includeBase64: true,
+  //   }
 
-    launchImageLibrary(options, (response: ImagePickerResponse) => {
-      if (response.didCancel) {
-        console.log("User cancelled image picker")
-        fileStorage.clearAll()
-      } else if (response.errorCode) {
-        console.log("ImagePicker Error: ", response.errorMessage)
-        fileStorage.clearAll()
-      } else {
-        const fileStore = fileStorage.getString("file-data")
-        const fileStoreUri = fileStorage.getString("file-uri")
+  //   launchImageLibrary(options, (response: ImagePickerResponse) => {
+  //     if (response.didCancel) {
+  //       console.log("User cancelled image picker")
+  //       fileStorage.clearAll()
+  //     } else if (response.errorCode) {
+  //       console.log("ImagePicker Error: ", response.errorMessage)
+  //       fileStorage.clearAll()
+  //     } else {
+  //       const fileStore = fileStorage.getString("file-data")
+  //       const fileStoreUri = fileStorage.getString("file-uri")
 
-        if (fileStore?.length || fileStoreUri?.length > 0) {
-          fileStorage.clearAll()
-        }
+  //       if (fileStore?.length || fileStoreUri?.length > 0) {
+  //         fileStorage.clearAll()
+  //       }
 
-        const source = response?.assets[0]?.base64
-        const srcUri = response?.assets[0]?.uri
-        // const fileSize = response?.assets[0]?.fileSize
+  //       const source = response?.assets[0]?.base64
+  //       const srcUri = response?.assets[0]?.uri
+  //       // const fileSize = response?.assets[0]?.fileSize
 
-        setImgSrcUri(srcUri)
+  //       setImgSrcUri(srcUri)
 
-        fileStorage.set("file-data", source?.toString())
-        fileStorage.set("file-uri", srcUri?.toString())
+  //       fileStorage.set("file-data", source?.toString())
+  //       fileStorage.set("file-uri", srcUri?.toString())
 
-        // console.log("ashdguasydguasdguyasdasd", fileStore)
-        // console.log("ashdguasydguasdgufddstgdtgrgdfgdfgdffyasdasd", imgSrcUri)
-        console.log(
-          "ashdguasydguasdgufddstgdtgrgdfgdfgdffyasdasd",
-          source?.toString(),
-        )
-      }
-    })
-  }
+  //       // console.log("ashdguasydguasdguyasdasd", fileStore)
+  //       // console.log("ashdguasydguasdgufddstgdtgrgdfgdfgdffyasdasd", imgSrcUri)
+  //       console.log(
+  //         "ashdguasydguasdgufddstgdtgrgdfgdfgdffyasdasd",
+  //         source?.toString(),
+  //       )
+  //     }
+  //   })
+  // }
 
   const removeLogo = () => {
     setImgSrcUri("")
@@ -104,9 +104,9 @@ function LogoUploadScreen() {
             paddingHorizontal: normalize(25),
             paddingBottom: normalize(10),
           }}>
-          <ButtonPaper mode="contained" onPress={selectLogo}>
+          {/* <ButtonPaper mode="contained" onPress={selectLogo}>
             UPLOAD
-          </ButtonPaper>
+          </ButtonPaper> */}
         </View>
 
         <View

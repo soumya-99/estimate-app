@@ -156,6 +156,7 @@ export type ItemsData = {
   bar_code?: string
   catg_id?: number
   category_name?: string
+  item_img?: string,
 }
 
 export type UnitData = {
@@ -529,6 +530,7 @@ export type ItemEditRequestCredentials = {
   catg_id?: number
   // unit_name?: string
   item_name?: string
+  item_img?: any
 }
 
 export type UnitEditCredentials = {

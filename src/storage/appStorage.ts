@@ -19,3 +19,7 @@ export const productStorage = new MMKV({
 export const itemsContextStorage = new MMKV({
   id: "item-context-store",
 })
+
+export const ezetapStorage = new MMKV({
+  id: "ezetap-store",
+})

@@ -13,6 +13,7 @@ import {
   ToastAndroid,
   Keyboard,
   Alert,
+  AppState,
 } from "react-native"
 import { withTheme, Text, TouchableRipple } from "react-native-paper"
 import SmoothPinCodeInput from "react-native-smooth-pincode-input"
@@ -26,11 +27,12 @@ import navigationRoutes from "../routes/navigationRoutes"
 import { AppStore } from "../context/AppContext"
 import LinearGradient from "react-native-linear-gradient"
 import { logo, logoDark, flower2, flower2Dark } from "../resources/images"
-import { loginStorage } from "../storage/appStorage"
+import { ezetapStorage, loginStorage } from "../storage/appStorage"
 import InvertedTriangle from "../components/InvertedTriangle"
 import { AppStoreContext } from "../models/custom_types"
 import useUpdateLoginFlag from "../hooks/api/useUpdateLoginFlag"
 import { UpdateLoginFlagCredentials } from "../models/api_types"
+// import RNEzetapSdk from "react-native-ezetap-sdk"
 
 function LoginScreen() {
   const navigation = useNavigation()
@@ -131,30 +133,85 @@ function LoginScreen() {
     }
   }, [passwordText])
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout
-    if (otpSent) {
-      interval = setInterval(() => {
-        setTimer(prevTimer => {
-          if (prevTimer === 0) {
-            clearInterval(interval)
-            setOtpSent(false)
-            // setFetchedOtp(-1)
-            return 300 // Reset the timer to 300 seconds
-          } else {
-            return prevTimer - 1
-          }
-        })
-      }, 1000)
-    }
-    return () => clearInterval(interval)
-  }, [otpSent])
+  // useEffect(() => {
+  //   let interval: NodeJS.Timeout
+  //   if (otpSent) {
+  //     interval = setInterval(() => {
+  //       setTimer(prevTimer => {
+  //         if (prevTimer === 0) {
+  //           clearInterval(interval)
+  //           setOtpSent(false)
+  //           // setFetchedOtp(-1)
+  //           return 300 // Reset the timer to 300 seconds
+  //         } else {
+  //           return prevTimer - 1
+  //         }
+  //       })
+  //     }, 1000)
+  //   }
+  //   return () => clearInterval(interval)
+  // }, [otpSent])
 
-  const handleResendOtp = () => {
-    setOtpSent(true)
-    handleLogin(loginText)
-    setTimer(300) // Reset the timer
-  }
+  // const handleResendOtp = () => {
+  //   setOtpSent(true)
+  //   handleLogin(loginText)
+  //   setTimer(300) // Reset the timer
+  // }
+
+
+  ///////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////
+
+  // const initRazorpay = async () => {
+  //   var withAppKey =
+  //     '{"userName":' +
+  //     "9903044748" +
+  //     ',"demoAppKey":"a40c761a-b664-4bc6-ab5a-bf073aa797d5","prodAppKey":"a40c761a-b664-4bc6-ab5a-bf073aa797d5","merchantName":"SYNERGIC_SOFTEK_SOLUTIONS","appMode":"DEMO","currencyCode":"INR","captureSignature":false,"prepareDevice":false}'
+  //   var response = await RNEzetapSdk.initialize(withAppKey)
+  //   console.log(response)
+  //   // var jsonData = JSON.parse(response)
+  //   // setRazorpayInitializationJson(jsonData)
+  //   ezetapStorage.set("ezetap-initialization-json", response)
+  // }
+
+  // const init = async () => {
+  //   console.log(
+  //     "PPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+  //     ezetapStorage.contains("ezetap-initialization-json"),
+  //     ezetapStorage.getString("ezetap-initialization-json"),
+  //   )
+  //   // if (!ezetapStorage.contains("ezetap-initialization-json")) {
+  //   await initRazorpay()
+
+  //   var res = await RNEzetapSdk.prepareDevice()
+  //   console.warn("RAZORPAY===PREPARE DEVICE", res)
+  //   // }
+  // }
+
+  // useEffect(() => {
+  //   init()
+  // }, [])
+
+  // useEffect(() => {
+  //   const handleAppStateChange = (nextAppState) => {
+  //     if (nextAppState === 'background') {
+  //       console.log('App has gone to the background!');
+  //       // Add your event handling code here
+  //     } else if (nextAppState === 'inactive') {
+  //       console.log('App is closing!');
+
+  //       ezetapStorage.clearAll()
+  //     }
+  //   };
+
+  //   const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, []);
+
 
   return (
     <SafeAreaView>
@@ -313,17 +370,16 @@ function LoginScreen() {
                       LOGIN
                     </ButtonPaper>
                   </View>
-                  <View>
+                  {/* <View>
                     <ButtonPaper
                       mode="text"
-                      // buttonColor={theme.colors.secondaryContainer}
                       textColor={theme.colors.primary}
                       onPress={handleResendOtp}
                       icon="update"
                       disabled={otpSent && timer !== 0}>
                       {otpSent ? `OTP Sent (${timer}s)` : "Resend OTP"}
                     </ButtonPaper>
-                  </View>
+                  </View> */}
 
                   {/* <View style={{
                     justifyContent: "space-around",

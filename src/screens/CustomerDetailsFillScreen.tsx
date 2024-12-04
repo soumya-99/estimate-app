@@ -26,7 +26,7 @@ import NetTotalButton from "../components/NetTotalButton"
 import { AppStore } from "../context/AppContext"
 import SquircleBox from "../components/SquircleBox"
 import useSaleInsert from "../hooks/api/useSaleInsert"
-import { fileStorage, itemsContextStorage, loginStorage } from "../storage/appStorage"
+import { ezetapStorage, fileStorage, itemsContextStorage, loginStorage } from "../storage/appStorage"
 import { AppStoreContext, FilteredItem } from "../models/custom_types"
 import navigationRoutes from "../routes/navigationRoutes"
 import { ProductsScreenRouteProp } from "../models/route_types"
@@ -41,6 +41,7 @@ import {
 } from "../models/api_types"
 import useBillSms2 from "../hooks/api/useBillSms2"
 import QRCode from "react-native-qrcode-svg"
+import RNEzetapSdk from "react-native-ezetap-sdk"
 
 const CustomerDetailsFillScreen = () => {
   const isFocused = useIsFocused()
@@ -532,6 +533,133 @@ const CustomerDetailsFillScreen = () => {
   //   )
   // }
 
+
+
+
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+
+  var tnxResponse
+
+  const handleRazorpayClient = async () => {
+    let json = {
+      // appKey: "a40c761a-b664-4bc6-ab5a-bf073aa797d5",
+      username: "9903044748",
+      amount: +cashAmount,
+      // customerMobileNumber: "",
+      externalRefNumber: "",
+      // externalRefNumber2: "",
+      // externalRefNumber3: "",
+      // accountLabel: "AC1",
+      // customerEmail: "",
+      // pushTo: { deviceId: "1492621778|razorpay_pos_soundbox" },
+      // mode: "ALL",
+    }
+
+    // Convert json object to string
+    let jsonString = JSON.stringify(json)
+
+    // await RNEzetapSdk.initialize(jsonString)
+    //   .then(res => {
+    //     console.log(">>>>>>>>>>>>>>>>>", res)
+    //   })
+    //   .catch(err => {
+    //     console.log("<<<<<<<<<<<<<<<<<", err)
+    //   })
+
+    // var res = await RNEzetapSdk.prepareDevice()
+    // console.log("RAZORPAY===PREPARE DEVICE", res)
+
+    await RNEzetapSdk.pay(jsonString)
+      .then(res => {
+        console.log(">>>>>>>>>>>>>>>>>", res)
+
+        // if (res?.status == "success") {
+        //   handleSave()
+        //   Alert.alert("Txn ID", res?.txnId)
+        // } else {
+        //   Alert.alert("Error in Tnx", res?.error)
+        // }
+        tnxResponse = res
+        // setTnxResponse(res)
+      })
+      .catch(err => {
+        console.log("<<<<<<<<<<<<<<<<<", err)
+      })
+  }
+
+  const init = async () => {
+    // var withAppKey =
+    //   '{"userName":' +
+    //   "9903044748" +
+    //   ',"demoAppKey":"a40c761a-b664-4bc6-ab5a-bf073aa797d5","prodAppKey":"a40c761a-b664-4bc6-ab5a-bf073aa797d5","merchantName":"SYNERGIC_SOFTEK_SOLUTIONS","appMode":"DEMO","currencyCode":"INR","captureSignature":false,"prepareDevice":false}'
+    // var response = await RNEzetapSdk.initialize(withAppKey)
+    // console.log(response)
+    // var jsonData = JSON.parse(response)
+
+    let razorpayInitializationJson = JSON.parse(
+      ezetapStorage.getString("ezetap-initialization-json"),
+    )
+
+    console.log("MMMMMMSSSSSSSSSSSS", razorpayInitializationJson)
+
+    if (razorpayInitializationJson.status == "success") {
+      await handleRazorpayClient()
+        .then(async res => {
+          console.log("###################", res)
+          // var res = await RNEzetapSdk.close()
+          // console.log("CLOSEEEEE TNXXXXX", res)
+          // var json = JSON.parse(res)
+        })
+        .catch(err => {
+          console.log("==================", err)
+        })
+    } else {
+      console.log("XXXXXXXXXXXXXXXXXXX ELSE PART")
+    }
+  }
+
+  const handleSaveBillRazorpay = async (flag?: boolean) => {
+    await init()
+      .then(() => {
+        console.log(
+          "TRANSACTION RES DATA================",
+          tnxResponse,
+        )
+        if (JSON.parse(tnxResponse)?.status === "success") {
+          // item?.acc_type != "L"
+          //   ? handleSave(tnxResponse)
+          //   : handleSaveForLoan()
+
+          handlePrintReceipt(flag)
+
+          // Alert.alert(
+          //   `Transaction ID`,
+          //   `${tnxResponse?.result?.txn?.txnId}`,
+          // )
+        } else {
+          console.log("tnxResponse value error...")
+          // Alert.alert(
+          //   "Error",
+          //   `Some problem occurred while transaction. Error Status: ${
+          //     JSON.parse(tnxResponse)?.status
+          //   }`,
+          // )
+        }
+      })
+      .catch(err => {
+        console.error("TNX Response Error!", err)
+
+        console.log(
+          "PPPPPPPPPPPPKKKKKKKKKKKKK",
+          ezetapStorage.contains("ezetap-initialization-json"),
+          ezetapStorage.getString("ezetap-initialization-json"),
+        )
+      })
+  }
+
+
   return (
     <SafeAreaView>
       <ScrollView keyboardShouldPersistTaps="handled">
@@ -809,7 +937,7 @@ const CustomerDetailsFillScreen = () => {
               </View>
             )}
 
-            {
+            {/* {
               checked === "U" && upiData !== undefined && (
                 <View>
                   <View style={{ paddingHorizontal: normalize(20), paddingBottom: normalize(12), alignSelf: "center" }}>
@@ -857,10 +985,10 @@ const CustomerDetailsFillScreen = () => {
                   </View>
                 </View>
               )
-            }
+            } */}
 
             <View style={{ padding: normalize(20), flexDirection: "row", gap: 10, alignSelf: "center" }}>
-              <ButtonPaper
+              {checked !== "U" ? <ButtonPaper
                 mode="contained"
                 buttonColor={theme.colors.primary}
                 textColor={theme.colors.onPrimary}
@@ -870,7 +998,17 @@ const CustomerDetailsFillScreen = () => {
                 disabled={isDisabled}>
                 SAVE / PRINT
               </ButtonPaper>
-              <ButtonPaper
+                : <ButtonPaper
+                  mode="contained"
+                  buttonColor={theme.colors.primary}
+                  textColor={theme.colors.onPrimary}
+                  onPress={() => handleSaveBillRazorpay(true)}
+                  icon="cloud-print-outline"
+                  loading={isLoading}
+                  disabled={isDisabled}>
+                  SAVE / PRINT
+                </ButtonPaper>}
+              {checked !== "U" ? <ButtonPaper
                 mode="contained"
                 buttonColor={theme.colors.purple}
                 textColor={theme.colors.onPurple}
@@ -880,6 +1018,16 @@ const CustomerDetailsFillScreen = () => {
                 disabled={isDisabled}>
                 SAVE
               </ButtonPaper>
+                : <ButtonPaper
+                  mode="contained"
+                  buttonColor={theme.colors.purple}
+                  textColor={theme.colors.onPurple}
+                  onPress={() => handleSaveBillRazorpay()}
+                  icon="content-save-outline"
+                  loading={isLoading}
+                  disabled={isDisabled}>
+                  SAVE
+                </ButtonPaper>}
             </View>
           </View>
         </View>
