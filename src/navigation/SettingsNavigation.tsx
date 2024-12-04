@@ -62,11 +62,11 @@ export default function SettingsNavigation() {
         name={navigationRoutes.settingsMasterScreen}
         component={SettingsMasterScreen}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.logoUploadScreen}
         component={LogoUploadScreen}
-      />
-      <Stack.Screen name={navigationRoutes.printMain} component={PrintMain} />
+      /> */}
+      {/* <Stack.Screen name={navigationRoutes.printMain} component={PrintMain} /> */}
       <Stack.Screen
         name={navigationRoutes.profileScreen}
         component={ProfileScreen}
@@ -83,10 +83,10 @@ export default function SettingsNavigation() {
         name={navigationRoutes.gstSettingsScreen}
         component={GstSettingsScreen}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.upiGenerateScreen}
         component={UPIGenerateScreen}
-      />
+      /> */}
       {/* <Stack.Screen
         name={navigationRoutes.changePinScreen}
         component={ChangePinScreen}

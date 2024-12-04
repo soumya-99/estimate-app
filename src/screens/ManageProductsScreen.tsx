@@ -32,7 +32,7 @@ import useAddItem from "../hooks/api/useAddItem"
 import MenuPaper from "../components/MenuPaper"
 import { AppStoreContext } from "../models/custom_types"
 // import * as ImagePicker from 'react-native-image-picker'
-import ButtonPaper from "../components/ButtonPaper"
+// import ButtonPaper from "../components/ButtonPaper"
 
 export default function ManageProductsScreen() {
   const theme = usePaperColorScheme()
@@ -487,11 +487,11 @@ export default function ManageProductsScreen() {
                 keyboardType="numeric"
                 mode="outlined"
               />
-              <View style={{ width: "100%" }}>
+              {/* <View style={{ width: "100%" }}>
                 <ButtonPaper mode="outlined" onPress={() => null}>
                   Add Photo
                 </ButtonPaper>
-              </View>
+              </View> */}
             </View>
             {/* <View style={{ width: "50%" }}>
               <InputPaper
