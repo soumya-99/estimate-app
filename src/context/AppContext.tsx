@@ -109,10 +109,10 @@ const AppContext = ({ children }) => {
         }
         if (loginData?.suc === 1) {
           // setOtp(loginData?.otp?.otp)
-          let otpCreds: SendOtpCredentials = {
-            comp_id: loginData?.msg?.comp_id,
-            phone: loginData?.msg?.user_id,
-          }
+          // let otpCreds: SendOtpCredentials = {
+          //   comp_id: loginData?.msg?.comp_id,
+          //   phone: loginData?.msg?.user_id,
+          // }
 
           loginStorage.set("login-data", JSON.stringify(loginData?.msg))
           // getOtp(otpCreds)

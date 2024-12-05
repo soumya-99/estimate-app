@@ -104,34 +104,34 @@ function LoginScreen() {
   //   }
   // }, [loginText])
 
-  const handleLoginAfterGettingOtp = () => {
-    if (parseInt(passwordText) === fetchedOtp) {
-      const creds: UpdateLoginFlagCredentials = {
-        user_id: loginText
-      }
-      updateLoginFlag(creds).then(res => {
-        if (res.suc === 1) {
-          setIsLogin(true)
-        } else {
-          ToastAndroid.show("Login Flag not updated.", ToastAndroid.SHORT)
-          return
-        }
-      }).catch(err => {
-        ToastAndroid.show("Error while updating Login Flag!", ToastAndroid.SHORT)
-      })
-    } else {
-      setIsLogin(false)
-      Alert.alert("Message", "Provided OTP is wrong! Re-enter OTP.")
-      setPasswordText("")
-    }
-  }
+  // const handleLoginAfterGettingOtp = () => {
+  //   if (parseInt(passwordText) === fetchedOtp) {
+  //     const creds: UpdateLoginFlagCredentials = {
+  //       user_id: loginText
+  //     }
+  //     updateLoginFlag(creds).then(res => {
+  //       if (res.suc === 1) {
+  //         setIsLogin(true)
+  //       } else {
+  //         ToastAndroid.show("Login Flag not updated.", ToastAndroid.SHORT)
+  //         return
+  //       }
+  //     }).catch(err => {
+  //       ToastAndroid.show("Error while updating Login Flag!", ToastAndroid.SHORT)
+  //     })
+  //   } else {
+  //     setIsLogin(false)
+  //     Alert.alert("Message", "Provided OTP is wrong! Re-enter OTP.")
+  //     setPasswordText("")
+  //   }
+  // }
 
-  useEffect(() => {
-    if (passwordText.length === 4) {
-      Keyboard.dismiss()
-      handleLoginAfterGettingOtp()
-    }
-  }, [passwordText])
+  // useEffect(() => {
+  //   if (passwordText.length === 4) {
+  //     Keyboard.dismiss()
+  //     handleLoginAfterGettingOtp()
+  //   }
+  // }, [passwordText])
 
   // useEffect(() => {
   //   let interval: NodeJS.Timeout
@@ -259,17 +259,30 @@ function LoginScreen() {
                     />
                   </View>
                   <View>
+                    <InputPaper
+                      value={passwordText}
+                      label={"Password"}
+                      onChangeText={(e: string) => setPasswordText(e)}
+                      customStyle={{ backgroundColor: theme.colors.onPrimary }}
+                      leftIcon="form-textbox-password"
+                      keyboardType="default"
+                      secureTextEntry
+                    />
+                  </View>
+                  <View>
                     <ButtonPaper
                       mode="contained"
                       onPress={() => {
-                        if (loginText !== "") {
-                          setNext(!next)
+                        if (loginText !== "" && passwordText !== "") {
+                          // setNext(!next)
                           handleLogin(loginText)
-                          setOtpSent(true)
+                          // setOtpSent(true)
+                        } else {
+                          ToastAndroid.show("Enter username or password properly.", ToastAndroid.SHORT)
                         }
                       }}
                       icon="arrow-right">
-                      NEXT
+                      LOGIN
                     </ButtonPaper>
                   </View>
 
@@ -292,7 +305,7 @@ function LoginScreen() {
                 </View>
               )}
 
-              {next && (
+              {/* {next && (
                 <View
                   style={{
                     paddingHorizontal: normalize(40),
@@ -370,35 +383,8 @@ function LoginScreen() {
                       LOGIN
                     </ButtonPaper>
                   </View>
-                  {/* <View>
-                    <ButtonPaper
-                      mode="text"
-                      textColor={theme.colors.primary}
-                      onPress={handleResendOtp}
-                      icon="update"
-                      disabled={otpSent && timer !== 0}>
-                      {otpSent ? `OTP Sent (${timer}s)` : "Resend OTP"}
-                    </ButtonPaper>
-                  </View> */}
-
-                  {/* <View style={{
-                    justifyContent: "space-around",
-                    flexDirection: "row",
-                    marginVertical: normalize(10),
-                    alignItems: "center"
-                  }}>
-                    <TouchableRipple onPress={
-                      () => (navigation.dispatch(
-                        CommonActions.navigate({
-                          name: navigationRoutes.forgotPinScreen,
-                        }))
-                      )
-                    }>
-                      <Text variant="labelSmall" style={[styles.forgotOrResetText, { color: theme.colors.error }]}>Forgot Pin?</Text>
-                    </TouchableRipple>
-                  </View> */}
                 </View>
-              )}
+              )} */}
             </View>
             <View>
               <Text
