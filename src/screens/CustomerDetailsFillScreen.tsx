@@ -255,25 +255,25 @@ const CustomerDetailsFillScreen = () => {
             }),
           )
 
-          if (receiptSettings?.rcpt_type !== "P") {
-            let sendBillSmsCreds: BillSmsCredentials = {
-              comp_id: loginStore?.comp_id,
-              phone: customerMobileNumber,
-              receipt_no: receiptNumber,
-            }
-            // sendBillSms(sendBillSmsCreds)
-            //   .then(res => {
-            //     if (res?.suc === 1) {
-            //       ToastAndroid.show("SMS Sent to customer.", ToastAndroid.SHORT)
-            //     }
-            //   })
-            //   .catch(err => {
-            //     ToastAndroid.show(
-            //       "Some error occurred while sending bill sms.",
-            //       ToastAndroid.SHORT,
-            //     )
-            //   })
-          }
+          // if (receiptSettings?.rcpt_type !== "P") {
+          //   let sendBillSmsCreds: BillSmsCredentials = {
+          //     comp_id: loginStore?.comp_id,
+          //     phone: customerMobileNumber,
+          //     receipt_no: receiptNumber,
+          //   }
+          // sendBillSms(sendBillSmsCreds)
+          //   .then(res => {
+          //     if (res?.suc === 1) {
+          //       ToastAndroid.show("SMS Sent to customer.", ToastAndroid.SHORT)
+          //     }
+          //   })
+          //   .catch(err => {
+          //     ToastAndroid.show(
+          //       "Some error occurred while sending bill sms.",
+          //       ToastAndroid.SHORT,
+          //     )
+          //   })
+          // }
         } else {
           Alert.alert("Fail", "Something Went Wrong!")
         }

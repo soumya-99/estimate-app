@@ -1812,31 +1812,6 @@ export const useBluetoothPrint = () => {
     rcptNo?: number,
     paymentMode?: string,
   ) => {
-    // const loginStore = JSON.parse(loginStorage.getString("login-data"))
-    // const fileStore = fileStorage.getString("file-data")
-    // const upiStore = fileStorage.getString("upi-blob")
-    // const upiData = fileStorage.getString("upi-data")
-
-    // const shopName: string = loginStore?.company_name?.toString()
-    // const address: string = loginStore?.address?.toString()
-    // const location: string = loginStore?.branch_name?.toString()
-    // const shopMobile: string = loginStore?.phone_no?.toString()
-    // const shopEmail: string = loginStore?.email_id?.toString()
-    // const cashier: string = loginStore?.user_name?.toString()
-
-    // let { totalCGST_5, totalCGST_12, totalCGST_18, totalCGST_28, totalSGST_5, totalSGST_12, totalSGST_18, totalSGST_28, totalGST } = gstFilterationAndTotals(addedProducts)
-
-    // let gstTotals = gstFilterationAndTotals(
-    //   addedProducts,
-    //   receiptSettings?.gst_type,
-    // )
-    // let { totalGST } = gstTotals // Destructure totalGST for separate handling
-
-    // Filter keys for CGST and SGST display
-    // const gstKeys = Object.keys(gstTotals).filter(
-    //   key => key.includes("totalCGST") || key.includes("totalSGST"),
-    // )
-
     let totalQuantities: number = 0
     // let totalAmountAfterDiscount: number = 0
 
@@ -1886,7 +1861,7 @@ export const useBluetoothPrint = () => {
     })
   }
 
-  async function rePrintWithoutGst(
+  const rePrintT = async (
     addedProducts: ShowBillData[],
     netTotal: number,
     totalDiscountAmount: number,
@@ -1899,1571 +1874,1635 @@ export const useBluetoothPrint = () => {
     isRefunded?: boolean,
     isRefundedDuplicate?: boolean,
     cancelFlag?: boolean
-  ) {
-    const loginStore = JSON.parse(loginStorage.getString("login-data"))
-    const fileStore = fileStorage.getString("file-data")
-
-    const shopName: string = loginStore?.company_name?.toString()
-    const address: string = loginStore?.address?.toString()
-    const location: string = loginStore?.branch_name?.toString()
-    const shopMobile: string = loginStore?.phone_no?.toString()
-    const shopEmail: string = loginStore?.email_id?.toString()
-    const cashier: string = loginStore?.user_name?.toString()
-
+  ) => {
     let totalQuantities: number = 0
-    let totalAmountAfterDiscount: number = 0
+    // let totalAmountAfterDiscount: number = 0
 
-    try {
-      let columnWidths = [11, 1, 18]
-      let columnWidthsHeader = [8, 1, 21]
-      let columnWidthsProductsHeaderAndBody = [8, 4, 6, 5, 7]
-      let columnWidthsProductsHeaderAndBodyWithoutDiscount = [8, 6, 7, 8]
-      // let columnWidthsProductsHeaderAndBody = [18, 3, 4, 3, 4]
-      let columnWidthsItemTotal = [18, 12]
-      let columnWidthIfNameIsBig = [32]
+    let text =
+      `[C]ESTIMATE (DUPLICATE)\n` +
+      // `[C]==========DUPLICATE==========\n` +
+      `[C]=============================\n` +
+      `[L]RCPT. NO.[R]${rcptNo?.toString()}\n` +
+      `[L]RCPT. DATE[R]${new Date().toLocaleDateString("en-GB")}\n` +
+      `[C]=============================\n` +
+      `[L]Item[C]Qty[R]Amount\n` +
+      `[C]=============================\n`;
 
-      // let newColumnWidths: number[] = [9, 9, 6, 7]
-
-      if (fileStore?.length > 0) {
-        await BluetoothEscposPrinter.printerAlign(
-          BluetoothEscposPrinter.ALIGN.CENTER,
-        )
-        const options = {
-          width: 250, // Assuming 58mm paper width with 8 dots/mm resolution (58mm * 8dots/mm = 384 dots)
-          left: 50, // No left padding
-          // align: "CENTER"
-        }
-
-        // Print the image
-        await BluetoothEscposPrinter.printPic(fileStore, options)
-      }
-
-      await BluetoothEscposPrinter.printerAlign(
-        BluetoothEscposPrinter.ALIGN.CENTER,
-      )
-      await BluetoothEscposPrinter.printText(shopName.toUpperCase(), {
-        align: "center",
-        widthtimes: 1.2,
-        heigthtimes: 2,
-      })
-      await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText("hasifughaf", { align: "center" })
-
-      if (receiptSettings?.on_off_flag1 === "Y") {
-        await BluetoothEscposPrinter.printText(receiptSettings?.header1, {})
-        await BluetoothEscposPrinter.printText("\n", {})
-      }
-
-      if (receiptSettings?.on_off_flag2 === "Y") {
-        await BluetoothEscposPrinter.printText(receiptSettings?.header2, {})
-      }
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      if (!cancelFlag) {
-        !isRefunded
-          ? await BluetoothEscposPrinter.printText("DUPLICATE RECEIPT", {
-            align: "center",
-          })
-          : !isRefundedDuplicate
-            ? await BluetoothEscposPrinter.printText("REFUND RECEIPT", {
-              align: "center",
-            })
-            : await BluetoothEscposPrinter.printText("DUPLICATE REFUND RECEIPT", {
-              align: "center",
-            })
-      }
-
-      cancelFlag
-        && await BluetoothEscposPrinter.printText("CANCELLED BILL", {
-          align: "center",
-        })
-
-      // await BluetoothEscposPrinter.printText("\n", {})
-
-      // await BluetoothEscposPrinter.printText("------------------------", {
-      //   align: "center",
-      // })
-
-      // await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText(address, {
-      //   align: "center",
-      // })
-      // await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText(location, {
-      //   align: "center",
-      // })
-      await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText("------------------------", {
-      //   align: "center",
-      // })
-      // await BluetoothEscposPrinter.printText("\n", {})
-
-      // // await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.LEFT)
-
-      // await BluetoothEscposPrinter.printColumn(
-      //   columnWidthsHeader,
-      //   [
-      //     BluetoothEscposPrinter.ALIGN.LEFT,
-      //     BluetoothEscposPrinter.ALIGN.CENTER,
-      //     BluetoothEscposPrinter.ALIGN.RIGHT,
-      //   ],
-      //   ["MOBILE", ":", shopMobile],
-      //   {},
-      // )
-      // await BluetoothEscposPrinter.printColumn(
-      //   columnWidthsHeader,
-      //   [
-      //     BluetoothEscposPrinter.ALIGN.LEFT,
-      //     BluetoothEscposPrinter.ALIGN.CENTER,
-      //     BluetoothEscposPrinter.ALIGN.RIGHT,
-      //   ],
-      //   ["EMAIL", ":", shopEmail],
-      //   {},
-      // )
-      // await BluetoothEscposPrinter.printColumn(
-      //     columnWidthsHeader,
-      //     [
-      //         BluetoothEscposPrinter.ALIGN.LEFT,
-      //         BluetoothEscposPrinter.ALIGN.CENTER,
-      //         BluetoothEscposPrinter.ALIGN.RIGHT,
-      //     ],
-      //     ["SITE", ":", "SHOPNAME.COM"],
-      //     {},
-      // )
-
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      await BluetoothEscposPrinter.printColumn(
-        columnWidthsHeader,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        ["RCPT.NO", ":", rcptNo?.toString()],
-        {},
-      )
-      await BluetoothEscposPrinter.printColumn(
-        columnWidthsHeader,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        ["DATE", ":", `${new Date().toLocaleString("en-GB")}`],
-        {},
-      )
-      await BluetoothEscposPrinter.printColumn(
-        columnWidthsHeader,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        ["CASHIER", ":", cashier],
-        {},
-      )
-
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      // if (customerName.length !== 0 || customerPhone.length !== 0) {
-      // receiptSettings?.cust_inf === "Y" &&
-      if (addedProducts[0]?.phone_no !== "0000000000") {
-        await BluetoothEscposPrinter.printColumn(
-          columnWidthsHeader,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          ["NAME", ":", customerName],
-          {},
-        )
-        await BluetoothEscposPrinter.printColumn(
-          columnWidthsHeader,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          ["PHONE", ":", customerPhone],
-          {},
-        )
-      }
-
-      // }
-
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      await BluetoothEscposPrinter.printerAlign(
-        BluetoothEscposPrinter.ALIGN.CENTER,
-      )
-
-      addedProducts[0]?.discount_flag === "Y" &&
-        addedProducts[0]?.discount_position !== "B"
-        ? await BluetoothEscposPrinter.printColumn(
-          columnWidthsProductsHeaderAndBody,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          ["ITEM", "QTY", "PRICE", "DIS.", "AMT"],
-          {},
-        )
-        : await BluetoothEscposPrinter.printColumn(
-          columnWidthsProductsHeaderAndBodyWithoutDiscount,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          ["ITEM", "QTY", "PRICE", "AMT"],
-          {},
-        )
-
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      for (const item of addedProducts) {
-        //@ts-ignore
-        totalQuantities += parseInt(item?.qty)
-        let discountType: "P" | "A" = addedProducts[0]?.discount_type
-        let discountFlag: "Y" | "N" = addedProducts[0]?.discount_flag
-        let discountPosition: "B" | "I" = addedProducts[0]?.discount_position
-
-        // discountType === "P"
-        //     ? totalAmountAfterDiscount += ((item?.price * item?.qty) - ((item?.price * item?.qty * item?.discount_amt) / 100))
-        //     : totalAmountAfterDiscount += ((item?.price * item?.qty) - (item?.qty * item?.discount_amt))
-
-        if (item?.item_name?.length >= 8) {
-          await BluetoothEscposPrinter.printColumn(
-            columnWidthIfNameIsBig,
-            [BluetoothEscposPrinter.ALIGN.LEFT],
-            [item?.item_name],
-            {},
-          )
-
-          discountFlag === "Y" && discountPosition !== "B"
-            ? discountType === "P"
-              ? await BluetoothEscposPrinter.printColumn(
-                columnWidthsProductsHeaderAndBody,
-                [
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.CENTER,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                ],
-                //@ts-ignore
-                [
-                  "",
-                  item?.qty.toString(),
-                  item?.price.toString(),
-                  calculatePercentDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.dis_pertg,
-                  ),
-                  calculateAmountAfterPercentDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.dis_pertg,
-                  ),
-                ],
-                {},
-              )
-              : await BluetoothEscposPrinter.printColumn(
-                columnWidthsProductsHeaderAndBody,
-                [
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.CENTER,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                ],
-                [
-                  "",
-                  item?.qty.toString(),
-                  item?.price.toString(),
-                  calculateAmountDiscountPerProduct(
-                    item?.qty,
-                    item?.discount_amt,
-                  ),
-                  calculateAmountAfterAmountDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.discount_amt,
-                  ),
-                ],
-                {},
-              )
-            : await BluetoothEscposPrinter.printColumn(
-              columnWidthsProductsHeaderAndBodyWithoutDiscount,
-              [
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-              ],
-              [
-                "",
-                item?.qty.toString(),
-                item?.price.toString(),
-                calculateAmountAfterAmountDiscountPerProduct(
-                  item?.price,
-                  item?.qty,
-                  0,
-                ),
-              ],
-              {},
-            )
-          // : await BluetoothEscposPrinter.printColumn(
-          //     columnWidthsProductsHeaderAndBody,
-          //     [
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.CENTER,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //     ],
-          //     ["", item?.qty.toString(), item?.price.toString(), calculateAmountDiscountPerProduct(item?.qty, 0), calculateAmountAfterAmountDiscountPerProduct(item?.price, item?.qty, 0)],
-          //     {},
-          // )
-
-          // await BluetoothEscposPrinter.printColumn(
-          //     columnWidthsProductsHeaderAndBody,
-          //     [
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.CENTER,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //     ],
-          //     ["", item?.qty.toString(), item?.price.toString(), (((item?.price * item?.qty * item?.discount_amt) / 100).toFixed(2)).toString(), `${((item?.price * item?.qty) - ((item?.price * item?.qty * item?.discount_amt) / 100)).toFixed(2).toString()}`],
-          //     {},
-          // )
-        } else {
-          discountFlag === "Y" && discountPosition !== "B"
-            ? discountType === "P"
-              ? await BluetoothEscposPrinter.printColumn(
-                columnWidthsProductsHeaderAndBody,
-                [
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.CENTER,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                ],
-                //@ts-ignore
-                [
-                  item?.item_name,
-                  item?.qty.toString(),
-                  item?.price.toString(),
-                  calculatePercentDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.dis_pertg,
-                  ),
-                  calculateAmountAfterPercentDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.dis_pertg,
-                  ),
-                ],
-                {},
-              )
-              : await BluetoothEscposPrinter.printColumn(
-                columnWidthsProductsHeaderAndBody,
-                [
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.CENTER,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                ],
-                //@ts-ignore
-                [
-                  item?.item_name,
-                  item?.qty.toString(),
-                  item?.price.toString(),
-                  calculateAmountDiscountPerProduct(
-                    item?.qty,
-                    item?.discount_amt,
-                  ),
-                  calculateAmountAfterAmountDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.discount_amt,
-                  ),
-                ],
-                {},
-              )
-            : await BluetoothEscposPrinter.printColumn(
-              columnWidthsProductsHeaderAndBodyWithoutDiscount,
-              [
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-              ],
-              //@ts-ignore
-              [
-                item?.item_name,
-                item?.qty.toString(),
-                item?.price.toString(),
-                calculateAmountAfterAmountDiscountPerProduct(
-                  item?.price,
-                  item?.qty,
-                  0,
-                ),
-              ],
-              {},
-            )
-          // : await BluetoothEscposPrinter.printColumn(
-          //     columnWidthsProductsHeaderAndBody,
-          //     [
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.CENTER,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //     ],
-          //     //@ts-ignore
-          //     [item?.item_name, item?.qty.toString(), item?.price.toString(), calculateAmountDiscountPerProduct(item?.qty, 0), calculateAmountAfterAmountDiscountPerProduct(item?.price, item?.qty, 0)],
-          //     {},
-          // )
-
-          // await BluetoothEscposPrinter.printColumn(
-          //     columnWidthsProductsHeaderAndBody,
-          //     [
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.CENTER,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //     ],
-          //     [item?.item_name, item?.qty.toString(), item?.price.toString(), (((item?.price * item?.qty * item?.discount_amt) / 100).toFixed(2)).toString(), `${(item?.price * item?.qty).toString()}`],
-          //     {},
-          // )
-          // await BluetoothEscposPrinter.printText("\n", {})
-        }
-      }
-
-      // await BluetoothEscposPrinter.printText("\n", {})
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      await BluetoothEscposPrinter.printColumn(
-        columnWidthsItemTotal,
-        [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-        [
-          `ITEM: ${addedProducts?.length?.toString()} QTY: ${totalQuantities.toString()}`,
-          `AMT: ${netTotal?.toFixed(2)}`,
-        ],
-        {},
-      )
-      // await BluetoothEscposPrinter.printText("\n", {})
-
-      addedProducts[0]?.discount_flag === "Y" &&
-        (await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          //@ts-ignore
-          ["DISCOUNT", ":", parseFloat(totalDiscountAmount).toFixed(2)],
-          {},
-        ))
-      await BluetoothEscposPrinter.printColumn(
-        columnWidths,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        // ["TOTAL", ":", `${(netTotal - totalDiscountAmount).toFixed(2)}`],
-        ["TOTAL", ":", `${netTotalCalculate(netTotal, totalDiscountAmount)}`],
-        {},
-      )
-      await BluetoothEscposPrinter.printColumn(
-        columnWidths,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        // ["ROUND OFF", ":", `${(Math.round(parseFloat((netTotal - totalDiscountAmount).toFixed(2))) - parseFloat((netTotal - totalDiscountAmount).toFixed(2))).toFixed(2)}`],
-        [
-          "ROUND OFF",
-          ":",
-          `${roundingOffCalculate(netTotal, totalDiscountAmount)}`,
-        ],
-        {},
-      )
-      await BluetoothEscposPrinter.printColumn(
-        columnWidths,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        // ["NET AMT", ":", `${Math.round(parseFloat((netTotal - totalDiscountAmount).toFixed(2)))}`],
-        [
-          "NET AMT",
-          ":",
-          `${grandTotalCalculate(netTotal, totalDiscountAmount)}`,
-        ],
-        {},
-      )
-
-      // await BluetoothEscposPrinter.printText("\n", {})
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      if (!cancelFlag) {
-        if (addedProducts[0]?.rcv_cash_flag === "Y") {
-          if (!isRefunded && paymentMode === "C") {
-            await BluetoothEscposPrinter.printText("PAYMENT MODE", {
-              align: "center",
-            })
-            await BluetoothEscposPrinter.printText("\n", {})
-            await BluetoothEscposPrinter.printText(
-              `CASH RECEIVED:       ${cashAmount}`,
-              { align: "center" },
-            )
-            await BluetoothEscposPrinter.printText("\n", {})
-            await BluetoothEscposPrinter.printText(
-              `RETURNED AMT:        ${returnedAmt}`,
-              { align: "center" },
-            )
-
-            await BluetoothEscposPrinter.printText("\n", {})
-            await BluetoothEscposPrinter.printText("------------------------", {
-              align: "center",
-            })
-            await BluetoothEscposPrinter.printText("\n", {})
-          }
-        } else {
-          // await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText(
-            `TOTAL AMT:        ${Math.abs(returnedAmt)}`,
-            { align: "center" },
-          )
-
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText("------------------------", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-        }
-      }
-
-      if (!cancelFlag) {
-        // await BluetoothEscposPrinter.printText("\n", {})
-        if (paymentMode === "U") {
-          await BluetoothEscposPrinter.printText(
-            `RECEIVED:       ${grandTotalCalculate(
-              netTotal,
-              totalDiscountAmount,
-            )} [UPI]`,
-            { align: "center" },
-          )
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText("------------------------", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-        }
-        if (paymentMode === "D") {
-          await BluetoothEscposPrinter.printText(
-            `RECEIVED:       ${grandTotalCalculate(
-              netTotal,
-              totalDiscountAmount,
-            )} [CARD]`,
-            { align: "center" },
-          )
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText("------------------------", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-        }
-        if (paymentMode === "R") {
-          await BluetoothEscposPrinter.printText("PAYMENT MODE", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText(
-            `CASH RECEIVED:       ${cashAmount}`,
-            { align: "center" },
-          )
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText(
-            `DUE AMT:        ${Math.abs(returnedAmt)}`,
-            { align: "center" },
-          )
-
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText("------------------------", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-        }
-      }
-
-      if (isRefunded)
-        await BluetoothEscposPrinter.printText(
-          `REFUNDED AMT:    ${grandTotalCalculate(
-            netTotal,
-            totalDiscountAmount,
-          )}`,
-          { align: "center" },
-        )
-
-      if (receiptSettings?.on_off_flag3 === "Y") {
-        // await BluetoothEscposPrinter.printText("\n", {})
-        await BluetoothEscposPrinter.printText(receiptSettings?.footer1, {})
-        await BluetoothEscposPrinter.printText("\n", {})
-      }
-      if (receiptSettings?.on_off_flag4 === "Y") {
-        await BluetoothEscposPrinter.printText(receiptSettings?.footer2, {})
-        await BluetoothEscposPrinter.printText("\n", {})
-      }
-
-      // await BluetoothEscposPrinter.printText(
-      //     "THANK YOU, VISIT AGAIN!",
-      //     { align: "center" },
-      // )
-      // await BluetoothEscposPrinter.printText("\n", {})
-
-      await BluetoothEscposPrinter.printText("------X------", {})
-      await BluetoothEscposPrinter.printText("\n\r\n\r\n\r", {})
-    } catch (e) {
-      console.log(e.message || "ERROR")
+    for (const item of addedProducts) {
+      totalQuantities += +item?.qty
+      text += `[L]${item?.item_name?.slice(0, 10)}[C]${item?.qty}[R]${+item?.price * +item?.qty}\n`
     }
+
+    text += `[C]=============================\n` +
+
+      // `[L]Item[C]Qty[R]Amount\n` +
+      `[L]${addedProducts?.length}[C]${totalQuantities}[R]${netTotal?.toFixed(2)}\n` +
+      `[C]=============================\n` +
+      `[L]ROUND OFF[R]${roundingOffCalculate(netTotal, 0)}\n`;
+
+    if (paymentMode === "C") {
+      text += `[L]CASH RECEIVED[R]${cashAmount}\n` +
+        `[L]RETURN[R]${returnedAmt}\n`;
+    }
+    if (paymentMode === "R") {
+      text += `[L]CASH RECEIVED[R]${cashAmount}\n` +
+        `[L]DUE AMOUNT[R]${Math.abs(returnedAmt)}\n`;
+    }
+
+    text += `[L]GRAND AMT[R]${grandTotalCalculate(netTotal, 0).toFixed(2)}\n` +
+      `[C]==============X===============\n\n\n`;
+
+    await ThermalPrinterModule.printBluetooth({
+      payload: text,
+      printerNbrCharactersPerLine: 32,
+      printerDpi: 120,
+      printerWidthMM: 58,
+      mmFeedPaper: 25,
+    }).then(res => {
+      console.log("RES", res)
+    }).catch(err => {
+      console.log("ERR", err)
+    })
   }
 
-  async function rePrint(
-    addedProducts: ShowBillData[],
-    netTotal: number,
-    totalDiscountAmount: number,
-    cashAmount?: number,
-    returnedAmt?: number,
-    customerName?: string,
-    customerPhone?: string,
-    rcptNo?: number,
-    paymentMode?: string,
-    isRefunded?: boolean,
-    isRefundedDuplicate?: boolean,
-    cancelFlag?: boolean
-  ) {
-    console.log(
-      "SSSSSSSSSSSSSSSS==================SSSSSSSSSSSSSSSSSS CALLED rePrint",
-    )
-
-    const loginStore = JSON.parse(loginStorage.getString("login-data"))
-    const fileStore = fileStorage.getString("file-data")
-
-    const shopName: string = loginStore?.company_name?.toString()
-    const address: string = loginStore?.address?.toString()
-    const location: string = loginStore?.branch_name?.toString()
-    const shopMobile: string = loginStore?.phone_no?.toString()
-    const shopEmail: string = loginStore?.email_id?.toString()
-    const cashier: string = loginStore?.user_name?.toString()
-
-    // let { totalCGST_5, totalCGST_12, totalCGST_18, totalCGST_28, totalSGST_5, totalSGST_12, totalSGST_18, totalSGST_28, totalGST } = gstFilterationAndTotalForRePrint(addedProducts)
-
-    let gstTotals = gstFilterationAndTotalForRePrint(
-      addedProducts,
-      addedProducts[0]?.gst_type,
-    )
-    let { totalGST } = gstTotals // Destructure totalGST for separate handling
-
-    // Filter keys for CGST and SGST display
-    const gstKeys = Object.keys(gstTotals).filter(
-      key => key.includes("totalCGST") || key.includes("totalSGST"),
-    )
-
-    let totalQuantities: number = 0
-    let totalAmountAfterDiscount: number = 0
-
-    try {
-      let columnWidths = [11, 1, 18]
-      let columnWidthsHeader = [8, 1, 21]
-      let columnWidthsProductsHeaderAndBody = [8, 4, 6, 5, 7]
-      let columnWidthsProductsHeaderAndBodyWithoutDiscount = [8, 6, 7, 8]
-      // let columnWidthsProductsHeaderAndBody = [18, 3, 4, 3, 4]
-      let columnWidthsItemTotal = [18, 12]
-      let columnWidthIfNameIsBig = [32]
-
-      // let newColumnWidths: number[] = [9, 9, 6, 7]
-
-      if (fileStore?.length > 0) {
-        await BluetoothEscposPrinter.printerAlign(
-          BluetoothEscposPrinter.ALIGN.CENTER,
-        )
-        const options = {
-          width: 210, // Assuming 58mm paper width with 8 dots/mm resolution (58mm * 8dots/mm = 384 dots)
-          left: 50, // No left padding
-          // align: "CENTER"
-        }
-
-        // Print the image
-        await BluetoothEscposPrinter.printPic(fileStore, options)
-      }
-
-      await BluetoothEscposPrinter.printerAlign(
-        BluetoothEscposPrinter.ALIGN.CENTER,
-      )
-      await BluetoothEscposPrinter.printText(shopName.toUpperCase(), {
-        align: "center",
-        widthtimes: 1.2,
-        heigthtimes: 2,
-      })
-      await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText("hasifughaf", { align: "center" })
-
-      if (receiptSettings?.on_off_flag1 === "Y") {
-        await BluetoothEscposPrinter.printText(receiptSettings?.header1, {})
-        await BluetoothEscposPrinter.printText("\n", {})
-      }
-
-      if (receiptSettings?.on_off_flag2 === "Y") {
-        await BluetoothEscposPrinter.printText(receiptSettings?.header2, {})
-      }
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      if (!cancelFlag) {
-        !isRefunded
-          ? await BluetoothEscposPrinter.printText("DUPLICATE RECEIPT", {
-            align: "center",
-          })
-          : !isRefundedDuplicate
-            ? await BluetoothEscposPrinter.printText("REFUND RECEIPT", {
-              align: "center",
-            })
-            : await BluetoothEscposPrinter.printText("DUPLICATE REFUND RECEIPT", {
-              align: "center",
-            })
-      }
-
-      cancelFlag
-        && await BluetoothEscposPrinter.printText("CANCELLED BILL", {
-          align: "center",
-        })
-
-      // await BluetoothEscposPrinter.printText("\n", {})
-
-      // await BluetoothEscposPrinter.printText("------------------------", {
-      //   align: "center",
-      // })
-
-      // await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText(address, {
-      //   align: "center",
-      // })
-      // await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText(location, {
-      //   align: "center",
-      // })
-      await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText("------------------------", {
-      //   align: "center",
-      // })
-      // await BluetoothEscposPrinter.printText("\n", {})
-
-      // // await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.LEFT)
-
-      // await BluetoothEscposPrinter.printColumn(
-      //   columnWidthsHeader,
-      //   [
-      //     BluetoothEscposPrinter.ALIGN.LEFT,
-      //     BluetoothEscposPrinter.ALIGN.CENTER,
-      //     BluetoothEscposPrinter.ALIGN.RIGHT,
-      //   ],
-      //   ["MOBILE", ":", shopMobile],
-      //   {},
-      // )
-      // await BluetoothEscposPrinter.printColumn(
-      //   columnWidthsHeader,
-      //   [
-      //     BluetoothEscposPrinter.ALIGN.LEFT,
-      //     BluetoothEscposPrinter.ALIGN.CENTER,
-      //     BluetoothEscposPrinter.ALIGN.RIGHT,
-      //   ],
-      //   ["EMAIL", ":", shopEmail],
-      //   {},
-      // )
-      // await BluetoothEscposPrinter.printColumn(
-      //     columnWidthsHeader,
-      //     [
-      //         BluetoothEscposPrinter.ALIGN.LEFT,
-      //         BluetoothEscposPrinter.ALIGN.CENTER,
-      //         BluetoothEscposPrinter.ALIGN.RIGHT,
-      //     ],
-      //     ["SITE", ":", "SHOPNAME.COM"],
-      //     {},
-      // )
-
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      await BluetoothEscposPrinter.printColumn(
-        columnWidthsHeader,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        ["RCPT.NO", ":", rcptNo?.toString()],
-        {},
-      )
-      await BluetoothEscposPrinter.printColumn(
-        columnWidthsHeader,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        ["DATE", ":", `${new Date().toLocaleString("en-GB")}`],
-        {},
-      )
-      await BluetoothEscposPrinter.printColumn(
-        columnWidthsHeader,
-        [
-          BluetoothEscposPrinter.ALIGN.LEFT,
-          BluetoothEscposPrinter.ALIGN.CENTER,
-          BluetoothEscposPrinter.ALIGN.RIGHT,
-        ],
-        ["CASHIER", ":", cashier],
-        {},
-      )
-
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      if (customerName.length !== 0 || customerPhone.length !== 0) {
-        receiptSettings?.cust_inf === "Y" &&
-          (await BluetoothEscposPrinter.printColumn(
-            columnWidthsHeader,
-            [
-              BluetoothEscposPrinter.ALIGN.LEFT,
-              BluetoothEscposPrinter.ALIGN.CENTER,
-              BluetoothEscposPrinter.ALIGN.RIGHT,
-            ],
-            ["NAME", ":", customerName],
-            {},
-          ))
-        await BluetoothEscposPrinter.printColumn(
-          columnWidthsHeader,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          ["PHONE", ":", customerPhone],
-          {},
-        )
-      }
-
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      await BluetoothEscposPrinter.printerAlign(
-        BluetoothEscposPrinter.ALIGN.CENTER,
-      )
-
-      addedProducts[0]?.discount_flag === "Y" &&
-        addedProducts[0]?.discount_position !== "B"
-        ? await BluetoothEscposPrinter.printColumn(
-          columnWidthsProductsHeaderAndBody,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          ["ITEM", "QTY", "PRICE", "DIS.", "AMT"],
-          {},
-        )
-        : await BluetoothEscposPrinter.printColumn(
-          columnWidthsProductsHeaderAndBodyWithoutDiscount,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          ["ITEM", "QTY", "PRICE", "AMT"],
-          {},
-        )
-
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      for (const item of addedProducts) {
-        //@ts-ignore
-        totalQuantities += parseInt(item?.qty)
-        let discountType: "P" | "A" = addedProducts[0]?.discount_type
-        let discountFlag: "N" | "Y" = addedProducts[0]?.discount_flag
-        let discountPosition: "B" | "I" = addedProducts[0]?.discount_position
-
-        // discountType === "P"
-        //     ? totalAmountAfterDiscount += ((item?.price * item?.qty) - ((item?.price * item?.qty * item?.dis_pertg) / 100))
-        //     : totalAmountAfterDiscount += ((item?.price * item?.qty) - (item?.qty * item?.discount_amt))
-
-        if (item?.item_name?.length >= 8) {
-          await BluetoothEscposPrinter.printColumn(
-            columnWidthIfNameIsBig,
-            [BluetoothEscposPrinter.ALIGN.LEFT],
-            [item?.item_name],
-            {},
-          )
-
-          discountFlag === "Y" && discountPosition !== "B"
-            ? discountType === "P"
-              ? await BluetoothEscposPrinter.printColumn(
-                columnWidthsProductsHeaderAndBody,
-                [
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.CENTER,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                ],
-                //@ts-ignore
-                [
-                  "",
-                  item?.qty.toString(),
-                  item?.price.toString(),
-                  calculatePercentDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.dis_pertg,
-                  ),
-                  calculateAmountAfterPercentDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.dis_pertg,
-                  ),
-                ],
-                {},
-              )
-              : await BluetoothEscposPrinter.printColumn(
-                columnWidthsProductsHeaderAndBody,
-                [
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.CENTER,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                ],
-                //@ts-ignore
-                [
-                  "",
-                  item?.qty.toString(),
-                  item?.price.toString(),
-                  calculateAmountDiscountPerProduct(
-                    item?.qty,
-                    item?.discount_amt,
-                  ),
-                  calculateAmountAfterAmountDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.discount_amt,
-                  ),
-                ],
-                {},
-              )
-            : await BluetoothEscposPrinter.printColumn(
-              columnWidthsProductsHeaderAndBodyWithoutDiscount,
-              [
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-              ],
-              //@ts-ignore
-              [
-                "",
-                item?.qty.toString(),
-                item?.price.toString(),
-                calculateAmountAfterAmountDiscountPerProduct(
-                  item?.price,
-                  item?.qty,
-                  0,
-                ),
-              ],
-              {},
-            )
-          // : await BluetoothEscposPrinter.printColumn(
-          //     columnWidthsProductsHeaderAndBody,
-          //     [
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.CENTER,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //     ],
-          //     //@ts-ignore
-          //     ["", item?.qty.toString(), item?.price.toString(), calculateAmountDiscountPerProduct(item?.qty, 0), calculateAmountAfterAmountDiscountPerProduct(item?.price, item?.qty, 0)],
-          //     {},
-          // )
-
-          // await BluetoothEscposPrinter.printColumn(
-          //     columnWidthsProductsHeaderAndBody,
-          //     [
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.CENTER,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //     ],
-          //     ["", item?.qty.toString(), item?.price.toString(), (((item?.price * item?.qty * item?.dis_pertg) / 100).toFixed(2)).toString(), `${((item?.price * item?.qty) - ((item?.price * item?.qty * item?.dis_pertg) / 100)).toFixed(2).toString()}`],
-          //     {},
-          // )
-        } else {
-          discountFlag === "Y" && discountPosition !== "B"
-            ? discountType === "P"
-              ? await BluetoothEscposPrinter.printColumn(
-                columnWidthsProductsHeaderAndBody,
-                [
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.CENTER,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                ],
-                //@ts-ignore
-                [
-                  item?.item_name,
-                  item?.qty.toString(),
-                  item?.price.toString(),
-                  calculatePercentDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.dis_pertg,
-                  ),
-                  calculateAmountAfterPercentDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.dis_pertg,
-                  ),
-                ],
-                {},
-              )
-              : await BluetoothEscposPrinter.printColumn(
-                columnWidthsProductsHeaderAndBody,
-                [
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.LEFT,
-                  BluetoothEscposPrinter.ALIGN.CENTER,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                  BluetoothEscposPrinter.ALIGN.RIGHT,
-                ],
-                //@ts-ignore
-                [
-                  item?.item_name,
-                  item?.qty.toString(),
-                  item?.price.toString(),
-                  calculateAmountDiscountPerProduct(
-                    item?.qty,
-                    item?.discount_amt,
-                  ),
-                  calculateAmountAfterAmountDiscountPerProduct(
-                    item?.price,
-                    item?.qty,
-                    item?.discount_amt,
-                  ),
-                ],
-                {},
-              )
-            : await BluetoothEscposPrinter.printColumn(
-              columnWidthsProductsHeaderAndBodyWithoutDiscount,
-              [
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-              ],
-              //@ts-ignore
-              [
-                item?.item_name,
-                item?.qty.toString(),
-                item?.price.toString(),
-                calculateAmountAfterAmountDiscountPerProduct(
-                  item?.price,
-                  item?.qty,
-                  0,
-                ),
-              ],
-              {},
-            )
-          // : await BluetoothEscposPrinter.printColumn(
-          //     columnWidthsProductsHeaderAndBody,
-          //     [
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.CENTER,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //     ],
-          //     //@ts-ignore
-          //     [item?.item_name, item?.qty.toString(), item?.price.toString(), calculateAmountDiscountPerProduct(item?.qty, 0), calculateAmountAfterAmountDiscountPerProduct(item?.price, item?.qty, 0)],
-          //     {},
-          // )
-
-          // await BluetoothEscposPrinter.printColumn(
-          //     columnWidthsProductsHeaderAndBody,
-          //     [
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.LEFT,
-          //         BluetoothEscposPrinter.ALIGN.CENTER,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //         BluetoothEscposPrinter.ALIGN.RIGHT,
-          //     ],
-          //     [item?.item_name, item?.qty.toString(), item?.price.toString(), (((item?.price * item?.qty * item?.dis_pertg) / 100).toFixed(2)).toString(), `${(item?.price * item?.qty).toString()}`],
-          //     {},
-          // )
-          // await BluetoothEscposPrinter.printText("\n", {})
-        }
-      }
-
-      // await BluetoothEscposPrinter.printText("\n", {})
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      await BluetoothEscposPrinter.printColumn(
-        columnWidthsItemTotal,
-        [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-        [
-          `ITEM: ${addedProducts?.length?.toString()} QTY: ${totalQuantities.toString()}`,
-          `AMT: ${netTotal?.toFixed(2)}`,
-        ],
-        {},
-      )
-      // await BluetoothEscposPrinter.printText("\n", {})
-
-      // addedProducts[0]?.gst_type === "E"
-      //     ? await BluetoothEscposPrinter.printColumn(
-      //         columnWidths,
-      //         [
-      //             BluetoothEscposPrinter.ALIGN.LEFT,
-      //             BluetoothEscposPrinter.ALIGN.CENTER,
-      //             BluetoothEscposPrinter.ALIGN.RIGHT,
-      //         ],
-      //         // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
-      //         ["TOTAL", ":", `${netTotalWithGSTCalculate(netTotal, totalDiscountAmount, totalGST)}`],
-      //         {},
-      //     )
-      //     : await BluetoothEscposPrinter.printColumn(
-      //         columnWidths,
-      //         [
-      //             BluetoothEscposPrinter.ALIGN.LEFT,
-      //             BluetoothEscposPrinter.ALIGN.CENTER,
-      //             BluetoothEscposPrinter.ALIGN.RIGHT,
-      //         ],
-      //         // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
-      //         ["TOTAL", ":", `${totalAmountWithGSTInclCalculate(netTotal, totalGST)}`],
-      //         {},
-      //     )
-
-      // addedProducts[0]?.gst_type === "I" &&
-      //     await BluetoothEscposPrinter.printColumn(
-      //         columnWidths,
-      //         [
-      //             BluetoothEscposPrinter.ALIGN.LEFT,
-      //             BluetoothEscposPrinter.ALIGN.CENTER,
-      //             BluetoothEscposPrinter.ALIGN.RIGHT,
-      //         ],
-      //         // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
-      //         ["TOTAL (Excl GST)", ":", `${totalAmountWithGSTInclCalculate(netTotal, totalGST)}`],
-      //         {},
-      //     )
-
-      addedProducts[0]?.gst_flag === "Y" &&
-        gstKeys.map(
-          async key =>
-            await BluetoothEscposPrinter.printColumn(
-              columnWidths,
-              [
-                BluetoothEscposPrinter.ALIGN.LEFT,
-                BluetoothEscposPrinter.ALIGN.CENTER,
-                BluetoothEscposPrinter.ALIGN.RIGHT,
-              ],
-              [
-                `${key.includes("CGST") ? "CGST" : "SGST"} @${key
-                  .replace(/total(CGST|SGST)_/, "")
-                  .replace("_", ".")}%`,
-                ":",
-                gstTotals[key].toFixed(2).toString(),
-              ],
-              {},
-            ),
-        )
-
-      addedProducts[0]?.gst_flag === "Y" &&
-        (await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          ["TOTAL GST", ":", totalGST.toFixed(2).toString()],
-          {},
-        ))
-
-      addedProducts[0]?.discount_flag === "Y" &&
-        (await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          //@ts-ignore
-          ["DISCOUNT", ":", parseFloat(totalDiscountAmount).toFixed(2)],
-          {},
-        ))
-
-      addedProducts[0]?.gst_type === "E"
-        ? await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
-          [
-            "TOTAL",
-            ":",
-            `${netTotalWithGSTCalculate(
-              netTotal,
-              totalDiscountAmount,
-              totalGST,
-            )}`,
-          ],
-          {},
-        )
-        : await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
-          [
-            "TOTAL",
-            ":",
-            `${netTotalWithGSTInclCalculate(netTotal, totalDiscountAmount)}`,
-          ],
-          {},
-        )
-      // : await BluetoothEscposPrinter.printColumn(
-      //     columnWidths,
-      //     [
-      //         BluetoothEscposPrinter.ALIGN.LEFT,
-      //         BluetoothEscposPrinter.ALIGN.CENTER,
-      //         BluetoothEscposPrinter.ALIGN.RIGHT,
-      //     ],
-      //     // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
-      //     ["TOTAL", ":", `${totalAmountWithGSTInclCalculate(netTotal, totalGST)}`],
-      //     {},
-      // )
-
-      // addedProducts[0]?.gst_flag === "Y"
-      //     && await BluetoothEscposPrinter.printColumn(
-      //         columnWidths,
-      //         [
-      //             BluetoothEscposPrinter.ALIGN.LEFT,
-      //             BluetoothEscposPrinter.ALIGN.CENTER,
-      //             BluetoothEscposPrinter.ALIGN.RIGHT,
-      //         ],
-      //         ["TOTAL GST", ":", (totalGST).toFixed(2).toString()],
-      //         {},
-      //     )
-
-      addedProducts[0]?.gst_type === "E"
-        ? await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          // ["ROUND OFF", ":", `${(Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2))) - parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2))).toFixed(2)}`],
-          [
-            "ROUND OFF",
-            ":",
-            `${roundingOffWithGSTCalculate(
-              netTotal,
-              totalDiscountAmount,
-              totalGST,
-            )}`,
-          ],
-          {},
-        )
-        : await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          // ["ROUND OFF", ":", `${(Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2))) - parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2))).toFixed(2)}`],
-          [
-            "ROUND OFF",
-            ":",
-            `${roundingOffWithGSTInclCalculate(
-              netTotal,
-              totalDiscountAmount,
-            )}`,
-          ],
-          {},
-        )
-
-      // await BluetoothEscposPrinter.printColumn(
-      //     columnWidths,
-      //     [
-      //         BluetoothEscposPrinter.ALIGN.LEFT,
-      //         BluetoothEscposPrinter.ALIGN.CENTER,
-      //         BluetoothEscposPrinter.ALIGN.RIGHT,
-      //     ],
-      //     // ["NET AMT", ":", `${Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2)))}`],
-      //     ["NET AMT", ":", `${grandTotalWithGSTCalculate(netTotal, totalDiscountAmount, totalGST)}`],
-      //     {},
-      // )
-
-      addedProducts[0]?.gst_type === "E"
-        ? await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          // ["NET AMT", ":", `${Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2)))}`],
-          [
-            "NET AMT",
-            ":",
-            `${grandTotalWithGSTCalculate(
-              netTotal,
-              totalDiscountAmount,
-              totalGST,
-            )}`,
-          ],
-          {},
-        )
-        : await BluetoothEscposPrinter.printColumn(
-          columnWidths,
-          [
-            BluetoothEscposPrinter.ALIGN.LEFT,
-            BluetoothEscposPrinter.ALIGN.CENTER,
-            BluetoothEscposPrinter.ALIGN.RIGHT,
-          ],
-          // ["NET AMT", ":", `${Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2)))}`],
-          [
-            "NET AMT",
-            ":",
-            `${grandTotalWithGSTInclCalculate(
-              netTotal,
-              totalDiscountAmount,
-            )}`,
-          ],
-          {},
-        )
-
-      // await BluetoothEscposPrinter.printText("\n", {})
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
-      !cancelFlag && await BluetoothEscposPrinter.printText("\n", {})
-
-      if (!cancelFlag) {
-        if (addedProducts[0]?.rcv_cash_flag === "Y") {
-          if (!isRefunded && paymentMode === "C") {
-            await BluetoothEscposPrinter.printText("PAYMENT MODE", {
-              align: "center",
-            })
-            await BluetoothEscposPrinter.printText("\n", {})
-            await BluetoothEscposPrinter.printText(
-              `CASH RECEIVED:       ${cashAmount}`,
-              { align: "center" },
-            )
-            await BluetoothEscposPrinter.printText("\n", {})
-            await BluetoothEscposPrinter.printText(
-              `RETURNED AMT:        ${returnedAmt}`,
-              { align: "center" },
-            )
-
-            await BluetoothEscposPrinter.printText("\n", {})
-            await BluetoothEscposPrinter.printText("------------------------", {
-              align: "center",
-            })
-          }
-        } else {
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText(
-            `TOTAL AMT:        ${Math.abs(returnedAmt)}`,
-            { align: "center" },
-          )
-
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText("------------------------", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-        }
-      }
-
-
-      if (!cancelFlag) {
-        await BluetoothEscposPrinter.printText("\n", {})
-
-        if (paymentMode === "R") {
-          await BluetoothEscposPrinter.printText("PAYMENT MODE", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText(
-            `CASH RECEIVED:       ${cashAmount}`,
-            { align: "center" },
-          )
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText(
-            `DUE AMT:        ${Math.abs(returnedAmt)}`,
-            { align: "center" },
-          )
-
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText("------------------------", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-        }
-
-        if (paymentMode === "D") {
-          await BluetoothEscposPrinter.printText(
-            `RECEIVED:       ${grandTotalCalculate(
-              netTotal,
-              totalDiscountAmount,
-            )} [CARD]`,
-            { align: "center" },
-          )
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText("------------------------", {
-            align: "center",
-          })
-          await BluetoothEscposPrinter.printText("\n", {})
-        }
-
-        if (paymentMode === "U") {
-          receiptSettings?.gst_type === "E"
-            ? await BluetoothEscposPrinter.printText(
-              `RECEIVED:       ${grandTotalWithGSTCalculate(
-                netTotal,
-                totalDiscountAmount,
-                totalGST,
-              )} [UPI]`,
-              { align: "center" },
-            )
-            : await BluetoothEscposPrinter.printText(
-              `RECEIVED:       ${grandTotalWithGSTInclCalculate(
-                netTotal,
-                totalDiscountAmount,
-              )} [UPI]`,
-              { align: "center" },
-            )
-          await BluetoothEscposPrinter.printText("\n", {})
-          await BluetoothEscposPrinter.printText("------------------------", {
-            align: "center",
-          })
-        }
-      }
-
-
-
-      if (isRefunded)
-        addedProducts[0]?.gst_type === "E"
-          ? await BluetoothEscposPrinter.printText(
-            `REFUNDED AMT:    ${grandTotalWithGSTCalculate(
-              netTotal,
-              totalDiscountAmount,
-              totalGST,
-            )}`,
-            { align: "center" },
-          )
-          : await BluetoothEscposPrinter.printText(
-            `REFUNDED AMT:    ${grandTotalWithGSTInclCalculate(
-              netTotal,
-              totalDiscountAmount,
-            )}`,
-            { align: "center" },
-          )
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      if (receiptSettings?.on_off_flag3 === "Y") {
-        await BluetoothEscposPrinter.printText(receiptSettings?.footer1, {})
-        await BluetoothEscposPrinter.printText("\n", {})
-      }
-      if (receiptSettings?.on_off_flag4 === "Y") {
-        await BluetoothEscposPrinter.printText(receiptSettings?.footer2, {})
-      }
-      await BluetoothEscposPrinter.printText("\n", {})
-
-      // await BluetoothEscposPrinter.printText(
-      //     "THANK YOU, VISIT AGAIN!",
-      //     { align: "center" },
-      // )
-      // await BluetoothEscposPrinter.printText("\n", {})
-
-      await BluetoothEscposPrinter.printText("------X------", {})
-      await BluetoothEscposPrinter.printText("\n\r\n\r\n\r", {})
-    } catch (e) {
-      console.log(e.message || "ERROR")
-    }
-  }
+  // async function rePrintWithoutGst(
+  //   addedProducts: ShowBillData[],
+  //   netTotal: number,
+  //   totalDiscountAmount: number,
+  //   cashAmount?: number,
+  //   returnedAmt?: number,
+  //   customerName?: string,
+  //   customerPhone?: string,
+  //   rcptNo?: number,
+  //   paymentMode?: string,
+  //   isRefunded?: boolean,
+  //   isRefundedDuplicate?: boolean,
+  //   cancelFlag?: boolean
+  // ) {
+  //   const loginStore = JSON.parse(loginStorage.getString("login-data"))
+  //   const fileStore = fileStorage.getString("file-data")
+
+  //   const shopName: string = loginStore?.company_name?.toString()
+  //   const address: string = loginStore?.address?.toString()
+  //   const location: string = loginStore?.branch_name?.toString()
+  //   const shopMobile: string = loginStore?.phone_no?.toString()
+  //   const shopEmail: string = loginStore?.email_id?.toString()
+  //   const cashier: string = loginStore?.user_name?.toString()
+
+  //   let totalQuantities: number = 0
+  //   let totalAmountAfterDiscount: number = 0
+
+  //   try {
+  //     let columnWidths = [11, 1, 18]
+  //     let columnWidthsHeader = [8, 1, 21]
+  //     let columnWidthsProductsHeaderAndBody = [8, 4, 6, 5, 7]
+  //     let columnWidthsProductsHeaderAndBodyWithoutDiscount = [8, 6, 7, 8]
+  //     // let columnWidthsProductsHeaderAndBody = [18, 3, 4, 3, 4]
+  //     let columnWidthsItemTotal = [18, 12]
+  //     let columnWidthIfNameIsBig = [32]
+
+  //     // let newColumnWidths: number[] = [9, 9, 6, 7]
+
+  //     if (fileStore?.length > 0) {
+  //       await BluetoothEscposPrinter.printerAlign(
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //       )
+  //       const options = {
+  //         width: 250, // Assuming 58mm paper width with 8 dots/mm resolution (58mm * 8dots/mm = 384 dots)
+  //         left: 50, // No left padding
+  //         // align: "CENTER"
+  //       }
+
+  //       // Print the image
+  //       await BluetoothEscposPrinter.printPic(fileStore, options)
+  //     }
+
+  //     await BluetoothEscposPrinter.printerAlign(
+  //       BluetoothEscposPrinter.ALIGN.CENTER,
+  //     )
+  //     await BluetoothEscposPrinter.printText(shopName.toUpperCase(), {
+  //       align: "center",
+  //       widthtimes: 1.2,
+  //       heigthtimes: 2,
+  //     })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText("hasifughaf", { align: "center" })
+
+  //     if (receiptSettings?.on_off_flag1 === "Y") {
+  //       await BluetoothEscposPrinter.printText(receiptSettings?.header1, {})
+  //       await BluetoothEscposPrinter.printText("\n", {})
+  //     }
+
+  //     if (receiptSettings?.on_off_flag2 === "Y") {
+  //       await BluetoothEscposPrinter.printText(receiptSettings?.header2, {})
+  //     }
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     if (!cancelFlag) {
+  //       !isRefunded
+  //         ? await BluetoothEscposPrinter.printText("DUPLICATE RECEIPT", {
+  //           align: "center",
+  //         })
+  //         : !isRefundedDuplicate
+  //           ? await BluetoothEscposPrinter.printText("REFUND RECEIPT", {
+  //             align: "center",
+  //           })
+  //           : await BluetoothEscposPrinter.printText("DUPLICATE REFUND RECEIPT", {
+  //             align: "center",
+  //           })
+  //     }
+
+  //     cancelFlag
+  //       && await BluetoothEscposPrinter.printText("CANCELLED BILL", {
+  //         align: "center",
+  //       })
+
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+
+  //     // await BluetoothEscposPrinter.printText("------------------------", {
+  //     //   align: "center",
+  //     // })
+
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText(address, {
+  //     //   align: "center",
+  //     // })
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText(location, {
+  //     //   align: "center",
+  //     // })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText("------------------------", {
+  //     //   align: "center",
+  //     // })
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+
+  //     // // await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.LEFT)
+
+  //     // await BluetoothEscposPrinter.printColumn(
+  //     //   columnWidthsHeader,
+  //     //   [
+  //     //     BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //     BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //     BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //   ],
+  //     //   ["MOBILE", ":", shopMobile],
+  //     //   {},
+  //     // )
+  //     // await BluetoothEscposPrinter.printColumn(
+  //     //   columnWidthsHeader,
+  //     //   [
+  //     //     BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //     BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //     BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //   ],
+  //     //   ["EMAIL", ":", shopEmail],
+  //     //   {},
+  //     // )
+  //     // await BluetoothEscposPrinter.printColumn(
+  //     //     columnWidthsHeader,
+  //     //     [
+  //     //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //     ],
+  //     //     ["SITE", ":", "SHOPNAME.COM"],
+  //     //     {},
+  //     // )
+
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidthsHeader,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       ["RCPT.NO", ":", rcptNo?.toString()],
+  //       {},
+  //     )
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidthsHeader,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       ["DATE", ":", `${new Date().toLocaleString("en-GB")}`],
+  //       {},
+  //     )
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidthsHeader,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       ["CASHIER", ":", cashier],
+  //       {},
+  //     )
+
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     // if (customerName.length !== 0 || customerPhone.length !== 0) {
+  //     // receiptSettings?.cust_inf === "Y" &&
+  //     if (addedProducts[0]?.phone_no !== "0000000000") {
+  //       await BluetoothEscposPrinter.printColumn(
+  //         columnWidthsHeader,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         ["NAME", ":", customerName],
+  //         {},
+  //       )
+  //       await BluetoothEscposPrinter.printColumn(
+  //         columnWidthsHeader,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         ["PHONE", ":", customerPhone],
+  //         {},
+  //       )
+  //     }
+
+  //     // }
+
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     await BluetoothEscposPrinter.printerAlign(
+  //       BluetoothEscposPrinter.ALIGN.CENTER,
+  //     )
+
+  //     addedProducts[0]?.discount_flag === "Y" &&
+  //       addedProducts[0]?.discount_position !== "B"
+  //       ? await BluetoothEscposPrinter.printColumn(
+  //         columnWidthsProductsHeaderAndBody,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         ["ITEM", "QTY", "PRICE", "DIS.", "AMT"],
+  //         {},
+  //       )
+  //       : await BluetoothEscposPrinter.printColumn(
+  //         columnWidthsProductsHeaderAndBodyWithoutDiscount,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         ["ITEM", "QTY", "PRICE", "AMT"],
+  //         {},
+  //       )
+
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     for (const item of addedProducts) {
+  //       //@ts-ignore
+  //       totalQuantities += parseInt(item?.qty)
+  //       let discountType: "P" | "A" = addedProducts[0]?.discount_type
+  //       let discountFlag: "Y" | "N" = addedProducts[0]?.discount_flag
+  //       let discountPosition: "B" | "I" = addedProducts[0]?.discount_position
+
+  //       // discountType === "P"
+  //       //     ? totalAmountAfterDiscount += ((item?.price * item?.qty) - ((item?.price * item?.qty * item?.discount_amt) / 100))
+  //       //     : totalAmountAfterDiscount += ((item?.price * item?.qty) - (item?.qty * item?.discount_amt))
+
+  //       if (item?.item_name?.length >= 8) {
+  //         await BluetoothEscposPrinter.printColumn(
+  //           columnWidthIfNameIsBig,
+  //           [BluetoothEscposPrinter.ALIGN.LEFT],
+  //           [item?.item_name],
+  //           {},
+  //         )
+
+  //         discountFlag === "Y" && discountPosition !== "B"
+  //           ? discountType === "P"
+  //             ? await BluetoothEscposPrinter.printColumn(
+  //               columnWidthsProductsHeaderAndBody,
+  //               [
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.CENTER,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               ],
+  //               //@ts-ignore
+  //               [
+  //                 "",
+  //                 item?.qty.toString(),
+  //                 item?.price.toString(),
+  //                 calculatePercentDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.dis_pertg,
+  //                 ),
+  //                 calculateAmountAfterPercentDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.dis_pertg,
+  //                 ),
+  //               ],
+  //               {},
+  //             )
+  //             : await BluetoothEscposPrinter.printColumn(
+  //               columnWidthsProductsHeaderAndBody,
+  //               [
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.CENTER,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               ],
+  //               [
+  //                 "",
+  //                 item?.qty.toString(),
+  //                 item?.price.toString(),
+  //                 calculateAmountDiscountPerProduct(
+  //                   item?.qty,
+  //                   item?.discount_amt,
+  //                 ),
+  //                 calculateAmountAfterAmountDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.discount_amt,
+  //                 ),
+  //               ],
+  //               {},
+  //             )
+  //           : await BluetoothEscposPrinter.printColumn(
+  //             columnWidthsProductsHeaderAndBodyWithoutDiscount,
+  //             [
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //             ],
+  //             [
+  //               "",
+  //               item?.qty.toString(),
+  //               item?.price.toString(),
+  //               calculateAmountAfterAmountDiscountPerProduct(
+  //                 item?.price,
+  //                 item?.qty,
+  //                 0,
+  //               ),
+  //             ],
+  //             {},
+  //           )
+  //         // : await BluetoothEscposPrinter.printColumn(
+  //         //     columnWidthsProductsHeaderAndBody,
+  //         //     [
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //     ],
+  //         //     ["", item?.qty.toString(), item?.price.toString(), calculateAmountDiscountPerProduct(item?.qty, 0), calculateAmountAfterAmountDiscountPerProduct(item?.price, item?.qty, 0)],
+  //         //     {},
+  //         // )
+
+  //         // await BluetoothEscposPrinter.printColumn(
+  //         //     columnWidthsProductsHeaderAndBody,
+  //         //     [
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //     ],
+  //         //     ["", item?.qty.toString(), item?.price.toString(), (((item?.price * item?.qty * item?.discount_amt) / 100).toFixed(2)).toString(), `${((item?.price * item?.qty) - ((item?.price * item?.qty * item?.discount_amt) / 100)).toFixed(2).toString()}`],
+  //         //     {},
+  //         // )
+  //       } else {
+  //         discountFlag === "Y" && discountPosition !== "B"
+  //           ? discountType === "P"
+  //             ? await BluetoothEscposPrinter.printColumn(
+  //               columnWidthsProductsHeaderAndBody,
+  //               [
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.CENTER,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               ],
+  //               //@ts-ignore
+  //               [
+  //                 item?.item_name,
+  //                 item?.qty.toString(),
+  //                 item?.price.toString(),
+  //                 calculatePercentDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.dis_pertg,
+  //                 ),
+  //                 calculateAmountAfterPercentDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.dis_pertg,
+  //                 ),
+  //               ],
+  //               {},
+  //             )
+  //             : await BluetoothEscposPrinter.printColumn(
+  //               columnWidthsProductsHeaderAndBody,
+  //               [
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.CENTER,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               ],
+  //               //@ts-ignore
+  //               [
+  //                 item?.item_name,
+  //                 item?.qty.toString(),
+  //                 item?.price.toString(),
+  //                 calculateAmountDiscountPerProduct(
+  //                   item?.qty,
+  //                   item?.discount_amt,
+  //                 ),
+  //                 calculateAmountAfterAmountDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.discount_amt,
+  //                 ),
+  //               ],
+  //               {},
+  //             )
+  //           : await BluetoothEscposPrinter.printColumn(
+  //             columnWidthsProductsHeaderAndBodyWithoutDiscount,
+  //             [
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //             ],
+  //             //@ts-ignore
+  //             [
+  //               item?.item_name,
+  //               item?.qty.toString(),
+  //               item?.price.toString(),
+  //               calculateAmountAfterAmountDiscountPerProduct(
+  //                 item?.price,
+  //                 item?.qty,
+  //                 0,
+  //               ),
+  //             ],
+  //             {},
+  //           )
+  //         // : await BluetoothEscposPrinter.printColumn(
+  //         //     columnWidthsProductsHeaderAndBody,
+  //         //     [
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //     ],
+  //         //     //@ts-ignore
+  //         //     [item?.item_name, item?.qty.toString(), item?.price.toString(), calculateAmountDiscountPerProduct(item?.qty, 0), calculateAmountAfterAmountDiscountPerProduct(item?.price, item?.qty, 0)],
+  //         //     {},
+  //         // )
+
+  //         // await BluetoothEscposPrinter.printColumn(
+  //         //     columnWidthsProductsHeaderAndBody,
+  //         //     [
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //     ],
+  //         //     [item?.item_name, item?.qty.toString(), item?.price.toString(), (((item?.price * item?.qty * item?.discount_amt) / 100).toFixed(2)).toString(), `${(item?.price * item?.qty).toString()}`],
+  //         //     {},
+  //         // )
+  //         // await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+  //     }
+
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidthsItemTotal,
+  //       [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+  //       [
+  //         `ITEM: ${addedProducts?.length?.toString()} QTY: ${totalQuantities.toString()}`,
+  //         `AMT: ${netTotal?.toFixed(2)}`,
+  //       ],
+  //       {},
+  //     )
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+
+  //     addedProducts[0]?.discount_flag === "Y" &&
+  //       (await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         //@ts-ignore
+  //         ["DISCOUNT", ":", parseFloat(totalDiscountAmount).toFixed(2)],
+  //         {},
+  //       ))
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidths,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       // ["TOTAL", ":", `${(netTotal - totalDiscountAmount).toFixed(2)}`],
+  //       ["TOTAL", ":", `${netTotalCalculate(netTotal, totalDiscountAmount)}`],
+  //       {},
+  //     )
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidths,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       // ["ROUND OFF", ":", `${(Math.round(parseFloat((netTotal - totalDiscountAmount).toFixed(2))) - parseFloat((netTotal - totalDiscountAmount).toFixed(2))).toFixed(2)}`],
+  //       [
+  //         "ROUND OFF",
+  //         ":",
+  //         `${roundingOffCalculate(netTotal, totalDiscountAmount)}`,
+  //       ],
+  //       {},
+  //     )
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidths,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       // ["NET AMT", ":", `${Math.round(parseFloat((netTotal - totalDiscountAmount).toFixed(2)))}`],
+  //       [
+  //         "NET AMT",
+  //         ":",
+  //         `${grandTotalCalculate(netTotal, totalDiscountAmount)}`,
+  //       ],
+  //       {},
+  //     )
+
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     if (!cancelFlag) {
+  //       if (addedProducts[0]?.rcv_cash_flag === "Y") {
+  //         if (!isRefunded && paymentMode === "C") {
+  //           await BluetoothEscposPrinter.printText("PAYMENT MODE", {
+  //             align: "center",
+  //           })
+  //           await BluetoothEscposPrinter.printText("\n", {})
+  //           await BluetoothEscposPrinter.printText(
+  //             `CASH RECEIVED:       ${cashAmount}`,
+  //             { align: "center" },
+  //           )
+  //           await BluetoothEscposPrinter.printText("\n", {})
+  //           await BluetoothEscposPrinter.printText(
+  //             `RETURNED AMT:        ${returnedAmt}`,
+  //             { align: "center" },
+  //           )
+
+  //           await BluetoothEscposPrinter.printText("\n", {})
+  //           await BluetoothEscposPrinter.printText("------------------------", {
+  //             align: "center",
+  //           })
+  //           await BluetoothEscposPrinter.printText("\n", {})
+  //         }
+  //       } else {
+  //         // await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText(
+  //           `TOTAL AMT:        ${Math.abs(returnedAmt)}`,
+  //           { align: "center" },
+  //         )
+
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText("------------------------", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+  //     }
+
+  //     if (!cancelFlag) {
+  //       // await BluetoothEscposPrinter.printText("\n", {})
+  //       if (paymentMode === "U") {
+  //         await BluetoothEscposPrinter.printText(
+  //           `RECEIVED:       ${grandTotalCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //           )} [UPI]`,
+  //           { align: "center" },
+  //         )
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText("------------------------", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+  //       if (paymentMode === "D") {
+  //         await BluetoothEscposPrinter.printText(
+  //           `RECEIVED:       ${grandTotalCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //           )} [CARD]`,
+  //           { align: "center" },
+  //         )
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText("------------------------", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+  //       if (paymentMode === "R") {
+  //         await BluetoothEscposPrinter.printText("PAYMENT MODE", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText(
+  //           `CASH RECEIVED:       ${cashAmount}`,
+  //           { align: "center" },
+  //         )
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText(
+  //           `DUE AMT:        ${Math.abs(returnedAmt)}`,
+  //           { align: "center" },
+  //         )
+
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText("------------------------", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+  //     }
+
+  //     if (isRefunded)
+  //       await BluetoothEscposPrinter.printText(
+  //         `REFUNDED AMT:    ${grandTotalCalculate(
+  //           netTotal,
+  //           totalDiscountAmount,
+  //         )}`,
+  //         { align: "center" },
+  //       )
+
+  //     if (receiptSettings?.on_off_flag3 === "Y") {
+  //       // await BluetoothEscposPrinter.printText("\n", {})
+  //       await BluetoothEscposPrinter.printText(receiptSettings?.footer1, {})
+  //       await BluetoothEscposPrinter.printText("\n", {})
+  //     }
+  //     if (receiptSettings?.on_off_flag4 === "Y") {
+  //       await BluetoothEscposPrinter.printText(receiptSettings?.footer2, {})
+  //       await BluetoothEscposPrinter.printText("\n", {})
+  //     }
+
+  //     // await BluetoothEscposPrinter.printText(
+  //     //     "THANK YOU, VISIT AGAIN!",
+  //     //     { align: "center" },
+  //     // )
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+
+  //     await BluetoothEscposPrinter.printText("------X------", {})
+  //     await BluetoothEscposPrinter.printText("\n\r\n\r\n\r", {})
+  //   } catch (e) {
+  //     console.log(e.message || "ERROR")
+  //   }
+  // }
+
+  // async function rePrint(
+  //   addedProducts: ShowBillData[],
+  //   netTotal: number,
+  //   totalDiscountAmount: number,
+  //   cashAmount?: number,
+  //   returnedAmt?: number,
+  //   customerName?: string,
+  //   customerPhone?: string,
+  //   rcptNo?: number,
+  //   paymentMode?: string,
+  //   isRefunded?: boolean,
+  //   isRefundedDuplicate?: boolean,
+  //   cancelFlag?: boolean
+  // ) {
+  //   console.log(
+  //     "SSSSSSSSSSSSSSSS==================SSSSSSSSSSSSSSSSSS CALLED rePrint",
+  //   )
+
+  //   const loginStore = JSON.parse(loginStorage.getString("login-data"))
+  //   const fileStore = fileStorage.getString("file-data")
+
+  //   const shopName: string = loginStore?.company_name?.toString()
+  //   const address: string = loginStore?.address?.toString()
+  //   const location: string = loginStore?.branch_name?.toString()
+  //   const shopMobile: string = loginStore?.phone_no?.toString()
+  //   const shopEmail: string = loginStore?.email_id?.toString()
+  //   const cashier: string = loginStore?.user_name?.toString()
+
+  //   // let { totalCGST_5, totalCGST_12, totalCGST_18, totalCGST_28, totalSGST_5, totalSGST_12, totalSGST_18, totalSGST_28, totalGST } = gstFilterationAndTotalForRePrint(addedProducts)
+
+  //   let gstTotals = gstFilterationAndTotalForRePrint(
+  //     addedProducts,
+  //     addedProducts[0]?.gst_type,
+  //   )
+  //   let { totalGST } = gstTotals // Destructure totalGST for separate handling
+
+  //   // Filter keys for CGST and SGST display
+  //   const gstKeys = Object.keys(gstTotals).filter(
+  //     key => key.includes("totalCGST") || key.includes("totalSGST"),
+  //   )
+
+  //   let totalQuantities: number = 0
+  //   let totalAmountAfterDiscount: number = 0
+
+  //   try {
+  //     let columnWidths = [11, 1, 18]
+  //     let columnWidthsHeader = [8, 1, 21]
+  //     let columnWidthsProductsHeaderAndBody = [8, 4, 6, 5, 7]
+  //     let columnWidthsProductsHeaderAndBodyWithoutDiscount = [8, 6, 7, 8]
+  //     // let columnWidthsProductsHeaderAndBody = [18, 3, 4, 3, 4]
+  //     let columnWidthsItemTotal = [18, 12]
+  //     let columnWidthIfNameIsBig = [32]
+
+  //     // let newColumnWidths: number[] = [9, 9, 6, 7]
+
+  //     if (fileStore?.length > 0) {
+  //       await BluetoothEscposPrinter.printerAlign(
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //       )
+  //       const options = {
+  //         width: 210, // Assuming 58mm paper width with 8 dots/mm resolution (58mm * 8dots/mm = 384 dots)
+  //         left: 50, // No left padding
+  //         // align: "CENTER"
+  //       }
+
+  //       // Print the image
+  //       await BluetoothEscposPrinter.printPic(fileStore, options)
+  //     }
+
+  //     await BluetoothEscposPrinter.printerAlign(
+  //       BluetoothEscposPrinter.ALIGN.CENTER,
+  //     )
+  //     await BluetoothEscposPrinter.printText(shopName.toUpperCase(), {
+  //       align: "center",
+  //       widthtimes: 1.2,
+  //       heigthtimes: 2,
+  //     })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText("hasifughaf", { align: "center" })
+
+  //     if (receiptSettings?.on_off_flag1 === "Y") {
+  //       await BluetoothEscposPrinter.printText(receiptSettings?.header1, {})
+  //       await BluetoothEscposPrinter.printText("\n", {})
+  //     }
+
+  //     if (receiptSettings?.on_off_flag2 === "Y") {
+  //       await BluetoothEscposPrinter.printText(receiptSettings?.header2, {})
+  //     }
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     if (!cancelFlag) {
+  //       !isRefunded
+  //         ? await BluetoothEscposPrinter.printText("DUPLICATE RECEIPT", {
+  //           align: "center",
+  //         })
+  //         : !isRefundedDuplicate
+  //           ? await BluetoothEscposPrinter.printText("REFUND RECEIPT", {
+  //             align: "center",
+  //           })
+  //           : await BluetoothEscposPrinter.printText("DUPLICATE REFUND RECEIPT", {
+  //             align: "center",
+  //           })
+  //     }
+
+  //     cancelFlag
+  //       && await BluetoothEscposPrinter.printText("CANCELLED BILL", {
+  //         align: "center",
+  //       })
+
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+
+  //     // await BluetoothEscposPrinter.printText("------------------------", {
+  //     //   align: "center",
+  //     // })
+
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText(address, {
+  //     //   align: "center",
+  //     // })
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText(location, {
+  //     //   align: "center",
+  //     // })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText("------------------------", {
+  //     //   align: "center",
+  //     // })
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+
+  //     // // await BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.LEFT)
+
+  //     // await BluetoothEscposPrinter.printColumn(
+  //     //   columnWidthsHeader,
+  //     //   [
+  //     //     BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //     BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //     BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //   ],
+  //     //   ["MOBILE", ":", shopMobile],
+  //     //   {},
+  //     // )
+  //     // await BluetoothEscposPrinter.printColumn(
+  //     //   columnWidthsHeader,
+  //     //   [
+  //     //     BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //     BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //     BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //   ],
+  //     //   ["EMAIL", ":", shopEmail],
+  //     //   {},
+  //     // )
+  //     // await BluetoothEscposPrinter.printColumn(
+  //     //     columnWidthsHeader,
+  //     //     [
+  //     //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //     ],
+  //     //     ["SITE", ":", "SHOPNAME.COM"],
+  //     //     {},
+  //     // )
+
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidthsHeader,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       ["RCPT.NO", ":", rcptNo?.toString()],
+  //       {},
+  //     )
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidthsHeader,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       ["DATE", ":", `${new Date().toLocaleString("en-GB")}`],
+  //       {},
+  //     )
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidthsHeader,
+  //       [
+  //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //       ],
+  //       ["CASHIER", ":", cashier],
+  //       {},
+  //     )
+
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     if (customerName.length !== 0 || customerPhone.length !== 0) {
+  //       receiptSettings?.cust_inf === "Y" &&
+  //         (await BluetoothEscposPrinter.printColumn(
+  //           columnWidthsHeader,
+  //           [
+  //             BluetoothEscposPrinter.ALIGN.LEFT,
+  //             BluetoothEscposPrinter.ALIGN.CENTER,
+  //             BluetoothEscposPrinter.ALIGN.RIGHT,
+  //           ],
+  //           ["NAME", ":", customerName],
+  //           {},
+  //         ))
+  //       await BluetoothEscposPrinter.printColumn(
+  //         columnWidthsHeader,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         ["PHONE", ":", customerPhone],
+  //         {},
+  //       )
+  //     }
+
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     await BluetoothEscposPrinter.printerAlign(
+  //       BluetoothEscposPrinter.ALIGN.CENTER,
+  //     )
+
+  //     addedProducts[0]?.discount_flag === "Y" &&
+  //       addedProducts[0]?.discount_position !== "B"
+  //       ? await BluetoothEscposPrinter.printColumn(
+  //         columnWidthsProductsHeaderAndBody,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         ["ITEM", "QTY", "PRICE", "DIS.", "AMT"],
+  //         {},
+  //       )
+  //       : await BluetoothEscposPrinter.printColumn(
+  //         columnWidthsProductsHeaderAndBodyWithoutDiscount,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         ["ITEM", "QTY", "PRICE", "AMT"],
+  //         {},
+  //       )
+
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     for (const item of addedProducts) {
+  //       //@ts-ignore
+  //       totalQuantities += parseInt(item?.qty)
+  //       let discountType: "P" | "A" = addedProducts[0]?.discount_type
+  //       let discountFlag: "N" | "Y" = addedProducts[0]?.discount_flag
+  //       let discountPosition: "B" | "I" = addedProducts[0]?.discount_position
+
+  //       // discountType === "P"
+  //       //     ? totalAmountAfterDiscount += ((item?.price * item?.qty) - ((item?.price * item?.qty * item?.dis_pertg) / 100))
+  //       //     : totalAmountAfterDiscount += ((item?.price * item?.qty) - (item?.qty * item?.discount_amt))
+
+  //       if (item?.item_name?.length >= 8) {
+  //         await BluetoothEscposPrinter.printColumn(
+  //           columnWidthIfNameIsBig,
+  //           [BluetoothEscposPrinter.ALIGN.LEFT],
+  //           [item?.item_name],
+  //           {},
+  //         )
+
+  //         discountFlag === "Y" && discountPosition !== "B"
+  //           ? discountType === "P"
+  //             ? await BluetoothEscposPrinter.printColumn(
+  //               columnWidthsProductsHeaderAndBody,
+  //               [
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.CENTER,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               ],
+  //               //@ts-ignore
+  //               [
+  //                 "",
+  //                 item?.qty.toString(),
+  //                 item?.price.toString(),
+  //                 calculatePercentDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.dis_pertg,
+  //                 ),
+  //                 calculateAmountAfterPercentDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.dis_pertg,
+  //                 ),
+  //               ],
+  //               {},
+  //             )
+  //             : await BluetoothEscposPrinter.printColumn(
+  //               columnWidthsProductsHeaderAndBody,
+  //               [
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.CENTER,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               ],
+  //               //@ts-ignore
+  //               [
+  //                 "",
+  //                 item?.qty.toString(),
+  //                 item?.price.toString(),
+  //                 calculateAmountDiscountPerProduct(
+  //                   item?.qty,
+  //                   item?.discount_amt,
+  //                 ),
+  //                 calculateAmountAfterAmountDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.discount_amt,
+  //                 ),
+  //               ],
+  //               {},
+  //             )
+  //           : await BluetoothEscposPrinter.printColumn(
+  //             columnWidthsProductsHeaderAndBodyWithoutDiscount,
+  //             [
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //             ],
+  //             //@ts-ignore
+  //             [
+  //               "",
+  //               item?.qty.toString(),
+  //               item?.price.toString(),
+  //               calculateAmountAfterAmountDiscountPerProduct(
+  //                 item?.price,
+  //                 item?.qty,
+  //                 0,
+  //               ),
+  //             ],
+  //             {},
+  //           )
+  //         // : await BluetoothEscposPrinter.printColumn(
+  //         //     columnWidthsProductsHeaderAndBody,
+  //         //     [
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //     ],
+  //         //     //@ts-ignore
+  //         //     ["", item?.qty.toString(), item?.price.toString(), calculateAmountDiscountPerProduct(item?.qty, 0), calculateAmountAfterAmountDiscountPerProduct(item?.price, item?.qty, 0)],
+  //         //     {},
+  //         // )
+
+  //         // await BluetoothEscposPrinter.printColumn(
+  //         //     columnWidthsProductsHeaderAndBody,
+  //         //     [
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //     ],
+  //         //     ["", item?.qty.toString(), item?.price.toString(), (((item?.price * item?.qty * item?.dis_pertg) / 100).toFixed(2)).toString(), `${((item?.price * item?.qty) - ((item?.price * item?.qty * item?.dis_pertg) / 100)).toFixed(2).toString()}`],
+  //         //     {},
+  //         // )
+  //       } else {
+  //         discountFlag === "Y" && discountPosition !== "B"
+  //           ? discountType === "P"
+  //             ? await BluetoothEscposPrinter.printColumn(
+  //               columnWidthsProductsHeaderAndBody,
+  //               [
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.CENTER,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               ],
+  //               //@ts-ignore
+  //               [
+  //                 item?.item_name,
+  //                 item?.qty.toString(),
+  //                 item?.price.toString(),
+  //                 calculatePercentDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.dis_pertg,
+  //                 ),
+  //                 calculateAmountAfterPercentDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.dis_pertg,
+  //                 ),
+  //               ],
+  //               {},
+  //             )
+  //             : await BluetoothEscposPrinter.printColumn(
+  //               columnWidthsProductsHeaderAndBody,
+  //               [
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.LEFT,
+  //                 BluetoothEscposPrinter.ALIGN.CENTER,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //                 BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               ],
+  //               //@ts-ignore
+  //               [
+  //                 item?.item_name,
+  //                 item?.qty.toString(),
+  //                 item?.price.toString(),
+  //                 calculateAmountDiscountPerProduct(
+  //                   item?.qty,
+  //                   item?.discount_amt,
+  //                 ),
+  //                 calculateAmountAfterAmountDiscountPerProduct(
+  //                   item?.price,
+  //                   item?.qty,
+  //                   item?.discount_amt,
+  //                 ),
+  //               ],
+  //               {},
+  //             )
+  //           : await BluetoothEscposPrinter.printColumn(
+  //             columnWidthsProductsHeaderAndBodyWithoutDiscount,
+  //             [
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //             ],
+  //             //@ts-ignore
+  //             [
+  //               item?.item_name,
+  //               item?.qty.toString(),
+  //               item?.price.toString(),
+  //               calculateAmountAfterAmountDiscountPerProduct(
+  //                 item?.price,
+  //                 item?.qty,
+  //                 0,
+  //               ),
+  //             ],
+  //             {},
+  //           )
+  //         // : await BluetoothEscposPrinter.printColumn(
+  //         //     columnWidthsProductsHeaderAndBody,
+  //         //     [
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //     ],
+  //         //     //@ts-ignore
+  //         //     [item?.item_name, item?.qty.toString(), item?.price.toString(), calculateAmountDiscountPerProduct(item?.qty, 0), calculateAmountAfterAmountDiscountPerProduct(item?.price, item?.qty, 0)],
+  //         //     {},
+  //         // )
+
+  //         // await BluetoothEscposPrinter.printColumn(
+  //         //     columnWidthsProductsHeaderAndBody,
+  //         //     [
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //         //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         //     ],
+  //         //     [item?.item_name, item?.qty.toString(), item?.price.toString(), (((item?.price * item?.qty * item?.dis_pertg) / 100).toFixed(2)).toString(), `${(item?.price * item?.qty).toString()}`],
+  //         //     {},
+  //         // )
+  //         // await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+  //     }
+
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     await BluetoothEscposPrinter.printColumn(
+  //       columnWidthsItemTotal,
+  //       [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+  //       [
+  //         `ITEM: ${addedProducts?.length?.toString()} QTY: ${totalQuantities.toString()}`,
+  //         `AMT: ${netTotal?.toFixed(2)}`,
+  //       ],
+  //       {},
+  //     )
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+
+  //     // addedProducts[0]?.gst_type === "E"
+  //     //     ? await BluetoothEscposPrinter.printColumn(
+  //     //         columnWidths,
+  //     //         [
+  //     //             BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //             BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //             BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //         ],
+  //     //         // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
+  //     //         ["TOTAL", ":", `${netTotalWithGSTCalculate(netTotal, totalDiscountAmount, totalGST)}`],
+  //     //         {},
+  //     //     )
+  //     //     : await BluetoothEscposPrinter.printColumn(
+  //     //         columnWidths,
+  //     //         [
+  //     //             BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //             BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //             BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //         ],
+  //     //         // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
+  //     //         ["TOTAL", ":", `${totalAmountWithGSTInclCalculate(netTotal, totalGST)}`],
+  //     //         {},
+  //     //     )
+
+  //     // addedProducts[0]?.gst_type === "I" &&
+  //     //     await BluetoothEscposPrinter.printColumn(
+  //     //         columnWidths,
+  //     //         [
+  //     //             BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //             BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //             BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //         ],
+  //     //         // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
+  //     //         ["TOTAL (Excl GST)", ":", `${totalAmountWithGSTInclCalculate(netTotal, totalGST)}`],
+  //     //         {},
+  //     //     )
+
+  //     addedProducts[0]?.gst_flag === "Y" &&
+  //       gstKeys.map(
+  //         async key =>
+  //           await BluetoothEscposPrinter.printColumn(
+  //             columnWidths,
+  //             [
+  //               BluetoothEscposPrinter.ALIGN.LEFT,
+  //               BluetoothEscposPrinter.ALIGN.CENTER,
+  //               BluetoothEscposPrinter.ALIGN.RIGHT,
+  //             ],
+  //             [
+  //               `${key.includes("CGST") ? "CGST" : "SGST"} @${key
+  //                 .replace(/total(CGST|SGST)_/, "")
+  //                 .replace("_", ".")}%`,
+  //               ":",
+  //               gstTotals[key].toFixed(2).toString(),
+  //             ],
+  //             {},
+  //           ),
+  //       )
+
+  //     addedProducts[0]?.gst_flag === "Y" &&
+  //       (await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         ["TOTAL GST", ":", totalGST.toFixed(2).toString()],
+  //         {},
+  //       ))
+
+  //     addedProducts[0]?.discount_flag === "Y" &&
+  //       (await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         //@ts-ignore
+  //         ["DISCOUNT", ":", parseFloat(totalDiscountAmount).toFixed(2)],
+  //         {},
+  //       ))
+
+  //     addedProducts[0]?.gst_type === "E"
+  //       ? await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
+  //         [
+  //           "TOTAL",
+  //           ":",
+  //           `${netTotalWithGSTCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //             totalGST,
+  //           )}`,
+  //         ],
+  //         {},
+  //       )
+  //       : await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
+  //         [
+  //           "TOTAL",
+  //           ":",
+  //           `${netTotalWithGSTInclCalculate(netTotal, totalDiscountAmount)}`,
+  //         ],
+  //         {},
+  //       )
+  //     // : await BluetoothEscposPrinter.printColumn(
+  //     //     columnWidths,
+  //     //     [
+  //     //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //     ],
+  //     //     // ["TOTAL", ":", `${(netTotal - totalDiscountAmount + totalGST).toFixed(2)}`],
+  //     //     ["TOTAL", ":", `${totalAmountWithGSTInclCalculate(netTotal, totalGST)}`],
+  //     //     {},
+  //     // )
+
+  //     // addedProducts[0]?.gst_flag === "Y"
+  //     //     && await BluetoothEscposPrinter.printColumn(
+  //     //         columnWidths,
+  //     //         [
+  //     //             BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //             BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //             BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //         ],
+  //     //         ["TOTAL GST", ":", (totalGST).toFixed(2).toString()],
+  //     //         {},
+  //     //     )
+
+  //     addedProducts[0]?.gst_type === "E"
+  //       ? await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         // ["ROUND OFF", ":", `${(Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2))) - parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2))).toFixed(2)}`],
+  //         [
+  //           "ROUND OFF",
+  //           ":",
+  //           `${roundingOffWithGSTCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //             totalGST,
+  //           )}`,
+  //         ],
+  //         {},
+  //       )
+  //       : await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         // ["ROUND OFF", ":", `${(Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2))) - parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2))).toFixed(2)}`],
+  //         [
+  //           "ROUND OFF",
+  //           ":",
+  //           `${roundingOffWithGSTInclCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //           )}`,
+  //         ],
+  //         {},
+  //       )
+
+  //     // await BluetoothEscposPrinter.printColumn(
+  //     //     columnWidths,
+  //     //     [
+  //     //         BluetoothEscposPrinter.ALIGN.LEFT,
+  //     //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //     //         BluetoothEscposPrinter.ALIGN.RIGHT,
+  //     //     ],
+  //     //     // ["NET AMT", ":", `${Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2)))}`],
+  //     //     ["NET AMT", ":", `${grandTotalWithGSTCalculate(netTotal, totalDiscountAmount, totalGST)}`],
+  //     //     {},
+  //     // )
+
+  //     addedProducts[0]?.gst_type === "E"
+  //       ? await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         // ["NET AMT", ":", `${Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2)))}`],
+  //         [
+  //           "NET AMT",
+  //           ":",
+  //           `${grandTotalWithGSTCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //             totalGST,
+  //           )}`,
+  //         ],
+  //         {},
+  //       )
+  //       : await BluetoothEscposPrinter.printColumn(
+  //         columnWidths,
+  //         [
+  //           BluetoothEscposPrinter.ALIGN.LEFT,
+  //           BluetoothEscposPrinter.ALIGN.CENTER,
+  //           BluetoothEscposPrinter.ALIGN.RIGHT,
+  //         ],
+  //         // ["NET AMT", ":", `${Math.round(parseFloat((netTotal - totalDiscountAmount + totalGST).toFixed(2)))}`],
+  //         [
+  //           "NET AMT",
+  //           ":",
+  //           `${grandTotalWithGSTInclCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //           )}`,
+  //         ],
+  //         {},
+  //       )
+
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
+  //     !cancelFlag && await BluetoothEscposPrinter.printText("\n", {})
+
+  //     if (!cancelFlag) {
+  //       if (addedProducts[0]?.rcv_cash_flag === "Y") {
+  //         if (!isRefunded && paymentMode === "C") {
+  //           await BluetoothEscposPrinter.printText("PAYMENT MODE", {
+  //             align: "center",
+  //           })
+  //           await BluetoothEscposPrinter.printText("\n", {})
+  //           await BluetoothEscposPrinter.printText(
+  //             `CASH RECEIVED:       ${cashAmount}`,
+  //             { align: "center" },
+  //           )
+  //           await BluetoothEscposPrinter.printText("\n", {})
+  //           await BluetoothEscposPrinter.printText(
+  //             `RETURNED AMT:        ${returnedAmt}`,
+  //             { align: "center" },
+  //           )
+
+  //           await BluetoothEscposPrinter.printText("\n", {})
+  //           await BluetoothEscposPrinter.printText("------------------------", {
+  //             align: "center",
+  //           })
+  //         }
+  //       } else {
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText(
+  //           `TOTAL AMT:        ${Math.abs(returnedAmt)}`,
+  //           { align: "center" },
+  //         )
+
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText("------------------------", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+  //     }
+
+
+  //     if (!cancelFlag) {
+  //       await BluetoothEscposPrinter.printText("\n", {})
+
+  //       if (paymentMode === "R") {
+  //         await BluetoothEscposPrinter.printText("PAYMENT MODE", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText(
+  //           `CASH RECEIVED:       ${cashAmount}`,
+  //           { align: "center" },
+  //         )
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText(
+  //           `DUE AMT:        ${Math.abs(returnedAmt)}`,
+  //           { align: "center" },
+  //         )
+
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText("------------------------", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+
+  //       if (paymentMode === "D") {
+  //         await BluetoothEscposPrinter.printText(
+  //           `RECEIVED:       ${grandTotalCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //           )} [CARD]`,
+  //           { align: "center" },
+  //         )
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText("------------------------", {
+  //           align: "center",
+  //         })
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //       }
+
+  //       if (paymentMode === "U") {
+  //         receiptSettings?.gst_type === "E"
+  //           ? await BluetoothEscposPrinter.printText(
+  //             `RECEIVED:       ${grandTotalWithGSTCalculate(
+  //               netTotal,
+  //               totalDiscountAmount,
+  //               totalGST,
+  //             )} [UPI]`,
+  //             { align: "center" },
+  //           )
+  //           : await BluetoothEscposPrinter.printText(
+  //             `RECEIVED:       ${grandTotalWithGSTInclCalculate(
+  //               netTotal,
+  //               totalDiscountAmount,
+  //             )} [UPI]`,
+  //             { align: "center" },
+  //           )
+  //         await BluetoothEscposPrinter.printText("\n", {})
+  //         await BluetoothEscposPrinter.printText("------------------------", {
+  //           align: "center",
+  //         })
+  //       }
+  //     }
+
+
+
+  //     if (isRefunded)
+  //       addedProducts[0]?.gst_type === "E"
+  //         ? await BluetoothEscposPrinter.printText(
+  //           `REFUNDED AMT:    ${grandTotalWithGSTCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //             totalGST,
+  //           )}`,
+  //           { align: "center" },
+  //         )
+  //         : await BluetoothEscposPrinter.printText(
+  //           `REFUNDED AMT:    ${grandTotalWithGSTInclCalculate(
+  //             netTotal,
+  //             totalDiscountAmount,
+  //           )}`,
+  //           { align: "center" },
+  //         )
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     if (receiptSettings?.on_off_flag3 === "Y") {
+  //       await BluetoothEscposPrinter.printText(receiptSettings?.footer1, {})
+  //       await BluetoothEscposPrinter.printText("\n", {})
+  //     }
+  //     if (receiptSettings?.on_off_flag4 === "Y") {
+  //       await BluetoothEscposPrinter.printText(receiptSettings?.footer2, {})
+  //     }
+  //     await BluetoothEscposPrinter.printText("\n", {})
+
+  //     // await BluetoothEscposPrinter.printText(
+  //     //     "THANK YOU, VISIT AGAIN!",
+  //     //     { align: "center" },
+  //     // )
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+
+  //     await BluetoothEscposPrinter.printText("------X------", {})
+  //     await BluetoothEscposPrinter.printText("\n\r\n\r\n\r", {})
+  //   } catch (e) {
+  //     console.log(e.message || "ERROR")
+  //   }
+  // }
 
   async function printSaleReport(
     saleReport: SaleReport[],
@@ -7306,8 +7345,8 @@ export const useBluetoothPrint = () => {
   return {
     // printReceipt,
     // printReceiptWithoutGst,
-    rePrint,
-    rePrintWithoutGst,
+    // rePrint,
+    // rePrintWithoutGst,
     printSaleReport,
     printCollectionReport,
     printItemReport,
@@ -7331,6 +7370,7 @@ export const useBluetoothPrint = () => {
 
 
     ////////////////////////////////////
-    printReceiptT
+    printReceiptT,
+    rePrintT
   }
 }

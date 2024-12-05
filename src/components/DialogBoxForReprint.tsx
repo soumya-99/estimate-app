@@ -102,7 +102,7 @@ export default function DialogBoxForReprint({
               <Text
                 style={{ textAlign: "center", color: theme.colors.primary }}
                 variant="bodyLarge">
-                {currentReceiptNo}
+                RCPT. NO. {currentReceiptNo}
               </Text>
             </TouchableRipple>
             <Text
@@ -118,7 +118,7 @@ export default function DialogBoxForReprint({
                 borderColor: theme.colors.secondary,
                 alignSelf: "center",
               }}></View>
-            {billedSaleData[0]?.cust_name && (
+            {/* {billedSaleData[0]?.cust_name && (
               <Text
                 style={{ textAlign: "center", color: theme.colors.primary }}
                 variant="bodyLarge">
@@ -131,7 +131,7 @@ export default function DialogBoxForReprint({
                 variant="bodyLarge">
                 {billedSaleData[0]?.phone_no}
               </Text>
-            </TouchableRipple>
+            </TouchableRipple> */}
             <Text
               style={{ textAlign: "center", color: theme.colors.peach }}
               variant="bodyLarge">
