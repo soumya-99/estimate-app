@@ -34,10 +34,14 @@ import { mapItemToFilteredItem } from "../utils/mapItemToFilteredItem"
 import { gstFilterationAndTotals } from "../utils/gstFilterTotal"
 import useCalculations from "../hooks/useCalculations"
 import useCustomerInfo from "../hooks/api/useCustomerInfo"
-import useBillSms from "../hooks/api/useBillSms"
+import useSendTxnDetails from "../hooks/api/useSendTxnDetails"
+// import useBillSms from "../hooks/api/useBillSms"
 import {
   BillSmsCredentials,
   CustomerInfoCredentials,
+  LoginData,
+  LoginDataMessage,
+  TxnDetailsCreds,
 } from "../models/api_types"
 import useBillSms2 from "../hooks/api/useBillSms2"
 import QRCode from "react-native-qrcode-svg"
@@ -49,7 +53,7 @@ const CustomerDetailsFillScreen = () => {
   const { params } = useRoute<ProductsScreenRouteProp>()
   const theme = usePaperColorScheme()
 
-  const loginStore = JSON.parse(loginStorage.getString("login-data"))
+  const loginStore = JSON.parse(loginStorage.getString("login-data")) as LoginDataMessage
   const upiData = fileStorage.getString("upi-data")
 
   const { receiptSettings, init } = useContext<AppStoreContext>(AppStore)
@@ -68,7 +72,8 @@ const CustomerDetailsFillScreen = () => {
   const { sendSaleDetails } = useSaleInsert()
   const { fetchCustomerInfo } = useCustomerInfo()
   // const { sendBillSms } = useBillSms()
-  const { sendBillSms } = useBillSms2()
+  // const { sendBillSms } = useBillSms2()
+  const { sendTxnDetails } = useSendTxnDetails()
 
   const [customerName, setCustomerName] = useState<string>(() => "")
   const [customerMobileNumber, setCustomerMobileNumber] = useState<string>(
@@ -82,7 +87,7 @@ const CustomerDetailsFillScreen = () => {
   )
   const [discountBillwise, setDiscountBillwise] = useState<number>(() => 0)
 
-  let receiptNumber: number | undefined = undefined
+  var receiptNumber: number | undefined = undefined
   let kotNumber: number | undefined = undefined
 
   const [checked, setChecked] = useState<string>(() => "C")
@@ -192,9 +197,9 @@ const CustomerDetailsFillScreen = () => {
     }
   }
 
-  const handleDiscountBillwise = (dis: number) => {
-    setDiscountBillwise(dis)
-  }
+  // const handleDiscountBillwise = (dis: number) => {
+  //   setDiscountBillwise(dis)
+  // }
 
   const handleSendSaleData = async () => {
     const loginStore = JSON.parse(loginStorage.getString("login-data"))
@@ -624,30 +629,37 @@ const CustomerDetailsFillScreen = () => {
 
   const handleSaveBillRazorpay = async (flag?: boolean) => {
     await initializePaymentRequest()
-      .then(() => {
+      .then(async () => {
         console.log(
           "TRANSACTION RES DATA================",
           tnxResponse,
         )
         if (JSON.parse(tnxResponse)?.status === "success") {
-          // item?.acc_type != "L"
-          //   ? handleSave(tnxResponse)
-          //   : handleSaveForLoan()
 
-          handlePrintReceipt(flag)
+          await handlePrintReceipt(flag)
 
-          // Alert.alert(
-          //   `Transaction ID`,
-          //   `${tnxResponse?.result?.txn?.txnId}`,
-          // )
+          const creds: TxnDetailsCreds = {
+            receipt_no: receiptNumber?.toString(),
+            pay_txn_id: JSON.parse(tnxResponse)?.result?.txn?.txnId,
+            pay_amount: +JSON.parse(tnxResponse)?.result?.txn?.amount,
+            pay_amount_original: +JSON.parse(tnxResponse)?.result?.txn?.amountOriginal,
+            currency_code: JSON.parse(tnxResponse)?.result?.txn?.currencyCode,
+            payment_mode: JSON.parse(tnxResponse)?.result?.txn?.paymentMode,
+            pay_status: JSON.parse(tnxResponse)?.result?.txn?.status,
+            receipt_url: JSON.parse(tnxResponse)?.result?.receipt?.receiptUrl,
+            created_by: loginStore?.user_id
+          }
+
+          console.log("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::", creds)
+
+          await sendTxnDetails(creds).then(res => {
+            console.log("Txn details sent done.", res)
+          }).catch(err => {
+            console.log("Txn send failed.", err)
+          })
+
         } else {
           console.log("tnxResponse value error...")
-          // Alert.alert(
-          //   "Error",
-          //   `Some problem occurred while transaction. Error Status: ${
-          //     JSON.parse(tnxResponse)?.status
-          //   }`,
-          // )
         }
       })
       .catch(err => {

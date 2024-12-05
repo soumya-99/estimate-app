@@ -1036,3 +1036,15 @@ export type SaleReportCalculateModeData = {
   "net_amt": number
   "created_by": string
 }
+
+export type TxnDetailsCreds = {
+  "receipt_no": string,
+  "pay_txn_id": string,
+  "pay_amount": number,
+  "pay_amount_original": number,
+  "currency_code": string,
+  "payment_mode": string,
+  "pay_status": string,
+  "receipt_url": string,
+  "created_by": string
+}

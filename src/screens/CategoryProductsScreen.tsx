@@ -15,7 +15,7 @@ import {
     textureReportDark,
 } from "../resources/images"
 import { usePaperColorScheme } from "../theme/theme"
-import { CommonActions, useNavigation, useRoute } from "@react-navigation/native"
+import { CommonActions, useIsFocused, useNavigation, useRoute } from "@react-navigation/native"
 import { itemsContextStorage, loginStorage } from "../storage/appStorage"
 import { AppStore } from "../context/AppContext"
 import { CategoriesScreenRouteProp } from "../models/route_types"
@@ -33,16 +33,17 @@ import SnackBar from "../components/SnackBar"
 import ButtonPaper from "../components/ButtonPaper"
 import SurfacePaper from "../components/SurfacePaper"
 import { imgNotFound } from "../resources/images"
-import ReportButtonsWrapper from "../components/ReportButtonsWrapper"
+// import ReportButtonsWrapper from "../components/ReportButtonsWrapper"
 // import slikCut from "../resources/images/test_images/sc.jpg"
 
-import { ADDRESSES } from "../config/api_list"
+// import { ADDRESSES } from "../config/api_list"
 import { BASE_URL } from "../config/config"
 
 function CategoryProductsScreen() {
     const theme = usePaperColorScheme()
     const navigation = useNavigation()
-    const { receiptSettings } = useContext<AppStoreContext>(AppStore)
+    const isFocused = useIsFocused()
+    // const { receiptSettings } = useContext<AppStoreContext>(AppStore)
     const { fetchCategoryItems } = useCategoryItems()
     const { params } = useRoute<CategoriesScreenRouteProp>()
 
@@ -66,24 +67,31 @@ function CategoryProductsScreen() {
         totalDiscountedAmountStore = 0
     }
 
-    const { fetchStock } = useStockSearch()
 
-    const [visible, setVisible] = useState(() => false)
-    const hideDialog = () => setVisible(() => false)
+    // const { fetchStock } = useStockSearch()
+
+    // const [visible, setVisible] = useState(() => false)
+    // const hideDialog = () => setVisible(() => false)
 
     const [categoryWiseItems, setCategoryWiseItems] = useState<ItemsData[]>()
-    const [product, setProduct] = useState<ItemsData>()
-    const [quantity, setQuantity] = useState<number>()
-    const [discountState, setDiscountState] = useState<number>(() => 0)
-    const [price, setPrice] = useState<number>(() => product?.price)
-    const [stock, setStock] = useState<number>()
-    const [updatedStock, setUpdatedStock] = useState<number>()
+    // const [product, setProduct] = useState<ItemsData>()
+    // const [quantity, setQuantity] = useState<number>()
+    // const [discountState, setDiscountState] = useState<number>(() => 0)
+    // const [price, setPrice] = useState<number>(() => product?.price)
+    // const [stock, setStock] = useState<number>()
+    // const [updatedStock, setUpdatedStock] = useState<number>()
     const [addedProductsList, setAddedProductsList] = useState<ItemsData[]>(
         () => itemsStore,
     )
 
     const [totalPrice, setTotalPrice] = useState(() => totalAmountStore | 0)
     const [totalDiscountedAmount, setTotalDiscountedAmount] = useState(() => totalDiscountedAmountStore | 0)
+
+    useEffect(() => {
+        setAddedProductsList(itemsStore)
+        setTotalPrice(totalAmountStore)
+        setTotalDiscountedAmount(totalDiscountedAmountStore)
+    }, [isFocused])
 
     // const handleFetchStock = async (itemId: number) => {
     //     let fetchedStockObject: StockSearchCredentials = {
@@ -136,140 +144,140 @@ function CategoryProductsScreen() {
         handleGetItemsByCategoryId(params?.category_id)
     }, [])
 
-    const onDialogFailure = () => {
-        clearStates([setQuantity, setStock, setUpdatedStock], () => undefined)
+    // const onDialogFailure = () => {
+    //     clearStates([setQuantity, setStock, setUpdatedStock], () => undefined)
 
-        setVisible(!visible)
-    }
+    //     setVisible(!visible)
+    // }
 
-    const onDialogSuccecss = (item: ItemsData) => {
-        setAddedProductsList(prevList => {
-            const existingItemIndex = prevList.findIndex(product => product.id === item.id)
-            if (existingItemIndex !== -1) {
-                // Item exists, create a new array with updated quantity
-                const updatedList = [...prevList]
-                updatedList[existingItemIndex] = {
-                    ...updatedList[existingItemIndex],
-                    price: price > 0 ? price : product?.price,
-                    //@ts-ignore
-                    quantity: parseInt(quantity),
-                    //@ts-ignore
-                    discount: parseInt(discountState)
-                }
-                return updatedList
-            } else {
-                // Item doesn't exist, add it with quantity 1
-                //@ts-ignore
-                return [...prevList, {
-                    ...item,
-                    //@ts-ignore
-                    quantity: parseInt(quantity),
-                    //@ts-ignore
-                    discount: parseFloat(discountState) > 0 ? parseFloat(discountState) : parseFloat(product?.discount),
-                    price: price > 0 ? price : product?.price,
-                }]
-            }
-        })
-        setVisible(!visible)
-    }
+    // const onDialogSuccecss = (item: ItemsData) => {
+    //     setAddedProductsList(prevList => {
+    //         const existingItemIndex = prevList.findIndex(product => product.id === item.id)
+    //         if (existingItemIndex !== -1) {
+    //             // Item exists, create a new array with updated quantity
+    //             const updatedList = [...prevList]
+    //             updatedList[existingItemIndex] = {
+    //                 ...updatedList[existingItemIndex],
+    //                 price: price > 0 ? price : product?.price,
+    //                 //@ts-ignore
+    //                 quantity: parseInt(quantity),
+    //                 //@ts-ignore
+    //                 discount: parseInt(discountState)
+    //             }
+    //             return updatedList
+    //         } else {
+    //             // Item doesn't exist, add it with quantity 1
+    //             //@ts-ignore
+    //             return [...prevList, {
+    //                 ...item,
+    //                 //@ts-ignore
+    //                 quantity: parseInt(quantity),
+    //                 //@ts-ignore
+    //                 discount: parseFloat(discountState) > 0 ? parseFloat(discountState) : parseFloat(product?.discount),
+    //                 price: price > 0 ? price : product?.price,
+    //             }]
+    //         }
+    //     })
+    //     setVisible(!visible)
+    // }
 
-    const onDialogSuccessChange = (item: ItemsData) => {
-        if (receiptSettings?.stock_flag === "Y") {
-            if (
-                quantity <= 0 ||
-                typeof quantity === "undefined" ||
-                Number.isNaN(quantity) ||
-                updatedStock < 0
-            ) {
-                ToastAndroid.show("Try adding valid numbers!", ToastAndroid.SHORT)
-                return
-            }
-        } else {
-            if (
-                quantity <= 0 ||
-                typeof quantity === "undefined" ||
-                Number.isNaN(quantity)
-            ) {
-                ToastAndroid.show("Try adding valid numbers!", ToastAndroid.SHORT)
-                return
-            }
-        }
+    // const onDialogSuccessChange = (item: ItemsData) => {
+    //     if (receiptSettings?.stock_flag === "Y") {
+    //         if (
+    //             quantity <= 0 ||
+    //             typeof quantity === "undefined" ||
+    //             Number.isNaN(quantity) ||
+    //             updatedStock < 0
+    //         ) {
+    //             ToastAndroid.show("Try adding valid numbers!", ToastAndroid.SHORT)
+    //             return
+    //         }
+    //     } else {
+    //         if (
+    //             quantity <= 0 ||
+    //             typeof quantity === "undefined" ||
+    //             Number.isNaN(quantity)
+    //         ) {
+    //             ToastAndroid.show("Try adding valid numbers!", ToastAndroid.SHORT)
+    //             return
+    //         }
+    //     }
 
-        if (receiptSettings?.discount_type === "P") {
-            if (discountState > 100) {
-                ToastAndroid.show(
-                    "Discount cannot be greater than 100%.",
-                    ToastAndroid.SHORT,
-                )
-                return
-            }
-        } else if (product.price * quantity < discountState) {
-            ToastAndroid.show("Give valid Discount Amount.", ToastAndroid.SHORT)
-            return
-        }
+    //     if (receiptSettings?.discount_type === "P") {
+    //         if (discountState > 100) {
+    //             ToastAndroid.show(
+    //                 "Discount cannot be greater than 100%.",
+    //                 ToastAndroid.SHORT,
+    //             )
+    //             return
+    //         }
+    //     } else if (product.price * quantity < discountState) {
+    //         ToastAndroid.show("Give valid Discount Amount.", ToastAndroid.SHORT)
+    //         return
+    //     }
 
-        if (receiptSettings?.stock_flag === "Y") {
-            if (stock === undefined || stock === null) {
-                ToastAndroid.show(
-                    "No stock available. Add stock for this product.",
-                    ToastAndroid.SHORT,
-                )
-                return
-            }
-        }
+    //     if (receiptSettings?.stock_flag === "Y") {
+    //         if (stock === undefined || stock === null) {
+    //             ToastAndroid.show(
+    //                 "No stock available. Add stock for this product.",
+    //                 ToastAndroid.SHORT,
+    //             )
+    //             return
+    //         }
+    //     }
 
-        onDialogSuccecss(item)
-    }
+    //     onDialogSuccecss(item)
+    // }
 
-    useEffect(() => {
-        //@ts-ignore
-        setUpdatedStock(parseInt(stock) - parseInt(quantity))
-    }, [quantity])
+    // useEffect(() => {
+    //     //@ts-ignore
+    //     setUpdatedStock(parseInt(stock) - parseInt(quantity))
+    // }, [quantity])
 
-    const countTotalAmountAndTotalDiscount = () => {
-        const { totalAmount, totalDiscount } = addedProductsList.reduce((acc, item) => {
-            const itemTotalPrice = item?.price * item["quantity"]
-            let itemDiscount = 0
+    // const countTotalAmountAndTotalDiscount = () => {
+    //     const { totalAmount, totalDiscount } = addedProductsList.reduce((acc, item) => {
+    //         const itemTotalPrice = item?.price * item["quantity"]
+    //         let itemDiscount = 0
 
-            if (receiptSettings?.discount_flag === "Y") {
-                if (receiptSettings?.discount_position === "I") {
-                    if (receiptSettings?.discount_type === "A") {
-                        itemDiscount = (item["quantity"] * item["discount"])
-                    } else {
-                        itemDiscount = (item?.price * item["quantity"] * item["discount"]) / 100
-                    }
-                }
-            }
+    //         if (receiptSettings?.discount_flag === "Y") {
+    //             if (receiptSettings?.discount_position === "I") {
+    //                 if (receiptSettings?.discount_type === "A") {
+    //                     itemDiscount = (item["quantity"] * item["discount"])
+    //                 } else {
+    //                     itemDiscount = (item?.price * item["quantity"] * item["discount"]) / 100
+    //                 }
+    //             }
+    //         }
 
-            return {
-                totalAmount: acc.totalAmount + itemTotalPrice,
-                totalDiscount: acc.totalDiscount + itemDiscount,
-            }
-        }, { totalAmount: 0, totalDiscount: 0 })
+    //         return {
+    //             totalAmount: acc.totalAmount + itemTotalPrice,
+    //             totalDiscount: acc.totalDiscount + itemDiscount,
+    //         }
+    //     }, { totalAmount: 0, totalDiscount: 0 })
 
-        setTotalPrice(totalAmount)
-        setTotalDiscountedAmount(totalDiscount)
+    //     setTotalPrice(totalAmount)
+    //     setTotalDiscountedAmount(totalDiscount)
 
-        console.log("TOT DISSSSS ====>", totalDiscount)
-        itemsContextStorage.set("total-amount-data", totalAmount?.toString())
-        itemsContextStorage.set("total-discount-data", totalDiscount?.toString())
-    }
+    //     console.log("TOT DISSSSS ====>", totalDiscount)
+    //     itemsContextStorage.set("total-amount-data", totalAmount?.toString())
+    //     itemsContextStorage.set("total-discount-data", totalDiscount?.toString())
+    // }
 
-    useEffect(() => {
-        countTotalAmountAndTotalDiscount()
+    // useEffect(() => {
+    //     countTotalAmountAndTotalDiscount()
 
-        console.log("TESTTTT DATAAAA ====> BEFORE EMPTYING", addedProductsList)
+    //     console.log("TESTTTT DATAAAA ====> BEFORE EMPTYING", addedProductsList)
 
-        itemsContextStorage.set("items-data", JSON.stringify(addedProductsList))
-    }, [addedProductsList])
+    //     itemsContextStorage.set("items-data", JSON.stringify(addedProductsList))
+    // }, [addedProductsList])
 
-    const handleOnDelete = (product: ItemsData) => {
-        setAddedProductsList(prevData =>
-            prevData?.filter((item, index) => item.item_id !== product.item_id),
-        )
+    // const handleOnDelete = (product: ItemsData) => {
+    //     setAddedProductsList(prevData =>
+    //         prevData?.filter((item, index) => item.item_id !== product.item_id),
+    //     )
 
-        setVisible(!visible)
-    }
+    //     setVisible(!visible)
+    // }
 
     const handlePressBillScreen = () => {
         navigation.dispatch(
@@ -494,15 +502,25 @@ function CategoryProductsScreen() {
                 </View>
             </ScrollView>
 
-            <View style={{
+            {/* <View style={{
                 position: "absolute",
                 top: "88%",
                 alignSelf: "center"
             }}>
                 <SnackBar totAmt={totalPrice?.toFixed(2)} handleBtn1Press={handlePressBillScreen} handleBtn2Press={handleClear} handleBtn3Press={handleGoToCartScreen} disableNext={!totalPrice} cartItemQty={addedProductsList?.length} disableCart={!totalPrice} />
-            </View>
+            </View> */}
+            {
+                addedProductsList?.length !== 0 &&
+                <View style={{
+                    position: "absolute",
+                    top: "88%",
+                    alignSelf: "center"
+                }}>
+                    <SnackBar totAmt={totalPrice?.toFixed(2)} handleBtn1Press={handlePressBillScreen} handleBtn2Press={handleClear} handleBtn3Press={handleGoToCartScreen} disableNext={!totalPrice} cartItemQty={addedProductsList?.length} disableCart={!totalPrice} />
+                </View>
+            }
 
-            <DialogBox
+            {/* <DialogBox
                 iconSize={40}
                 visible={visible}
                 hide={hideDialog}
@@ -720,7 +738,7 @@ function CategoryProductsScreen() {
                         </View>
                     }
                 </View>
-            </DialogBox>
+            </DialogBox> */}
         </SafeAreaView>
     )
 }

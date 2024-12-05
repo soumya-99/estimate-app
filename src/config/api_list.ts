@@ -86,6 +86,8 @@ export const ADDRESSES = {
   RECOVERY_UPDATE: `${BASE_URL}/api/recovery_update`,
   LOGOUT: `${BASE_URL}/api/logout`,
 
+  SEND_TXN_DETAILS: `${BASE_URL}/api/add_txn_dtls`,
+
   /**
    * @deprecated @var SEND_OTP
    */
