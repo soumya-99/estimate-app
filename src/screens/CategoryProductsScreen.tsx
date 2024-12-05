@@ -32,9 +32,10 @@ import navigationRoutes from "../routes/navigationRoutes"
 import SnackBar from "../components/SnackBar"
 import ButtonPaper from "../components/ButtonPaper"
 import SurfacePaper from "../components/SurfacePaper"
-import { logo, logoDark, flower2, flower2Dark } from "../resources/images"
+import { imgNotFound } from "../resources/images"
 import ReportButtonsWrapper from "../components/ReportButtonsWrapper"
-import slikCut from "../resources/images/test_images/sc.jpg"
+// import slikCut from "../resources/images/test_images/sc.jpg"
+
 import { ADDRESSES } from "../config/api_list"
 import { BASE_URL } from "../config/config"
 
@@ -84,27 +85,27 @@ function CategoryProductsScreen() {
     const [totalPrice, setTotalPrice] = useState(() => totalAmountStore | 0)
     const [totalDiscountedAmount, setTotalDiscountedAmount] = useState(() => totalDiscountedAmountStore | 0)
 
-    const handleFetchStock = async (itemId: number) => {
-        let fetchedStockObject: StockSearchCredentials = {
-            comp_id: loginStore?.comp_id,
-            br_id: loginStore?.br_id,
-            item_id: itemId,
-        }
+    // const handleFetchStock = async (itemId: number) => {
+    //     let fetchedStockObject: StockSearchCredentials = {
+    //         comp_id: loginStore?.comp_id,
+    //         br_id: loginStore?.br_id,
+    //         item_id: itemId,
+    //     }
 
-        console.log(
-            "BRRRRRRRRRR IDDDDDDDDDDDDD loginStore?.br_id",
-            loginStore?.br_id,
-        )
+    //     console.log(
+    //         "BRRRRRRRRRR IDDDDDDDDDDDDD loginStore?.br_id",
+    //         loginStore?.br_id,
+    //     )
 
-        await fetchStock(fetchedStockObject)
-            .then(res => {
-                console.log("handleFetchStock fetchStock", res)
-                setStock(res?.stock)
-            })
-            .catch(err => {
-                console.log("Something went wrong in handleFetchStock!", err)
-            })
-    }
+    //     await fetchStock(fetchedStockObject)
+    //         .then(res => {
+    //             console.log("handleFetchStock fetchStock", res)
+    //             setStock(res?.stock)
+    //         })
+    //         .catch(err => {
+    //             console.log("Something went wrong in handleFetchStock!", err)
+    //         })
+    // }
 
     const handleGetItemsByCategoryId = async (catgId: number) => {
         const creds: CategoryItemListCredentials = {
@@ -119,17 +120,17 @@ function CategoryProductsScreen() {
         })
     }
 
-    const productDetails = (item: ItemsData) => {
-        setProduct(item)
+    // const productDetails = (item: ItemsData) => {
+    //     setProduct(item)
 
-        setDiscountState(item?.discount)
-        setPrice(item?.price)
-        setQuantity(
-            addedProductsList?.find(i => i.item_id === item?.item_id)?.quantity || 0
-        )
-        handleFetchStock(item?.item_id)
-        setVisible(!visible)
-    }
+    //     setDiscountState(item?.discount)
+    //     setPrice(item?.price)
+    //     setQuantity(
+    //         addedProductsList?.find(i => i.item_id === item?.item_id)?.quantity || 0
+    //     )
+    //     handleFetchStock(item?.item_id)
+    //     setVisible(!visible)
+    // }
 
     useEffect(() => {
         handleGetItemsByCategoryId(params?.category_id)
@@ -284,53 +285,53 @@ function CategoryProductsScreen() {
         )
     }
 
-    const add = (item: ItemsData) => {
-        handleFetchStock(item?.item_id)
-        setAddedProductsList(prevList => {
-            const existingItemIndex = prevList.findIndex(product => product.id === item.id)
-            if (existingItemIndex !== -1) {
-                // Item exists, create a new array with updated quantity
-                const updatedList = [...prevList]
-                updatedList[existingItemIndex] = {
-                    ...updatedList[existingItemIndex],
-                    //@ts-ignore
-                    quantity: parseInt(updatedList[existingItemIndex].quantity || 0) + 1,
-                }
-                return updatedList
-            } else {
-                // Item doesn't exist, add it with quantity 1
-                return [
-                    ...prevList,
-                    {
-                        ...item,
-                        quantity: 1,
-                    }
-                ]
-            }
-        })
-    }
+    // const add = (item: ItemsData) => {
+    //     handleFetchStock(item?.item_id)
+    //     setAddedProductsList(prevList => {
+    //         const existingItemIndex = prevList.findIndex(product => product.id === item.id)
+    //         if (existingItemIndex !== -1) {
+    //             // Item exists, create a new array with updated quantity
+    //             const updatedList = [...prevList]
+    //             updatedList[existingItemIndex] = {
+    //                 ...updatedList[existingItemIndex],
+    //                 //@ts-ignore
+    //                 quantity: parseInt(updatedList[existingItemIndex].quantity || 0) + 1,
+    //             }
+    //             return updatedList
+    //         } else {
+    //             // Item doesn't exist, add it with quantity 1
+    //             return [
+    //                 ...prevList,
+    //                 {
+    //                     ...item,
+    //                     quantity: 1,
+    //                 }
+    //             ]
+    //         }
+    //     })
+    // }
 
-    const remove = (item: ItemsData) => {
-        setAddedProductsList(prevList => {
-            const existingItemIndex = prevList.findIndex(product => product.id === item.id)
-            if (existingItemIndex !== -1) {
-                if (prevList[existingItemIndex].quantity > 1) {
-                    // Item exists and quantity is greater than 1, create a new array with updated quantity
-                    const updatedList = [...prevList]
-                    updatedList[existingItemIndex] = {
-                        ...updatedList[existingItemIndex],
-                        quantity: updatedList[existingItemIndex].quantity - 1,
-                    }
-                    return updatedList
-                } else {
-                    // Item exists and quantity is 1, remove the item from the list
-                    return prevList.filter(product => product.id !== item.id)
-                }
-            } else {
-                return prevList
-            }
-        })
-    }
+    // const remove = (item: ItemsData) => {
+    //     setAddedProductsList(prevList => {
+    //         const existingItemIndex = prevList.findIndex(product => product.id === item.id)
+    //         if (existingItemIndex !== -1) {
+    //             if (prevList[existingItemIndex].quantity > 1) {
+    //                 // Item exists and quantity is greater than 1, create a new array with updated quantity
+    //                 const updatedList = [...prevList]
+    //                 updatedList[existingItemIndex] = {
+    //                     ...updatedList[existingItemIndex],
+    //                     quantity: updatedList[existingItemIndex].quantity - 1,
+    //                 }
+    //                 return updatedList
+    //             } else {
+    //                 // Item exists and quantity is 1, remove the item from the list
+    //                 return prevList.filter(product => product.id !== item.id)
+    //             }
+    //         } else {
+    //             return prevList
+    //         }
+    //     })
+    // }
 
     const handleClear = () => {
         Alert.alert("Clear cart?", "Do you want to clear cart?", [
@@ -345,10 +346,10 @@ function CategoryProductsScreen() {
     }
 
     // Find the quantity for each item
-    const getQuantity = (itemId: number) => {
-        const item = addedProductsList.find(product => product.item_id === itemId)
-        return item ? item.quantity : 0
-    }
+    // const getQuantity = (itemId: number) => {
+    //     const item = addedProductsList.find(product => product.item_id === itemId)
+    //     return item ? item.quantity : 0
+    // }
 
     const handleGoToCartScreen = () => {
         navigation.dispatch(
@@ -444,7 +445,7 @@ function CategoryProductsScreen() {
                                                             padding: 5
                                                         }}>
                                                             <Image
-                                                                source={item?.item_img ? { uri: `${BASE_URL}${item?.item_img}` } : slikCut}
+                                                                source={item?.item_img ? { uri: `${BASE_URL}${item?.item_img}` } : imgNotFound}
                                                                 style={{ height: 80, width: 80 }}
                                                             />
                                                         </View>
@@ -459,7 +460,7 @@ function CategoryProductsScreen() {
                                                             <Text variant="bodySmall" style={{
                                                                 color: theme.colors.secondary,
                                                                 fontWeight: "800"
-                                                            }}>₹ {item?.price}</Text>
+                                                            }}>₹{item?.price}</Text>
                                                         </View>
                                                     </View>
                                                 </TouchableRipple>

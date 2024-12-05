@@ -25,6 +25,7 @@ import greenRepDark from "./green_report-dark.webp"
 import saveMoney from "./save_money_2.webp"
 import saveMoneyDark from "./save_money_dark.png"
 import moneyCalc from "./money_calculator.png"
+import imgNotFound from "./image_not_found.png"
 
 export {
   blurredBlue,
@@ -53,5 +54,6 @@ export {
   greenRepDark,
   saveMoney,
   saveMoneyDark,
-  moneyCalc
+  moneyCalc,
+  imgNotFound
 }

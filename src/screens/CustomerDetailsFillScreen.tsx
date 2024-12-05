@@ -52,7 +52,7 @@ const CustomerDetailsFillScreen = () => {
   const loginStore = JSON.parse(loginStorage.getString("login-data"))
   const upiData = fileStorage.getString("upi-data")
 
-  const { receiptSettings } = useContext<AppStoreContext>(AppStore)
+  const { receiptSettings, init } = useContext<AppStoreContext>(AppStore)
 
   const { totalGST } = gstFilterationAndTotals(
     params?.added_products,
@@ -540,25 +540,27 @@ const CustomerDetailsFillScreen = () => {
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
+  // useEffect(() => {
+  //   init()
+  // }, [])
+
   var tnxResponse
 
   const handleRazorpayClient = async () => {
     let json = {
-      // appKey: "a40c761a-b664-4bc6-ab5a-bf073aa797d5",
       username: "9903044748",
       amount: +cashAmount,
-      // customerMobileNumber: "",
       externalRefNumber: "",
-      // externalRefNumber2: "",
-      // externalRefNumber3: "",
-      // accountLabel: "AC1",
-      // customerEmail: "",
-      // pushTo: { deviceId: "1492621778|razorpay_pos_soundbox" },
-      // mode: "ALL",
+    }
+
+    let jsonUPI = {
+      username: "9903044748",
+      amount: params?.net_total,
+      externalRefNumber: "",
     }
 
     // Convert json object to string
-    let jsonString = JSON.stringify(json)
+    let jsonString = JSON.stringify(checked !== "U" ? json : jsonUPI)
 
     // await RNEzetapSdk.initialize(jsonString)
     //   .then(res => {
@@ -589,7 +591,7 @@ const CustomerDetailsFillScreen = () => {
       })
   }
 
-  const init = async () => {
+  const initializePaymentRequest = async () => {
     // var withAppKey =
     //   '{"userName":' +
     //   "9903044748" +
@@ -621,7 +623,7 @@ const CustomerDetailsFillScreen = () => {
   }
 
   const handleSaveBillRazorpay = async (flag?: boolean) => {
-    await init()
+    await initializePaymentRequest()
       .then(() => {
         console.log(
           "TRANSACTION RES DATA================",

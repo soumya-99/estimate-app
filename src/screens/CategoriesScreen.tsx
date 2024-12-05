@@ -70,7 +70,7 @@ function CategoriesScreen() {
         handleGetCategories()
     }, [])
 
-    const onPress = (catgId: number, catgName: string, catgPhoto: string) => {
+    const onPress = (catgId: number, catgName: string, catgPhoto?: string) => {
         console.log("CATEGORY: ", catgId)
 
         navigation.dispatch(
@@ -182,6 +182,16 @@ function CategoriesScreen() {
 
                 {categories.length !== 0
                     ? <ReportButtonsWrapper>
+                        <ReportButton
+                            text={"All Items"}
+                            color={theme.colors.vanillaSecondaryContainer}
+                            textColor={theme.colors.onVanillaContainer}
+                            icon={"hexagon-multiple-outline"}
+                            // withImage
+                            // imageSource={item?.catg_picture}
+                            // imageSourceObject={cate}
+                            onPress={() => onPress(0, "All Items")}
+                        />
                         {
                             categories?.map((item, index) => (
                                 <ReportButton

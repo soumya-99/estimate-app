@@ -51,6 +51,7 @@ export type AppStoreContext = {
   handleGetCategories: () => Promise<void>
   units: UnitData[]
   handleGetUnits: () => Promise<void>
+  init?: () => Promise<void>
 }
 
 export type Bill = {

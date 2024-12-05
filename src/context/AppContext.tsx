@@ -274,6 +274,7 @@ const AppContext = ({ children }) => {
         handleGetCategories,
         units,
         handleGetUnits,
+        init
       }}>
       {children}
     </AppStore.Provider>
