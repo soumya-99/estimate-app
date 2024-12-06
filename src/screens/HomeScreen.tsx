@@ -452,7 +452,7 @@ function HomeScreen() {
               borderTopLeftRadius: normalize(30),
             }}>
             <View style={{ width: "100%", padding: normalize(15) }}>
-              <View
+              {/* <View
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -467,7 +467,7 @@ function HomeScreen() {
                     color: theme.colors.onPeachContainer
                   }}>{totalBills}</Text>
                 </View>
-              </View>
+              </View> */}
               <View
                 style={{
                   flexDirection: "row",
