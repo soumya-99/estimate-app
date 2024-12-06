@@ -486,7 +486,7 @@ function CartScreen() {
 
             <View style={{
                 position: "absolute",
-                top: "88%",
+                top: "87.2%",
                 alignSelf: "center"
             }}>
                 <SnackBar totAmt={totalPrice?.toFixed(2)} handleBtn1Press={handlePressBillScreen} handleBtn2Press={handleClear} disableNext={!totalPrice} hideCart />

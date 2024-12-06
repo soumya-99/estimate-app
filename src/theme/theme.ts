@@ -25,7 +25,7 @@ export const usePaperColorScheme = () => {
     },
     bodyMedium: {
       fontFamily: "ProductSans-Medium",
-      fontSize: 17,
+      fontSize: 15,
     },
     bodyLarge: {
       fontFamily: "ProductSans-Medium",

@@ -518,7 +518,7 @@ function CategoryProductScreen() {
 
                     <View style={{
                         marginHorizontal: 10,
-                        // marginBottom: 0
+                        marginBottom: 2
                     }}>
                         <ButtonPaper mode="elevated" onPress={() => navigation.goBack()} icon="arrow-left-thick" textColor={theme.colors.vanillaSecondary} buttonColor={theme.colors.vanillaSecondaryContainer}>Back</ButtonPaper>
                     </View>
@@ -528,7 +528,7 @@ function CategoryProductScreen() {
 
             <View style={{
                 position: "absolute",
-                top: "88%",
+                top: "87.2%",
                 alignSelf: "center"
             }}>
                 <SnackBar totAmt={totalPrice?.toFixed(2)} handleBtn1Press={handlePressBillScreen} handleBtn2Press={handleClear} handleBtn3Press={handleGoToCartScreen} disableNext={!totalPrice} cartItemQty={addedProductsList?.length} disableCart={!totalPrice} />

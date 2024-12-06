@@ -266,6 +266,11 @@ const CustomerDetailsFillScreen = () => {
 
           Alert.alert("Success", "Bill Uploaded Successfully.")
 
+          // navigation.dispatch(
+          //   CommonActions.navigate({
+          //     name: navigationRoutes.categoriesScreen,
+          //   }),
+          // )
           navigation.dispatch(
             CommonActions.navigate({
               name: navigationRoutes.homeScreen,
@@ -334,6 +339,11 @@ const CustomerDetailsFillScreen = () => {
 
     if (checked === "R" && customerMobileNumber.length < 10) {
       ToastAndroid.show("Valid Mobile Number is mandatory for Credit Mode.", ToastAndroid.SHORT)
+      return
+    }
+
+    if (checked === "R" && customerName.length === 0) {
+      ToastAndroid.show("Valid Customer Name is mandatory for Credit Mode.", ToastAndroid.SHORT)
       return
     }
 
@@ -782,6 +792,18 @@ const CustomerDetailsFillScreen = () => {
                   keyboardType="number-pad"
                   leftIcon="card-account-phone-outline"
                   maxLength={10}
+                />}
+                {checked === "R" && <InputPaper
+                  selectTextOnFocus
+                  label="Enter Name"
+                  value={customerName}
+                  onChangeText={(customerName: string) =>
+                    setCustomerName(customerName)
+                  }
+                  keyboardType="default"
+                  leftIcon="account-circle-outline"
+                  maxLength={18}
+                  customStyle={{ marginBottom: normalize(2) }}
                 />}
                 {/* {receiptSettings?.cust_inf === "Y" && (
                   <InputPaper

@@ -257,8 +257,8 @@ function CategoriesScreen() {
                 addedProducts?.length !== 0 &&
                 <View style={{
                     position: "absolute",
-                    top: "88%",
-                    alignSelf: "center"
+                    top: "87.2%",
+                    alignSelf: "center",
                 }}>
                     <SnackBar totAmt={totalPrice?.toFixed(2)} handleBtn1Press={handlePressBillScreen} handleBtn2Press={handleClear} handleBtn3Press={handleGoToCartScreen} disableNext={!totalPrice} cartItemQty={addedProducts?.length} disableCart={!totalPrice} />
                 </View>

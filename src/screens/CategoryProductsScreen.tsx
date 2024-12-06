@@ -402,7 +402,7 @@ function CategoryProductsScreen() {
                 <View style={{
                     paddingHorizontal: normalize(25),
                     paddingBottom: normalize(10),
-                    maxHeight: SCREEN_HEIGHT / 2
+                    maxHeight: SCREEN_HEIGHT / 1.8
                 }}>
                     {
                         categoryWiseItems?.length !== 0
@@ -524,7 +524,7 @@ function CategoryProductsScreen() {
                 addedProductsList?.length !== 0 &&
                 <View style={{
                     position: "absolute",
-                    top: "88%",
+                    top: "87.2%",
                     alignSelf: "center"
                 }}>
                     <SnackBar totAmt={totalPrice?.toFixed(2)} handleBtn1Press={handlePressBillScreen} handleBtn2Press={handleClear} handleBtn3Press={handleGoToCartScreen} disableNext={!totalPrice} cartItemQty={addedProductsList?.length} disableCart={!totalPrice} />
