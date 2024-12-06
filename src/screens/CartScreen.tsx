@@ -398,7 +398,7 @@ function CartScreen() {
                 <View style={{
                     paddingHorizontal: normalize(25),
                     paddingBottom: normalize(10),
-                    maxHeight: SCREEN_HEIGHT / 2,
+                    maxHeight: SCREEN_HEIGHT / 1.85,
                 }}>
                     <ScrollView style={{
                         // borderWidth: 2,
@@ -414,13 +414,20 @@ function CartScreen() {
                                     <List.Item
                                         onPress={() => productDetails(item)}
                                         title={({ ellipsizeMode }) => <Text ellipsizeMode="tail">{item?.item_name}</Text>}
-                                        description={`₹${item?.price}`}
+                                        description={<View>
+                                            <Text style={{
+                                                color: theme.colors.green
+                                            }}>₹{item?.price}</Text>
+                                            <Text style={{
+                                                color: theme.colors.purple
+                                            }}>Total: ₹{+item?.price * +item?.quantity}</Text>
+                                        </View>}
                                         right={props => {
                                             return <AddRemove value={getQuantity(item?.item_id)} add={() => add(item)} remove={() => remove(item)} key={item?.item_id} isAddDisabled={receiptSettings?.stock_flag === "Y" && getQuantity(item?.item_id) === item?.stock} />
                                         }}
-                                        descriptionStyle={{
-                                            color: theme.colors.green
-                                        }}
+                                    // descriptionStyle={{
+                                    //     color: theme.colors.green
+                                    // }}
                                     />
                                     <Divider />
                                 </View>
@@ -428,9 +435,26 @@ function CartScreen() {
                         }
                     </ScrollView>
 
-                    <ButtonPaper mode="text" textColor={theme.colors.error} icon={"hand-back-left-outline"} onPress={onHoldClick}>
-                        Hold
-                    </ButtonPaper>
+
+                    {/* <View style={{
+                        paddingHorizontal: normalize(13),
+                    }}>
+                        <List.Item
+                            title={({ ellipsizeMode }) => <Text ellipsizeMode="tail">Nsfsdf</Text>}
+                            description={`Total`}
+                            right={props => {
+                                return <Text>dgusdg</Text>
+                            }}
+                            descriptionStyle={{
+                                color: theme.colors.green
+                            }}
+                        />
+                    </View> */}
+                    <View>
+                        <ButtonPaper mode="text" textColor={theme.colors.error} icon={"hand-back-left-outline"} onPress={onHoldClick}>
+                            Hold
+                        </ButtonPaper>
+                    </View>
                 </View>
             </ScrollView>
 

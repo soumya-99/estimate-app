@@ -105,7 +105,7 @@ function CategoriesScreen() {
     const handlePressBillScreen = () => {
         navigation.dispatch(
             CommonActions.navigate({
-                name: navigationRoutes.customerDetailsFillScreen,
+                name: navigationRoutes.cartScreen,
                 params: {
                     added_products: itemsStore,
                     net_total: totalAmountStore,
@@ -114,6 +114,17 @@ function CategoriesScreen() {
                 },
             }),
         )
+        // navigation.dispatch(
+        //     CommonActions.navigate({
+        //         name: navigationRoutes.customerDetailsFillScreen,
+        //         params: {
+        //             added_products: itemsStore,
+        //             net_total: totalAmountStore,
+        //             total_discount: totalDiscountedAmount,
+        //             // table_no: tableNo,
+        //         },
+        //     }),
+        // )
     }
 
     const handleGoToCartScreen = () => {
