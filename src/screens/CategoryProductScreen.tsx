@@ -479,19 +479,26 @@ function CategoryProductScreen() {
                             alignSelf: "center",
                             borderRadius: 25
                         }}>
+                            {/* <Text variant="headlineLarge" style={{
+                                color: theme.colors.onVanillaContainer
+                            }}>Price: {params?.product?.price} × {getQuantity(params?.product?.item_id)} = ₹{+params?.product?.price * +getQuantity(params?.product?.item_id)}</Text> */}
                             <Text variant="headlineLarge" style={{
                                 color: theme.colors.onVanillaContainer
-                            }}>Price: {params?.product?.price} × {getQuantity(params?.product?.item_id)} = ₹{+params?.product?.price * +getQuantity(params?.product?.item_id)}</Text>
-                            <Text variant="headlineLarge" style={{
-                                color: theme.colors.onVanillaContainer
-                            }}>MRP: ₹{params?.product?.price}</Text>
+                            }}>Selling Price: ₹{params?.product?.price}</Text>
                             <Text variant="headlineMedium" style={{
                                 backgroundColor: theme.colors.vanilla,
                                 padding: 10,
                                 color: theme.colors.onVanilla,
                                 alignSelf: "center",
                                 borderRadius: 18
-                            }}>Category: {params?.categoryName}</Text>
+                            }}>Price: {params?.product?.price} × {getQuantity(params?.product?.item_id)} = ₹{+params?.product?.price * +getQuantity(params?.product?.item_id)}</Text>
+                            {/* <Text variant="headlineMedium" style={{
+                                backgroundColor: theme.colors.vanilla,
+                                padding: 10,
+                                color: theme.colors.onVanilla,
+                                alignSelf: "center",
+                                borderRadius: 18
+                            }}>Category: {params?.categoryName}</Text> */}
                         </View>
                     </ScrollView>
 

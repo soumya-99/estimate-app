@@ -34,26 +34,26 @@ export default function SettingsNavigation() {
         name={navigationRoutes.itemMasterScreen}
         component={ItemMasterScreen}
       /> */}
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.headerFooterScreen}
         component={HeaderFooterScreen}
-      />
-      <Stack.Screen
+      /> */}
+      {/* <Stack.Screen
         name={navigationRoutes.manageProductsScreen}
         component={ManageProductsScreen}
-      />
-      <Stack.Screen
+      /> */}
+      {/* <Stack.Screen
         name={navigationRoutes.manageCategoriesScreen}
         component={ManageCategoriesScreen}
-      />
-      <Stack.Screen
+      /> */}
+      {/* <Stack.Screen
         name={navigationRoutes.manageUnitsScreen}
         component={ManageUnitsScreen}
-      />
-      <Stack.Screen
+      /> */}
+      {/* <Stack.Screen
         name={navigationRoutes.inventoryScreen}
         component={InventoryScreen}
-      />
+      /> */}
       {/* <Stack.Screen
         name={navigationRoutes.receiptSettingsEditScreen}
         component={ReceiptSettingsEditScreen}
