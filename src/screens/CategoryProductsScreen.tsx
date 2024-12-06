@@ -8,7 +8,7 @@ import {
     Alert,
     Image
 } from "react-native"
-import { Card, Divider, List, Text, TouchableRipple } from "react-native-paper"
+import { Card, Divider, List, Searchbar, Text, TouchableRipple } from "react-native-paper"
 import HeaderImage from "../components/HeaderImage"
 import {
     textureReport,
@@ -68,6 +68,7 @@ function CategoryProductsScreen() {
     }
 
 
+    // const searchProductRef = useRef(null)
     // const { fetchStock } = useStockSearch()
 
     // const [visible, setVisible] = useState(() => false)
@@ -80,9 +81,13 @@ function CategoryProductsScreen() {
     // const [price, setPrice] = useState<number>(() => product?.price)
     // const [stock, setStock] = useState<number>()
     // const [updatedStock, setUpdatedStock] = useState<number>()
+
     const [addedProductsList, setAddedProductsList] = useState<ItemsData[]>(
         () => itemsStore,
     )
+
+    const [search, setSearch] = useState<string>(() => "")
+    const [filteredItems, setFilteredItems] = useState<ItemsData[]>(() => itemsStore)
 
     const [totalPrice, setTotalPrice] = useState(() => totalAmountStore | 0)
     const [totalDiscountedAmount, setTotalDiscountedAmount] = useState(() => totalDiscountedAmountStore | 0)
@@ -115,6 +120,25 @@ function CategoryProductsScreen() {
     //         })
     // }
 
+    // const [copyAddedProductsList, setCopyAddedProductsList] = useState<ItemsData[]>(addedProductsList)
+    // var copyAddedProductsList = []
+
+    const onChangeSearch = (query: string) => {
+        // copyAddedProductsList = categoryWiseItems
+        setSearch(query)
+
+        const lowerCaseQuery = query.toLowerCase()
+
+        setFilteredItems(categoryWiseItems.filter(
+            (item: ItemsData) =>
+                item?.item_name?.toLowerCase().includes(lowerCaseQuery) ||
+                item?.item_id?.toString().toLowerCase().includes(lowerCaseQuery),
+        ))
+        // setFilteredItems(filtered)
+
+        // if (query === "") setFilteredItems(() => [])
+    }
+
     const handleGetItemsByCategoryId = async (catgId: number) => {
         const creds: CategoryItemListCredentials = {
             comp_id: loginStore?.comp_id,
@@ -123,6 +147,7 @@ function CategoryProductsScreen() {
         }
         fetchCategoryItems(creds).then(res => {
             setCategoryWiseItems(res?.msg)
+            setFilteredItems(res?.msg)
         }).catch(err => {
             ToastAndroid.show(`Some error occurred while fetching items.`, ToastAndroid.SHORT)
         })
@@ -399,10 +424,37 @@ function CategoryProductsScreen() {
                     </HeaderImage>
                 </View>
 
+                <View>
+                    <Searchbar
+                        placeholder=""
+                        onChangeText={onChangeSearch}
+                        value={search}
+                        elevation={search && 2}
+                        // loading={search ? true : false}
+                        autoFocus
+                        style={{
+                            // backgroundColor: theme.colors.vanillaSecondaryContainer,
+                            color: theme.colors.onSecondaryContainer,
+                            marginHorizontal: 20,
+                            // height: 45,
+                            textAlign: "center",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}
+                        traileringIcon={"barcode-scan"}
+                        traileringIconColor={theme.colors.purple}
+                        onTraileringIconPress={
+                            () => navigation.dispatch(
+                                CommonActions.navigate(navigationRoutes.cameraScreen)
+                            )
+                        }
+                    />
+                </View>
+
                 <View style={{
                     paddingHorizontal: normalize(25),
                     paddingBottom: normalize(10),
-                    maxHeight: SCREEN_HEIGHT / 1.8
+                    maxHeight: SCREEN_HEIGHT / 2
                 }}>
                     {
                         categoryWiseItems?.length !== 0
@@ -422,7 +474,7 @@ function CategoryProductsScreen() {
                                     marginBottom: 25
                                 }}>
                                     {
-                                        categoryWiseItems?.map((item, i) => {
+                                        filteredItems?.map((item, i) => {
                                             // console.log("GGGGGGGGGGGGGGGGG", getQuantity(item?.item_id))
                                             console.log("TTTTTTTTTTTTTTTTT", item)
                                             return (

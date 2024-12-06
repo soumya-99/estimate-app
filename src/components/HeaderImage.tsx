@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     margin: normalize(20),
     padding: normalize(25),
     // height: PixelRatio.roundToNearestPixel(200),
-    height: SCREEN_HEIGHT / 4.5,
+    height: SCREEN_HEIGHT / 5,
     borderRadius: normalize(30),
     // width: PixelRatio.roundToNearestPixel(330),
     width: SCREEN_WIDTH / 1.13,
