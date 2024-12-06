@@ -60,7 +60,7 @@ function CameraScreen() {
 
                     navigation.dispatch(
                         CommonActions.navigate({
-                            name: navigationRoutes.productsScreen,
+                            name: navigationRoutes.categoryProductsScreen,
                             params: {
                                 barcode: uniqueWithMaxCount,
                                 navigatedFromCamera: true

@@ -409,6 +409,24 @@ function CategoryProductsScreen() {
         )
     }
 
+    const findItemByBarcode = (barcode: string): ItemsData => {
+        return categoryWiseItems?.find((item, i) => item?.bar_code === barcode)
+    }
+
+    // useEffect(() => {
+    //     if (params?.barcode) {
+    //         let item = findItemByBarcode(params?.barcode)
+    //         navigation.dispatch(CommonActions.navigate({
+    //             name: navigationRoutes.categoryProductScreen,
+    //             params: {
+    //                 // category_id: item?.catg_id,
+    //                 product: item,
+    //                 categoryName: params?.category_name
+    //             }
+    //         }))
+    //     }
+    // }, [isFocused])
+
     return (
         <SafeAreaView
             style={[styles.container, { backgroundColor: theme.colors.background }]}>

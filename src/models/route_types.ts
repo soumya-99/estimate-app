@@ -12,6 +12,8 @@ type RootStackParamList = {
     category_id: number
     category_name: string
     category_photo?: string
+    navigatedFromCamera?: boolean
+    barcode?: string
   }
   CategoryProductsScreen: {
     added_products: ItemsData[]
