@@ -489,9 +489,11 @@ function CategoryProductScreen() {
                             <Text variant="headlineMedium" style={{
                                 backgroundColor: theme.colors.vanilla,
                                 padding: 10,
+                                width: "100%",
                                 color: theme.colors.onVanilla,
                                 alignSelf: "center",
-                                borderRadius: 18
+                                borderRadius: 18,
+                                textAlign: "center"
                             }}>Price: {params?.product?.price} × {getQuantity(params?.product?.item_id)} = ₹{+params?.product?.price * +getQuantity(params?.product?.item_id)}</Text>
                             {/* <Text variant="headlineMedium" style={{
                                 backgroundColor: theme.colors.vanilla,
@@ -502,6 +504,13 @@ function CategoryProductScreen() {
                             }}>Category: {params?.categoryName}</Text> */}
                         </View>
                     </ScrollView>
+
+                    <View style={{
+                        marginHorizontal: 10,
+                        // marginBottom: 0
+                    }}>
+                        <ButtonPaper mode="elevated" onPress={() => navigation.goBack()} icon="arrow-left-thick" textColor={theme.colors.vanillaSecondary} buttonColor={theme.colors.vanillaSecondaryContainer}>Back</ButtonPaper>
+                    </View>
 
                 </View>
             </ScrollView>

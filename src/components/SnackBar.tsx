@@ -23,7 +23,7 @@ const SnackBar = ({ handleBtn1Press, handleBtn2Press, handleBtn3Press, totAmt, c
             flexDirection: "row",
             paddingHorizontal: normalize(20),
             alignSelf: "center",
-            width: SCREEN_WIDTH / 1.13,
+            width: SCREEN_WIDTH / 1.1,
             height: normalize(60),
             backgroundColor: theme.colors.vanilla,
             borderRadius: normalize(20),
