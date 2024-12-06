@@ -80,7 +80,10 @@ const CustomerDetailsFillScreen = () => {
     () => "",
   )
   const [cashAmount, setCashAmount] = useState<number>(
-    () => 0,
+    () => grandTotalCalculate(
+      params?.net_total,
+      0,
+    ),
   )
   const [finalCashAmount, setFinalCashAmount] = useState<number>(
     () => 0,
@@ -104,54 +107,63 @@ const CustomerDetailsFillScreen = () => {
   // ]
 
   useEffect(() => {
-    if (receiptSettings?.gst_flag === "Y") {
-      receiptSettings?.gst_type === "E"
-        ? setFinalCashAmount(() =>
-          cashAmount !== undefined
-            ? cashAmount -
-            parseFloat(
-              grandTotalWithGSTCalculate(
-                params?.net_total,
-                receiptSettings?.discount_position !== "B"
-                  ? params?.total_discount
-                  : receiptSettings?.discount_type === "A"
-                    ? discountBillwise
-                    : (params?.net_total * discountBillwise) / 100,
-                totalGST,
-              ),
-            )
-            : 0,
+    // if (receiptSettings?.gst_flag === "Y") {
+    //   receiptSettings?.gst_type === "E"
+    //     ? setFinalCashAmount(() =>
+    //       cashAmount !== undefined
+    //         ? cashAmount -
+    //         parseFloat(
+    //           grandTotalWithGSTCalculate(
+    //             params?.net_total,
+    //             receiptSettings?.discount_position !== "B"
+    //               ? params?.total_discount
+    //               : receiptSettings?.discount_type === "A"
+    //                 ? discountBillwise
+    //                 : (params?.net_total * discountBillwise) / 100,
+    //             totalGST,
+    //           ),
+    //         )
+    //         : 0,
+    //     )
+    //     : setFinalCashAmount(() =>
+    //       cashAmount !== undefined
+    //         ? cashAmount -
+    //         parseFloat(
+    //           grandTotalWithGSTInclCalculate(
+    //             params?.net_total,
+    //             receiptSettings?.discount_position !== "B"
+    //               ? params?.total_discount
+    //               : receiptSettings?.discount_type === "A"
+    //                 ? discountBillwise
+    //                 : (params?.net_total * discountBillwise) / 100,
+    //           ),
+    //         )
+    //         : 0,
+    //     )
+    // } else {
+    //   setFinalCashAmount(() =>
+    //     cashAmount !== undefined
+    //       ? cashAmount -
+    //       grandTotalCalculate(
+    //         params?.net_total,
+    //         receiptSettings?.discount_position !== "B"
+    //           ? params?.total_discount
+    //           : receiptSettings?.discount_type === "A"
+    //             ? discountBillwise
+    //             : (params?.net_total * discountBillwise) / 100,
+    //       )
+    //       : 0,
+    //   )
+    // }
+    setFinalCashAmount(() =>
+      cashAmount !== undefined
+        ? cashAmount -
+        grandTotalCalculate(
+          params?.net_total,
+          0,
         )
-        : setFinalCashAmount(() =>
-          cashAmount !== undefined
-            ? cashAmount -
-            parseFloat(
-              grandTotalWithGSTInclCalculate(
-                params?.net_total,
-                receiptSettings?.discount_position !== "B"
-                  ? params?.total_discount
-                  : receiptSettings?.discount_type === "A"
-                    ? discountBillwise
-                    : (params?.net_total * discountBillwise) / 100,
-              ),
-            )
-            : 0,
-        )
-    } else {
-      setFinalCashAmount(() =>
-        cashAmount !== undefined
-          ? cashAmount -
-          grandTotalCalculate(
-            params?.net_total,
-            receiptSettings?.discount_position !== "B"
-              ? params?.total_discount
-              : receiptSettings?.discount_type === "A"
-                ? discountBillwise
-                : (params?.net_total * discountBillwise) / 100,
-          )
-          : 0,
-      )
-    }
+        : 0,
+    )
   }, [cashAmount, discountBillwise, isFocused])
 
   useEffect(() => {
@@ -690,9 +702,10 @@ const CustomerDetailsFillScreen = () => {
               borderRadius={30}
               blur={10}
               isBackEnabled>
-              {receiptSettings?.cust_inf === "Y"
+              {/* {receiptSettings?.cust_inf === "Y"
                 ? "Customer Details & Print"
-                : "Print"}
+                : "Print"} */}
+              Payment & Print
             </HeaderImage>
           </View>
 
@@ -762,15 +775,15 @@ const CustomerDetailsFillScreen = () => {
                   marginVertical: SCREEN_HEIGHT / 100,
                   gap: 2
                 }}>
-                <InputPaper
+                {checked === "R" && <InputPaper
                   label="Enter Mobile"
                   value={customerMobileNumber}
                   onChangeText={onChangeCustomerMobileNumber}
                   keyboardType="number-pad"
                   leftIcon="card-account-phone-outline"
                   maxLength={10}
-                />
-                {receiptSettings?.cust_inf === "Y" && (
+                />}
+                {/* {receiptSettings?.cust_inf === "Y" && (
                   <InputPaper
                     selectTextOnFocus
                     label="Enter Name (Optional)"
@@ -783,7 +796,7 @@ const CustomerDetailsFillScreen = () => {
                     maxLength={18}
                     customStyle={{ marginBottom: normalize(2) }}
                   />
-                )}
+                )} */}
               </View>
             </View>
 
@@ -816,7 +829,7 @@ const CustomerDetailsFillScreen = () => {
                     Cash
                   </Text>
                 </View>
-                <View style={styles.eachRadioBtn}>
+                {/* <View style={styles.eachRadioBtn}>
                   <RadioButton
                     value="D"
                     status={checked === "D" ? "checked" : "unchecked"}
@@ -832,7 +845,7 @@ const CustomerDetailsFillScreen = () => {
                     }>
                     Card
                   </Text>
-                </View>
+                </View> */}
 
                 <View style={styles.eachRadioBtn}>
                   <RadioButton
@@ -904,9 +917,10 @@ const CustomerDetailsFillScreen = () => {
                     selectTextOnFocus
                     label="Received"
                     value={
-                      receiptSettings?.rcv_cash_flag === "N"
-                        ? Math.abs(finalCashAmount)
-                        : cashAmount
+                      // receiptSettings?.rcv_cash_flag === "N"
+                      //   ? Math.abs(finalCashAmount)
+                      //   : cashAmount
+                      cashAmount
                     }
                     onChangeText={(cash: number) => setCashAmount(cash)}
                     keyboardType="number-pad"
