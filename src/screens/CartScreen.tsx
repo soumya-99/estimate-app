@@ -7,7 +7,7 @@ import {
     ToastAndroid,
     Alert
 } from "react-native"
-import { Divider, List, Text } from "react-native-paper"
+import { Divider, IconButton, List, Text } from "react-native-paper"
 import HeaderImage from "../components/HeaderImage"
 import {
     textureReport,
@@ -30,6 +30,10 @@ import navigationRoutes from "../routes/navigationRoutes"
 import SnackBar from "../components/SnackBar"
 import ButtonPaper from "../components/ButtonPaper"
 import AnimatedFABPaper from "../components/AnimatedFABPaper"
+import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler"
+
+const LeftActions = () => (<View style={styles.leftAction}> <Text style={styles.actionText}>Left Action</Text> </View>);
+const RightActions = () => (<View style={styles.rightAction}> <Text style={styles.actionText}>Right Action</Text> </View>);
 
 function CartScreen() {
     const theme = usePaperColorScheme()
@@ -411,25 +415,33 @@ function CartScreen() {
                         {
                             addedProductsList?.map((item, i) => (
                                 <View key={i}>
-                                    <List.Item
-                                        onPress={() => productDetails(item)}
-                                        title={({ ellipsizeMode }) => <Text ellipsizeMode="tail">{item?.item_name}</Text>}
-                                        description={<View>
-                                            <Text style={{
-                                                color: theme.colors.green
-                                            }}>₹{item?.price}</Text>
-                                            <Text style={{
-                                                color: theme.colors.purple
-                                            }}>Total: ₹{+item?.price * +item?.quantity}</Text>
-                                        </View>}
-                                        right={props => {
-                                            return <AddRemove value={getQuantity(item?.item_id)} add={() => add(item)} remove={() => remove(item)} key={item?.item_id} isAddDisabled={receiptSettings?.stock_flag === "Y" && getQuantity(item?.item_id) === item?.stock} />
-                                        }}
-                                    // descriptionStyle={{
-                                    //     color: theme.colors.green
-                                    // }}
-                                    />
-                                    <Divider />
+                                    <>
+                                        <List.Item
+                                            onPress={() => productDetails(item)}
+                                            title={({ ellipsizeMode }) => <Text ellipsizeMode="tail">{item?.item_name}</Text>}
+                                            description={<View>
+                                                <Text style={{
+                                                    color: theme.colors.green
+                                                }}>₹{item?.price}</Text>
+                                                <Text style={{
+                                                    color: theme.colors.purple
+                                                }}>Total: ₹{+item?.price * +item?.quantity}</Text>
+                                            </View>}
+                                            right={props => {
+                                                return <AddRemove value={getQuantity(item?.item_id)} add={() => add(item)} remove={() => remove(item)} key={item?.item_id} isAddDisabled={receiptSettings?.stock_flag === "Y" && getQuantity(item?.item_id) === item?.stock} />
+                                            }}
+                                        // descriptionStyle={{
+                                        //     color: theme.colors.green
+                                        // }}
+                                        />
+                                        {/* <IconButton icon={"trash-can-outline"} iconColor={theme.colors.error} style={{
+                                            alignSelf: "flex-start",
+                                            marginTop: -15,
+                                            left: -1
+                                        }} onPress={() => null} /> */}
+                                        <Divider />
+                                    </>
+
                                 </View>
                             ))
                         }
@@ -745,4 +757,10 @@ const styles = StyleSheet.create({
         right: normalize(16),
         position: "absolute",
     },
-})
+
+    text: { fontSize: 24, fontWeight: 'bold' },
+    leftAction: { flex: 1, backgroundColor: 'green', justifyContent: 'center', },
+    rightAction: { flex: 1, backgroundColor: 'red', justifyContent: 'center', },
+    actionText: { color: '#fff', fontSize: 16, padding: 20 }
+}
+)
