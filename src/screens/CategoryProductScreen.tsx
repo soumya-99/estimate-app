@@ -380,6 +380,7 @@ function CategoryProductScreen() {
                         imgDark={textureReportDark}
                         borderRadius={30}
                         blur={10}
+                        categoryName={params?.categoryName}
                         isBackEnabled>
                         {params?.product?.item_name}
                     </HeaderImage>

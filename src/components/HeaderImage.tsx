@@ -19,6 +19,7 @@ type HeaderImageProps = {
   isBackEnabled?: boolean
   isBackCustom?: boolean
   backPressed?: () => void
+  categoryName?: string
 }
 
 export default function HeaderImage({
@@ -30,6 +31,7 @@ export default function HeaderImage({
   isBackEnabled,
   isBackCustom = false,
   backPressed,
+  categoryName = ""
 }: PropsWithChildren<HeaderImageProps>) {
   const colorScheme = useColorScheme()
   const theme = usePaperColorScheme()
@@ -67,6 +69,10 @@ export default function HeaderImage({
           style={{ fontFamily: "ProductSans-Medium", textAlign: "center" }}>
           {children}
         </Text>
+        {categoryName && <Text variant="bodySmall" style={{
+          fontStyle: "italic",
+          textDecorationLine: "underline",
+        }}>Category: {categoryName}</Text>}
       </ImageBackground>
     </>
   )
