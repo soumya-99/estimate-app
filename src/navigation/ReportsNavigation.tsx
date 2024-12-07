@@ -15,6 +15,7 @@ import UserwiseReportScreen from "../screens/UserwiseReportScreen"
 import CustomerLedgerScreen from "../screens/CustomerLedgerScreen"
 import DueReportScreen from "../screens/DueReportScreen"
 import RecoveryReportScreen from "../screens/RecoveryReportScreen"
+import ProductwiseSaleReportScreen from "../screens/reports/ProductwiseSaleReportScreen"
 
 export default function ReportsNavigation() {
   const Stack = createNativeStackNavigator()
@@ -80,6 +81,10 @@ export default function ReportsNavigation() {
       <Stack.Screen
         name={navigationRoutes.recoveryReportScreen}
         component={RecoveryReportScreen}
+      />
+      <Stack.Screen
+        name={navigationRoutes.productwiseSaleReportScreen}
+        component={ProductwiseSaleReportScreen}
       />
     </Stack.Navigator>
   )

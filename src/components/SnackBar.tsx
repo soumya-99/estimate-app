@@ -63,7 +63,7 @@ const SnackBar = ({ handleBtn1Press, handleBtn2Press, handleBtn3Press, totAmt, c
                 <IconButton iconColor={theme.colors.onVanilla} icon="trash-can-outline" onPress={handleBtn2Press} />
             </View>
             <View style={{
-                backgroundColor: theme.colors.primary,
+                backgroundColor: theme.colors.vanillaSecondary,
                 height: 60,
                 alignItems: "center",
                 justifyContent: "center",
@@ -75,7 +75,7 @@ const SnackBar = ({ handleBtn1Press, handleBtn2Press, handleBtn3Press, totAmt, c
             </View>
 
             <View style={{
-                backgroundColor: theme.colors.primary,
+                backgroundColor: theme.colors.vanilla,
                 height: 60,
                 alignItems: "center",
                 justifyContent: "center",

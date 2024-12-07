@@ -35,6 +35,7 @@ const navigationRoutes = {
   gstSummaryReportScreen: "GstSummaryReportScreen",
   stockReportScreen: "StockReportScreen",
   cancelledBillsReportScreen: "CancelledBillsReportScreen",
+  productwiseSaleReportScreen: "ProductwiseSaleReportScreen",
   daybookReportScreen: "DaybookReportScreen",
   refundReportScreen: "RefundReportScreen",
   creditReportScreen: "CreditReportScreen",

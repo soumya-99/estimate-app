@@ -95,9 +95,9 @@ const AppContext = ({ children }) => {
   //   };
   // }, []);
 
-  const handleLogin = async (loginText: string) => {
+  const handleLogin = async (loginText: string, passwordText: string) => {
     setFlagOtp(!flagOtp)
-    await login(loginText)
+    await login(loginText, passwordText)
       .then(loginData => {
         console.log("loginData", loginData)
 
@@ -115,6 +115,8 @@ const AppContext = ({ children }) => {
           // }
 
           loginStorage.set("login-data", JSON.stringify(loginData?.msg))
+
+          setIsLogin(true)
           // getOtp(otpCreds)
           //   .then(res => {
           //     setOtp(res?.otp)

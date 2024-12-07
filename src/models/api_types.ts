@@ -356,6 +356,21 @@ export type SaleReport = {
   created_by: string
 }
 
+export type ProductwiseSaleReport = {
+  status: number
+  data: ProductwiseSaleReportData[]
+}
+
+export type ProductwiseSaleReportData = {
+  "item_name": string,
+  "item_id": number,
+  "tot_item_qty": number,
+  "unit_price": number,
+  "tot_item_price": number,
+  "stock": number
+  "category_name": string,
+}
+
 // export type ItemReportData = {
 //   status: number
 //   data: ItemReport[]

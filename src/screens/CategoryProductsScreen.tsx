@@ -444,12 +444,12 @@ function CategoryProductsScreen() {
 
                 <View>
                     <Searchbar
-                        placeholder=""
+                        placeholder="Search Items"
                         onChangeText={onChangeSearch}
                         value={search}
                         elevation={search && 2}
                         // loading={search ? true : false}
-                        autoFocus
+                        // autoFocus
                         style={{
                             // backgroundColor: theme.colors.vanillaSecondaryContainer,
                             color: theme.colors.onSecondaryContainer,

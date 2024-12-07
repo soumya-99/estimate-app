@@ -40,7 +40,7 @@ export type AppStoreContext = {
   isLogin: boolean
   otp: number
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>
-  handleLogin: (loginText: string) => Promise<void>
+  handleLogin: (loginText: string, passwordText: string) => Promise<void>
   // loginDataMessage: LoginDataMessage
   handleLogout: () => Promise<void>
   receiptSettings: ReceiptSettingsData

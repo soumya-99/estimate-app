@@ -1,10 +1,11 @@
 import React from "react"
 import { Button, StyleSheet, Text, View } from "react-native"
-import { BluetoothEscposPrinter } from "react-native-bluetooth-escpos-printer"
+// import { BluetoothEscposPrinter } from "react-native-bluetooth-escpos-printer"
 import { hsdLogo } from "./dummy-logo"
 import ButtonPaper from "../../components/ButtonPaper"
 import { usePaperColorScheme } from "../../theme/theme"
 
+class BluetoothEscposPrinter {}
 async function printreciept() {
   const columnWidths = [24, 24]
   const receiptNo = 120

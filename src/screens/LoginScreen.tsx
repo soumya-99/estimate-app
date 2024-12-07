@@ -40,9 +40,9 @@ function LoginScreen() {
   const {
     handleLogin,
     // loginDataMessage,
-    otp: fetchedOtp,
+    // otp: fetchedOtp,
     // setOtp: setFetchedOtp,
-    setIsLogin,
+    // setIsLogin,
   } = useContext<AppStoreContext>(AppStore)
 
   const theme = usePaperColorScheme()
@@ -53,8 +53,8 @@ function LoginScreen() {
   const [loginText, setLoginText] = useState<string>(() => "")
   const [passwordText, setPasswordText] = useState<string>(() => "")
   const [next, setNext] = useState<boolean>(() => false)
-  const [otpSent, setOtpSent] = useState<boolean>(() => false)
-  const [timer, setTimer] = useState<number>(() => 300)
+  // const [otpSent, setOtpSent] = useState<boolean>(() => false)
+  // const [timer, setTimer] = useState<number>(() => 300)
 
   // const openPhoneHintModal = async () => {
   //   if (Platform.OS === "android") {
@@ -275,7 +275,7 @@ function LoginScreen() {
                       onPress={() => {
                         if (loginText !== "" && passwordText !== "") {
                           // setNext(!next)
-                          handleLogin(loginText)
+                          handleLogin(loginText, passwordText)
                           // setOtpSent(true)
                         } else {
                           ToastAndroid.show("Enter username or password properly.", ToastAndroid.SHORT)

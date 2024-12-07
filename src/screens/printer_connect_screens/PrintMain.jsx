@@ -16,7 +16,7 @@ import {
   Linking,
 } from "react-native"
 import BleManager from "react-native-ble-manager"
-import { BluetoothManager } from "react-native-bluetooth-escpos-printer"
+// import { BluetoothManager } from "react-native-bluetooth-escpos-printer"
 import { PERMISSIONS, requestMultiple, RESULTS } from "react-native-permissions"
 import ItemList from "./ItemList"
 import SamplePrint from "./SamplePrint"
@@ -24,6 +24,8 @@ import HeaderImage from "../../components/HeaderImage"
 import { flowerSetting, flowerSettingDark } from "../../resources/images"
 import { usePaperColorScheme } from "../../theme/theme"
 import ButtonPaper from "../../components/ButtonPaper"
+
+class BluetoothManager {}
 
 const PrintMain = () => {
   const theme = usePaperColorScheme()

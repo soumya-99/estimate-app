@@ -1,4 +1,5 @@
-import { BluetoothEscposPrinter } from "react-native-bluetooth-escpos-printer"
+// import { BluetoothEscposPrinter } from "react-native-bluetooth-escpos-printer"
+class BluetoothEscposPrinter { }
 import { fileStorage, loginStorage } from "../../storage/appStorage"
 import { useContext } from "react"
 import { AppStore } from "../../context/AppContext"
@@ -15,6 +16,7 @@ import {
   GstSummary,
   ItemReportData,
   ItemsData,
+  ProductwiseSaleReportData,
   RecoveryAmountResponseData,
   RecoveryReportData,
   RefundReportData,
@@ -1910,6 +1912,44 @@ export const useBluetoothPrint = () => {
     }
 
     text += `[L]GRAND AMT[R]${grandTotalCalculate(netTotal, 0).toFixed(2)}\n` +
+      `[C]==============X===============\n\n\n`;
+
+    await ThermalPrinterModule.printBluetooth({
+      payload: text,
+      printerNbrCharactersPerLine: 32,
+      printerDpi: 120,
+      printerWidthMM: 58,
+      mmFeedPaper: 25,
+    }).then(res => {
+      console.log("RES", res)
+    }).catch(err => {
+      console.log("ERR", err)
+    })
+  }
+
+  const printProductwiseSaleReport = async (
+    reportData: ProductwiseSaleReportData[],
+    fromDate: string,
+    toDate: string,
+  ) => {
+    let text =
+      `[C]PRODUCTWISE SALE\n` +
+      `[C]=============================\n` +
+      `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
+      `[C]=============================\n` +
+      // `[L]RCPT. DATE[R]${new Date().toLocaleDateString("en-GB")}\n` +
+      `[L]Item[C]Qty[R]Catg\n` +
+      `[L]Price[R]Net\n` +
+      `[C]=============================\n`;
+
+    for (const item of reportData) {
+      text += `[L]${item?.item_name}[C]${item?.tot_item_qty}[R]${item?.category_name}\n` +
+        `[L]${item?.unit_price}[R]${item?.tot_item_price}\n` +
+        `[C]-----------------------------\n`;
+    }
+
+    text += `[C]=============================\n` +
+      `[L]Total Items[R]${reportData?.length}\n` +
       `[C]==============X===============\n\n\n`;
 
     await ThermalPrinterModule.printBluetooth({
@@ -7371,6 +7411,7 @@ export const useBluetoothPrint = () => {
 
     ////////////////////////////////////
     printReceiptT,
-    rePrintT
+    rePrintT,
+    printProductwiseSaleReport
   }
 }
