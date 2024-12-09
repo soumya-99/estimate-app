@@ -719,7 +719,7 @@ const CustomerDetailsFillScreen = () => {
             </HeaderImage>
           </View>
 
-          <View
+          {/* <View
             style={{
               alignSelf: "center",
               width: "85%",
@@ -745,7 +745,7 @@ const CustomerDetailsFillScreen = () => {
               textColor={theme.colors.onTertiaryContainer}>
               SEARCH PRODUCTS
             </ButtonPaper>
-          </View>
+          </View> */}
 
           <View style={{
             backgroundColor: theme.colors.surfaceVariant,
