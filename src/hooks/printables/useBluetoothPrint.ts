@@ -2159,7 +2159,7 @@ export const useBluetoothPrint = () => {
   ) => {
     // ["USER", "RCPTs", "NET", "CNCL"],
     let text =
-      `[C]CANCELLED REPORT\n` +
+      `[C]USERWISE REPORT\n` +
       `[C]=============================\n` +
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
@@ -2168,7 +2168,7 @@ export const useBluetoothPrint = () => {
       `[C]=============================\n`;
 
     for (const item of reportData) {
-      text += `[L]${item?.user_name}[C]${item?.no_of_receipts}[C]${item?.net_amt}[R]${item?.cancelled_amt}\n`;
+      text += `[L]${item?.user_name?.slice(0, 5)}[C]${item?.no_of_receipts}[C]${item?.net_amt}[R]${item?.cancelled_amt}\n`;
     }
 
     text += `[C]=============================\n` +
@@ -2194,7 +2194,7 @@ export const useBluetoothPrint = () => {
   ) => {
     // ["Sl.", "NAME", "PH", "DUE"],
     let text =
-      `[C]CANCELLED REPORT\n` +
+      `[C]DUE REPORT\n` +
       `[C]=============================\n` +
       `[C]DATE: ${new Date(date)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
@@ -2204,7 +2204,7 @@ export const useBluetoothPrint = () => {
 
     let i = 1
     for (const item of reportData) {
-      text += `[L]${i++}[C]${item?.cust_name}[C]${item?.phone_no}[R]${item?.due_amt}\n`;
+      text += `[L]${i++}[C]${item?.cust_name?.slice(0, 5)}[C]${item?.phone_no}[R]${item?.due_amt}\n`;
     }
 
     text += `[C]=============================\n` +

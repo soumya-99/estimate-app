@@ -27,6 +27,7 @@ const SnackBar = ({ handleBtn1Press, handleBtn2Press, handleBtn3Press, totAmt, c
             height: normalize(80),
             // backgroundColor: theme.colors.vanilla,
             // backgroundColor: "blue",
+            padding: 15,
             // backgroundColor: theme.colors.secondaryContainer,
             // borderRadius: normalize(20),
             justifyContent: "space-evenly",
@@ -37,7 +38,7 @@ const SnackBar = ({ handleBtn1Press, handleBtn2Press, handleBtn3Press, totAmt, c
                 !hideCart && <View style={{
                     // marginLeft: "-5%"
                     backgroundColor: theme.colors.vanillaTertiary,
-                    height: 60,
+                    height: 50,
                     alignItems: "center",
                     justifyContent: "center",
                     borderTopLeftRadius: 30,
@@ -56,7 +57,7 @@ const SnackBar = ({ handleBtn1Press, handleBtn2Press, handleBtn3Press, totAmt, c
             }
             <View style={{
                 backgroundColor: theme.colors.error,
-                height: 60,
+                height: 50,
                 alignItems: "center",
                 justifyContent: "center",
             }}>
@@ -64,10 +65,11 @@ const SnackBar = ({ handleBtn1Press, handleBtn2Press, handleBtn3Press, totAmt, c
             </View>
             <View style={{
                 backgroundColor: theme.colors.vanillaSecondary,
-                height: 60,
+                height: 50,
                 alignItems: "center",
                 justifyContent: "center",
-                minWidth: 100
+                minWidth: 100,
+                gap: -5
             }}>
                 <Text variant="bodyMedium" ellipsizeMode='tail' numberOfLines={2} style={{ color: theme.colors.onVanilla, textAlign: "center", paddingHorizontal: 15, flexWrap: "wrap" }}>Net Total</Text>
                 <Text style={{ color: theme.colors.onVanilla, textAlign: "center", paddingHorizontal: 15, flexWrap: "wrap" }}>•</Text>
@@ -76,7 +78,7 @@ const SnackBar = ({ handleBtn1Press, handleBtn2Press, handleBtn3Press, totAmt, c
 
             <View style={{
                 backgroundColor: theme.colors.vanilla,
-                height: 60,
+                height: 50,
                 alignItems: "center",
                 justifyContent: "center",
                 borderTopRightRadius: 30,
