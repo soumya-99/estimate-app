@@ -207,7 +207,7 @@ function CancelledBillsReportScreen() {
               {receiptSettings?.gst_flag === "Y" && (
                 <DataTable.Title textStyle={titleTextStyle}>GST</DataTable.Title>
               )}
-              <DataTable.Title textStyle={titleTextStyle}>Dis.</DataTable.Title>
+              {/* <DataTable.Title textStyle={titleTextStyle}>Dis.</DataTable.Title> */}
               <DataTable.Title textStyle={titleTextStyle}>Total Amt.</DataTable.Title>
             </DataTable.Header>
 
@@ -246,7 +246,7 @@ function CancelledBillsReportScreen() {
                   {receiptSettings?.gst_flag === "Y" && (
                     <DataTable.Cell>{totalGST}</DataTable.Cell>
                   )}
-                  <DataTable.Cell>{item?.discount_amt}</DataTable.Cell>
+                  {/* <DataTable.Cell>{item?.discount_amt}</DataTable.Cell> */}
                   <DataTable.Cell>{item?.net_amt}</DataTable.Cell>
                 </DataTable.Row>
               )

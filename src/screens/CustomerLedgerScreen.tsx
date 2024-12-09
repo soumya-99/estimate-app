@@ -76,7 +76,7 @@ function CustomerLedgerScreen() {
         if (cusLed.length !== 0) {
             printCustomerLedger(cusLed)
         } else {
-            ToastAndroid.show("No Due Report Found!", ToastAndroid.SHORT)
+            ToastAndroid.show("No Report Found!", ToastAndroid.SHORT)
             return
         }
     }

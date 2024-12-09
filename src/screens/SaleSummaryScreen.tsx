@@ -32,7 +32,7 @@ function SaleSummaryScreen() {
   const loginStore = JSON.parse(loginStorage.getString("login-data"))
 
   const { fetchCollectionReport } = useCollectionReport()
-  const { printCollectionReport } = useBluetoothPrint()
+  const { printSaleSummaryReport } = useBluetoothPrint()
 
   const [collectionReport, setCollectionReport] = useState<CollectionReport[]>(
     () => [],
@@ -90,7 +90,7 @@ function SaleSummaryScreen() {
     toDate: string,
   ) => {
     if (collectionReport.length !== 0) {
-      printCollectionReport(collectionReport, fromDate, toDate)
+      printSaleSummaryReport(collectionReport, fromDate, toDate)
     } else {
       ToastAndroid.show("No Sale Summary Found!", ToastAndroid.SHORT)
       return

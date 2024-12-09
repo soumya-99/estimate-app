@@ -83,14 +83,14 @@ function SaleReportScreen() {
   }
 
   const handlePrint = (
-    saleReport: SaleReport[],
+    report: SaleReport[],
     fromDate: string,
     toDate: string,
   ) => {
-    if (saleReport.length !== 0) {
-      printSaleReport(saleReport, fromDate, toDate)
+    if (report.length !== 0) {
+      printSaleReport(report, fromDate, toDate)
     } else {
-      ToastAndroid.show("No Sale Report Found!", ToastAndroid.SHORT)
+      ToastAndroid.show("No Report Found!", ToastAndroid.SHORT)
       return
     }
   }
@@ -194,71 +194,69 @@ function SaleReportScreen() {
         </View>
 
         <SurfacePaper backgroundColor={theme.colors.surface}>
-          <ScrollView horizontal>
-            <DataTable style={{
-              width: 430,
-            }}>
-              <DataTable.Header style={titleStyle}>
-                {/* <DataTable.Title>Name</DataTable.Title>
+          {/* <ScrollView horizontal> */}
+          <DataTable>
+            <DataTable.Header style={titleStyle}>
+              {/* <DataTable.Title>Name</DataTable.Title>
             <DataTable.Title>Phone</DataTable.Title> */}
-                {/* <DataTable.Title>Tnx. Date</DataTable.Title> */}
-                <DataTable.Title textStyle={titleTextStyle}>Rcpt. No.</DataTable.Title>
-                {/* <DataTable.Title textStyle={titleTextStyle}>SL. No.</DataTable.Title> */}
-                <DataTable.Title textStyle={titleTextStyle}>Pay Mode</DataTable.Title>
-                <DataTable.Title textStyle={titleTextStyle}>Qty.</DataTable.Title>
-                <DataTable.Title textStyle={titleTextStyle}>Price</DataTable.Title>
-                {receiptSettings?.gst_flag === "Y" && (
-                  <DataTable.Title textStyle={titleTextStyle}>GST</DataTable.Title>
-                )}
-                <DataTable.Title textStyle={titleTextStyle}>Dis.</DataTable.Title>
-                <DataTable.Title textStyle={titleTextStyle}>Total Amt.</DataTable.Title>
-              </DataTable.Header>
+              {/* <DataTable.Title>Tnx. Date</DataTable.Title> */}
+              <DataTable.Title textStyle={titleTextStyle}>Rcpt. No.</DataTable.Title>
+              {/* <DataTable.Title textStyle={titleTextStyle}>SL. No.</DataTable.Title> */}
+              <DataTable.Title textStyle={titleTextStyle}>Pay Mode</DataTable.Title>
+              <DataTable.Title textStyle={titleTextStyle}>Qty.</DataTable.Title>
+              <DataTable.Title textStyle={titleTextStyle}>Price</DataTable.Title>
+              {receiptSettings?.gst_flag === "Y" && (
+                <DataTable.Title textStyle={titleTextStyle}>GST</DataTable.Title>
+              )}
+              {/* <DataTable.Title textStyle={titleTextStyle}>Dis.</DataTable.Title> */}
+              <DataTable.Title textStyle={titleTextStyle}>Total Amt.</DataTable.Title>
+            </DataTable.Header>
 
-              {saleReport.map((item, i) => {
-                let totalGST: number = 0
+            {saleReport.map((item, i) => {
+              let totalGST: number = 0
 
-                totalGST += item?.cgst_amt + item?.sgst_amt
-                totalNetAmount += item?.net_amt
-                totalQty += item?.no_of_items
+              totalGST += item?.cgst_amt + item?.sgst_amt
+              totalNetAmount += item?.net_amt
+              totalQty += item?.no_of_items
 
-                return (
-                  <DataTable.Row key={item?.receipt_no}>
-                    {/* <DataTable.Cell>{item?.cust_name}</DataTable.Cell>
+              return (
+                <DataTable.Row key={item?.receipt_no}>
+                  {/* <DataTable.Cell>{item?.cust_name}</DataTable.Cell>
               <DataTable.Cell>{item?.phone_no}</DataTable.Cell> */}
-                    {/* <DataTable.Cell>{new Date(item?.trn_date).toLocaleDateString("en-GB")}</DataTable.Cell> */}
-                    {/* <DataTable.Cell>
+                  {/* <DataTable.Cell>{new Date(item?.trn_date).toLocaleDateString("en-GB")}</DataTable.Cell> */}
+                  {/* <DataTable.Cell>
                       {i + 1}
                     </DataTable.Cell> */}
-                    <DataTable.Cell>
-                      {item?.receipt_no
-                        ?.toString()
-                        ?.substring(item?.receipt_no?.toString()?.length - 4)}
-                    </DataTable.Cell>
-                    <DataTable.Cell>
-                      {
-                        item?.pay_mode === "C"
-                          ? "Cash"
-                          : item?.pay_mode === "D"
-                            ? "Card"
-                            : item?.pay_mode === "U"
-                              ? "UPI"
-                              : item?.pay_mode === "R"
-                                ? "Credit"
-                                : "Some Error!"
-                      }
-                    </DataTable.Cell>
-                    <DataTable.Cell>{item?.no_of_items}</DataTable.Cell>
-                    <DataTable.Cell>{item?.price}</DataTable.Cell>
-                    {receiptSettings?.gst_flag === "Y" && (
-                      <DataTable.Cell>{totalGST}</DataTable.Cell>
-                    )}
-                    <DataTable.Cell>{item?.discount_amt}</DataTable.Cell>
-                    <DataTable.Cell>{item?.net_amt}</DataTable.Cell>
-                  </DataTable.Row>
-                )
-              })}
-            </DataTable>
-          </ScrollView>
+                  <DataTable.Cell>
+                    {item?.receipt_no
+                      ?.toString()
+                      ?.substring(item?.receipt_no?.toString()?.length - 4)}
+                  </DataTable.Cell>
+                  <DataTable.Cell>
+                    {
+                      item?.pay_mode === "C"
+                        ? "Cash"
+                        : item?.pay_mode === "D"
+                          ? "Card"
+                          : item?.pay_mode === "U"
+                            ? "UPI"
+                            : item?.pay_mode === "R"
+                              ? "Credit"
+                              : "Some Error!"
+                    }
+                  </DataTable.Cell>
+                  <DataTable.Cell>{item?.no_of_items}</DataTable.Cell>
+                  <DataTable.Cell>{item?.price}</DataTable.Cell>
+                  {receiptSettings?.gst_flag === "Y" && (
+                    <DataTable.Cell>{totalGST}</DataTable.Cell>
+                  )}
+                  {/* <DataTable.Cell>{item?.discount_amt}</DataTable.Cell> */}
+                  <DataTable.Cell>{item?.net_amt}</DataTable.Cell>
+                </DataTable.Row>
+              )
+            })}
+          </DataTable>
+          {/* </ScrollView> */}
           <View style={{ padding: normalize(10) }}>
             <Text variant="labelMedium" style={{ color: theme.colors.purple }}>
               QUANTITY: {totalQty} TOTAL: ₹{totalNetAmount?.toFixed(2)}
