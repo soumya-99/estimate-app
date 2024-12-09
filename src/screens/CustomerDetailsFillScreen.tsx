@@ -719,12 +719,40 @@ const CustomerDetailsFillScreen = () => {
             </HeaderImage>
           </View>
 
+          <View
+            style={{
+              alignSelf: "center",
+              width: "85%",
+              marginTop: -9,
+              paddingBottom: normalize(10),
+            }}>
+            <ButtonPaper
+              icon="magnify-scan"
+              mode="contained"
+              buttonColor={theme.colors.tertiaryContainer}
+              onPress={() => navigation.dispatch(
+                CommonActions.navigate(
+                  {
+                    name: navigationRoutes.categoryProductsScreen,
+                    params: {
+                      category_id: 0,
+                      category_name: "All Items",
+                      category_photo: ""
+                    }
+                  }
+                )
+              )}
+              textColor={theme.colors.onTertiaryContainer}>
+              SEARCH PRODUCTS
+            </ButtonPaper>
+          </View>
+
           <View style={{
             backgroundColor: theme.colors.surfaceVariant,
             borderRadius: 35,
             width: SCREEN_WIDTH / 1.15,
             alignSelf: "center",
-            marginTop: normalize(-8),
+            marginTop: normalize(2),
             padding: 10,
             // height: "auto",
             // paddingVertical: normalize(15),

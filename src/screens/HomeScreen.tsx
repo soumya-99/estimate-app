@@ -61,6 +61,7 @@ import useCalculations from "../hooks/useCalculations"
 import DialogBoxForReprint from "../components/DialogBoxForReprint"
 import DialogForBillsInCalculatorMode from "../components/DialogForBillsInCalculatorMode"
 import { AppStoreContext } from "../models/custom_types"
+import { ADDRESSES } from "../config/api_list"
 
 function HomeScreen() {
   const theme = usePaperColorScheme()
@@ -426,6 +427,34 @@ function HomeScreen() {
           </HeaderImage>
         </View>
 
+        <View
+          style={{
+            alignSelf: "center",
+            width: "85%",
+            marginTop: -9,
+            paddingBottom: normalize(10),
+          }}>
+          <ButtonPaper
+            icon="magnify-scan"
+            mode="contained"
+            buttonColor={theme.colors.purpleContainer}
+            onPress={() => navigation.dispatch(
+              CommonActions.navigate(
+                {
+                  name: navigationRoutes.categoryProductsScreen,
+                  params: {
+                    category_id: 0,
+                    category_name: "All Items",
+                    category_photo: ""
+                  }
+                }
+              )
+            )}
+            textColor={theme.colors.onPurpleContainer}>
+            SEARCH PRODUCTS
+          </ButtonPaper>
+        </View>
+
         <Portal>
           <Dialog visible={visibleUpdatePortal} dismissable={false}>
             <Dialog.Title>UPDATE FOUND!</Dialog.Title>
@@ -492,7 +521,7 @@ function HomeScreen() {
             borderRadiusEnabled={false}
             paddingEnabled
             isBorderEnabled
-            heading="Recent Bills"
+            heading="Recent Activities"
             elevation={1}
             backgroundColor={theme.colors.tertiaryContainer}
             style={{
@@ -503,7 +532,7 @@ function HomeScreen() {
               {recentBills?.map((item, i) => (
                 <List.Item
                   key={i}
-                  title={`Bill ${item?.receipt_no}`}
+                  title={`${item?.receipt_no}`}
                   description={`₹${item?.net_amt}`}
                   onPress={() => {
                     loginStore?.mode !== "C"

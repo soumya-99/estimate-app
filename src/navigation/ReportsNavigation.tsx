@@ -3,19 +3,19 @@ import navigationRoutes from "../routes/navigationRoutes"
 import ReportsScreen from "../screens/ReportsScreen"
 import SaleReportScreen from "../screens/SaleReportScreen"
 import SaleSummaryScreen from "../screens/SaleSummaryScreen"
-import ItemReportScreen from "../screens/ItemReportScreen"
-import GstStatementReportScreen from "../screens/GstStatementReportScreen"
-import GstSummaryReportScreen from "../screens/GstSummaryReportScreen"
-import StockReportScreen from "../screens/StockReportScreen"
 import CancelledBillsReportScreen from "../screens/CancelledBillsReport"
-import RefundReportScreen from "../screens/RefundReportScreen"
 import CreditReportScreen from "../screens/CreditReportScreen"
-import DaybookReportScreen from "../screens/DaybookReportScreen"
 import UserwiseReportScreen from "../screens/UserwiseReportScreen"
 import CustomerLedgerScreen from "../screens/CustomerLedgerScreen"
 import DueReportScreen from "../screens/DueReportScreen"
-import RecoveryReportScreen from "../screens/RecoveryReportScreen"
 import ProductwiseSaleReportScreen from "../screens/reports/ProductwiseSaleReportScreen"
+// import ItemReportScreen from "../screens/ItemReportScreen"
+// import GstStatementReportScreen from "../screens/GstStatementReportScreen"
+// import GstSummaryReportScreen from "../screens/GstSummaryReportScreen"
+// import StockReportScreen from "../screens/StockReportScreen"
+// import RefundReportScreen from "../screens/RefundReportScreen"
+// import DaybookReportScreen from "../screens/DaybookReportScreen"
+// import RecoveryReportScreen from "../screens/RecoveryReportScreen"
 
 export default function ReportsNavigation() {
   const Stack = createNativeStackNavigator()
@@ -34,11 +34,11 @@ export default function ReportsNavigation() {
         name={navigationRoutes.saleSummaryScreen}
         component={SaleSummaryScreen}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.itemReportScreen}
         component={ItemReportScreen}
-      />
-      <Stack.Screen
+      /> */}
+      {/* <Stack.Screen
         name={navigationRoutes.gstStatementReportScreen}
         component={GstStatementReportScreen}
       />
@@ -49,7 +49,7 @@ export default function ReportsNavigation() {
       <Stack.Screen
         name={navigationRoutes.stockReportScreen}
         component={StockReportScreen}
-      />
+      /> */}
       <Stack.Screen
         name={navigationRoutes.cancelledBillsReportScreen}
         component={CancelledBillsReportScreen}
@@ -62,10 +62,10 @@ export default function ReportsNavigation() {
         name={navigationRoutes.creditReportScreen}
         component={CreditReportScreen}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.daybookReportScreen}
         component={DaybookReportScreen}
-      />
+      /> */}
       <Stack.Screen
         name={navigationRoutes.userwiseReportScreen}
         component={UserwiseReportScreen}
@@ -78,10 +78,10 @@ export default function ReportsNavigation() {
         name={navigationRoutes.dueReportScreen}
         component={DueReportScreen}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.recoveryReportScreen}
         component={RecoveryReportScreen}
-      />
+      /> */}
       <Stack.Screen
         name={navigationRoutes.productwiseSaleReportScreen}
         component={ProductwiseSaleReportScreen}

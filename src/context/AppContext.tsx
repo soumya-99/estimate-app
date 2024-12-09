@@ -97,6 +97,7 @@ const AppContext = ({ children }) => {
 
   const handleLogin = async (loginText: string, passwordText: string) => {
     setFlagOtp(!flagOtp)
+    console.log("@@@@@@@@@@@@@@@@", loginText, passwordText)
     await login(loginText, passwordText)
       .then(loginData => {
         console.log("loginData", loginData)
@@ -134,6 +135,7 @@ const AppContext = ({ children }) => {
         // setIsLogin(true)
       })
       .catch(err => {
+        console.log("========", err)
         ToastAndroid.show(
           "Some error on server while logging in.",
           ToastAndroid.SHORT,
@@ -141,12 +143,12 @@ const AppContext = ({ children }) => {
       })
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("CALLED OTP RESET")
-      setOtp(-1)
-    }, 300000)
-  }, [flagOtp])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     console.log("CALLED OTP RESET")
+  //     setOtp(-1)
+  //   }, 300000)
+  // }, [flagOtp])
 
   // const handleLogin = async (loginText: string, passwordText: string) => {
   //   await login(loginText, passwordText).then(loginData => {

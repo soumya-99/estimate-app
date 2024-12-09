@@ -397,6 +397,34 @@ function CategoryProductScreen() {
                     </HeaderImage>
                 </View>
 
+                <View
+                    style={{
+                        alignSelf: "center",
+                        width: "85%",
+                        marginTop: -9,
+                        paddingBottom: normalize(10),
+                    }}>
+                    <ButtonPaper
+                        icon="magnify-scan"
+                        mode="contained"
+                        buttonColor={theme.colors.vanillaContainer}
+                        onPress={() => navigation.dispatch(
+                            CommonActions.navigate(
+                                {
+                                    name: navigationRoutes.categoryProductsScreen,
+                                    params: {
+                                        category_id: 0,
+                                        category_name: "All Items",
+                                        category_photo: ""
+                                    }
+                                }
+                            )
+                        )}
+                        textColor={theme.colors.onVanillaContainer}>
+                        SEARCH PRODUCTS
+                    </ButtonPaper>
+                </View>
+
                 <View style={{
                     paddingHorizontal: normalize(25),
                     paddingBottom: normalize(10),
@@ -518,9 +546,11 @@ function CategoryProductScreen() {
 
                     <View style={{
                         marginHorizontal: 10,
-                        marginBottom: 2
+                        marginBottom: 2,
+                        // justifyContent: "center",
+                        // alignItems: "center",
                     }}>
-                        <ButtonPaper mode="elevated" onPress={() => navigation.goBack()} icon="arrow-left-thick" textColor={theme.colors.vanillaSecondary} buttonColor={theme.colors.vanillaSecondaryContainer}>Back</ButtonPaper>
+                        <ButtonPaper mode="elevated" onPress={() => navigation.goBack()} icon="plus-thick" textColor={theme.colors.vanillaSecondary} buttonColor={theme.colors.vanillaSecondaryContainer}>ADD ITEM</ButtonPaper>
                     </View>
 
                 </View>

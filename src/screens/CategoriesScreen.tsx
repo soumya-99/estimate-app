@@ -27,6 +27,7 @@ import { clearStates } from "../utils/clearStates"
 import SurfacePaper from "../components/SurfacePaper"
 import AnimatedFABPaper from "../components/AnimatedFABPaper"
 import normalize from "react-native-normalize"
+import ButtonPaper from "../components/ButtonPaper"
 
 function CategoriesScreen() {
     const theme = usePaperColorScheme()
@@ -189,6 +190,34 @@ function CategoriesScreen() {
                         isBackEnabled>
                         Categories
                     </HeaderImage>
+                </View>
+
+                <View
+                    style={{
+                        alignSelf: "center",
+                        width: "85%",
+                        marginTop: -9,
+                        paddingBottom: normalize(10),
+                    }}>
+                    <ButtonPaper
+                        icon="magnify-scan"
+                        mode="contained"
+                        buttonColor={theme.colors.vanillaContainer}
+                        onPress={() => navigation.dispatch(
+                            CommonActions.navigate(
+                                {
+                                    name: navigationRoutes.categoryProductsScreen,
+                                    params: {
+                                        category_id: 0,
+                                        category_name: "All Items",
+                                        category_photo: ""
+                                    }
+                                }
+                            )
+                        )}
+                        textColor={theme.colors.onVanillaContainer}>
+                        SEARCH PRODUCTS
+                    </ButtonPaper>
                 </View>
 
                 {categories.length !== 0
