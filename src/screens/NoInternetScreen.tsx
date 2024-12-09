@@ -23,7 +23,8 @@ const NoInternetScreen = () => {
           imgLight={textureBill}
           imgDark={textureBillDark}
           borderRadius={30}
-          blur={10}>
+          blur={10}
+          showProductSearch={false}>
           Turn on Internet
         </HeaderImage>
       </View>
