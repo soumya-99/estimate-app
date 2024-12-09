@@ -10,6 +10,8 @@ import normalize, { SCREEN_HEIGHT, SCREEN_WIDTH } from "react-native-normalize"
 import { IconButton, Text } from "react-native-paper"
 import { usePaperColorScheme } from "../theme/theme"
 import { CommonActions, useNavigation } from "@react-navigation/native"
+import ButtonPaper from "./ButtonPaper"
+import navigationRoutes from "../routes/navigationRoutes"
 
 type HeaderImageProps = {
   imgLight: { uri: string }
@@ -20,6 +22,7 @@ type HeaderImageProps = {
   isBackCustom?: boolean
   backPressed?: () => void
   categoryName?: string
+  showProductSearch?: boolean
 }
 
 export default function HeaderImage({
@@ -31,7 +34,8 @@ export default function HeaderImage({
   isBackEnabled,
   isBackCustom = false,
   backPressed,
-  categoryName = ""
+  categoryName = "",
+  showProductSearch = true
 }: PropsWithChildren<HeaderImageProps>) {
   const colorScheme = useColorScheme()
   const theme = usePaperColorScheme()
@@ -74,6 +78,33 @@ export default function HeaderImage({
           textDecorationLine: "underline",
         }}>Category: {categoryName}</Text>}
       </ImageBackground>
+      {showProductSearch && <View
+        style={{
+          alignSelf: "center",
+          width: "85%",
+          marginTop: -9,
+          paddingBottom: normalize(10),
+        }}>
+        <ButtonPaper
+          icon="magnify-scan"
+          mode="contained"
+          buttonColor={theme.colors.purpleContainer}
+          onPress={() => navigation.dispatch(
+            CommonActions.navigate(
+              {
+                name: navigationRoutes.categoryProductsScreen,
+                params: {
+                  category_id: 0,
+                  category_name: "All Items",
+                  category_photo: ""
+                }
+              }
+            )
+          )}
+          textColor={theme.colors.onPurpleContainer}>
+          SEARCH PRODUCTS
+        </ButtonPaper>
+      </View>}
     </>
   )
 }

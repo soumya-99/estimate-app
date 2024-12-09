@@ -16,6 +16,7 @@ import DiscountSettingsScreen from "../screens/DiscountSettingsScreen"
 import GstSettingsScreen from "../screens/GstSettingsScreen"
 import UPIGenerateScreen from "../screens/UPIGenerateScreen"
 import ManageCategoriesScreen from "../screens/ManageCategoriesScreen"
+import CategoryProductsScreen from "../screens/CategoryProductsScreen"
 
 export default function SettingsNavigation() {
   const Stack = createNativeStackNavigator()
@@ -91,6 +92,12 @@ export default function SettingsNavigation() {
         name={navigationRoutes.changePinScreen}
         component={ChangePinScreen}
       /> */}
+
+      <Stack.Screen
+        name={navigationRoutes.categoryProductsScreen}
+        component={CategoryProductsScreen}
+        options={{ animation: "simple_push" }}
+      />
     </Stack.Navigator>
   )
 }

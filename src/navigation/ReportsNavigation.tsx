@@ -9,6 +9,7 @@ import UserwiseReportScreen from "../screens/UserwiseReportScreen"
 import CustomerLedgerScreen from "../screens/CustomerLedgerScreen"
 import DueReportScreen from "../screens/DueReportScreen"
 import ProductwiseSaleReportScreen from "../screens/reports/ProductwiseSaleReportScreen"
+import CategoryProductsScreen from "../screens/CategoryProductsScreen"
 // import ItemReportScreen from "../screens/ItemReportScreen"
 // import GstStatementReportScreen from "../screens/GstStatementReportScreen"
 // import GstSummaryReportScreen from "../screens/GstSummaryReportScreen"
@@ -85,6 +86,11 @@ export default function ReportsNavigation() {
       <Stack.Screen
         name={navigationRoutes.productwiseSaleReportScreen}
         component={ProductwiseSaleReportScreen}
+      />
+      <Stack.Screen
+        name={navigationRoutes.categoryProductsScreen}
+        component={CategoryProductsScreen}
+        options={{ animation: "simple_push" }}
       />
     </Stack.Navigator>
   )

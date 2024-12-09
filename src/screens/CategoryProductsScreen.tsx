@@ -437,7 +437,8 @@ function CategoryProductsScreen() {
                         imgDark={textureReportDark}
                         borderRadius={30}
                         blur={10}
-                        isBackEnabled>
+                        isBackEnabled
+                        showProductSearch={false}>
                         {params?.category_name}
                     </HeaderImage>
                 </View>

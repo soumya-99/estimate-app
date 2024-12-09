@@ -427,7 +427,7 @@ function HomeScreen() {
           </HeaderImage>
         </View>
 
-        <View
+        {/* <View
           style={{
             alignSelf: "center",
             width: "85%",
@@ -453,7 +453,7 @@ function HomeScreen() {
             textColor={theme.colors.onPurpleContainer}>
             SEARCH PRODUCTS
           </ButtonPaper>
-        </View>
+        </View> */}
 
         <Portal>
           <Dialog visible={visibleUpdatePortal} dismissable={false}>

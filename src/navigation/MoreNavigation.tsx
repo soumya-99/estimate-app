@@ -9,6 +9,7 @@ import CancelBillsScreen from "../screens/CancelBillsScreen"
 import SearchBillsByItemScreen from "../screens/SearchBillsByItemScreen"
 import RefundReprintScreen from "../screens/RefundReprintScreen"
 import RecoveryAmountScreen from "../screens/RecoveryAmountScreen"
+import CategoryProductsScreen from "../screens/CategoryProductsScreen"
 
 export default function MoreNavigation() {
   const Stack = createNativeStackNavigator()
@@ -51,6 +52,11 @@ export default function MoreNavigation() {
       <Stack.Screen
         name={navigationRoutes.recoveryAmountScreen}
         component={RecoveryAmountScreen}
+      />
+      <Stack.Screen
+        name={navigationRoutes.categoryProductsScreen}
+        component={CategoryProductsScreen}
+        options={{ animation: "simple_push" }}
       />
     </Stack.Navigator>
   )

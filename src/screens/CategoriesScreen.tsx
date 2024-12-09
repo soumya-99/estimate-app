@@ -192,7 +192,7 @@ function CategoriesScreen() {
                     </HeaderImage>
                 </View>
 
-                <View
+                {/* <View
                     style={{
                         alignSelf: "center",
                         width: "85%",
@@ -218,7 +218,7 @@ function CategoriesScreen() {
                         textColor={theme.colors.onVanillaContainer}>
                         SEARCH PRODUCTS
                     </ButtonPaper>
-                </View>
+                </View> */}
 
                 {categories.length !== 0
                     ? <ReportButtonsWrapper>

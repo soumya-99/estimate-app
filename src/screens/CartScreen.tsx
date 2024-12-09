@@ -399,7 +399,7 @@ function CartScreen() {
                     </HeaderImage>
                 </View>
 
-                <View
+                {/* <View
                     style={{
                         alignSelf: "center",
                         width: "85%",
@@ -425,7 +425,7 @@ function CartScreen() {
                         textColor={theme.colors.onVanillaContainer}>
                         SEARCH PRODUCTS
                     </ButtonPaper>
-                </View>
+                </View> */}
 
                 <View style={{
                     paddingHorizontal: normalize(25),
