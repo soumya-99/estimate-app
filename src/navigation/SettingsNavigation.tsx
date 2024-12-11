@@ -76,14 +76,14 @@ export default function SettingsNavigation() {
         name={navigationRoutes.generalSettingsScreen}
         component={GeneralSettingsScreen}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.discountSettingsScreen}
         component={DiscountSettingsScreen}
       />
       <Stack.Screen
         name={navigationRoutes.gstSettingsScreen}
         component={GstSettingsScreen}
-      />
+      /> */}
       {/* <Stack.Screen
         name={navigationRoutes.upiGenerateScreen}
         component={UPIGenerateScreen}
