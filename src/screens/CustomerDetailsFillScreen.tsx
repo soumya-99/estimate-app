@@ -1086,7 +1086,7 @@ const CustomerDetailsFillScreen = () => {
                   disabled={isDisabled}>
                   SAVE / PRINT
                 </ButtonPaper>}
-              {checked !== "U" ? <ButtonPaper
+              {/* {checked !== "U" ? <ButtonPaper
                 mode="contained"
                 buttonColor={theme.colors.purple}
                 textColor={theme.colors.onPurple}
@@ -1105,7 +1105,7 @@ const CustomerDetailsFillScreen = () => {
                   loading={isLoading}
                   disabled={isDisabled}>
                   SAVE
-                </ButtonPaper>}
+                </ButtonPaper>} */}
             </View>
           </View>
         </View>
