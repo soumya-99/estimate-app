@@ -1848,7 +1848,8 @@ export const useBluetoothPrint = () => {
     }
 
     text += `[L]GRAND AMT[R]${grandTotalCalculate(netTotal, 0).toFixed(2)}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -1912,7 +1913,8 @@ export const useBluetoothPrint = () => {
     }
 
     text += `[L]GRAND AMT[R]${grandTotalCalculate(netTotal, 0).toFixed(2)}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -1950,7 +1952,8 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
       `[L]Total Items[R]${reportData?.length}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -1990,7 +1993,8 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -2028,7 +2032,8 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -2067,7 +2072,8 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -2103,7 +2109,8 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -2137,7 +2144,8 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${cusLed?.length}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -2173,7 +2181,8 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
@@ -2209,7 +2218,8 @@ export const useBluetoothPrint = () => {
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
-      `[C]==============X===============\n\n\n`;
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
 
     await ThermalPrinterModule.printBluetooth({
       payload: text,
