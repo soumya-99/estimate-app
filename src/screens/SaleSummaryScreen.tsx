@@ -236,7 +236,7 @@ function SaleSummaryScreen() {
           </DataTable>
           <View style={{ padding: normalize(10) }}>
             <Text variant="labelMedium" style={{ color: theme.colors.primary }}>
-              TOTAL: {totalBills} Bills ₹{totalSummary?.toFixed(2)}
+              TOTAL: {totalBills} Total NET: ₹{totalSummary?.toFixed(2)}
               {/* CANCELLED: ₹{totalCancelled} */}
             </Text>
           </View>

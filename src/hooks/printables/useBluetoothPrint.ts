@@ -1847,7 +1847,9 @@ export const useBluetoothPrint = () => {
         `[L]DUE AMOUNT[R]${Math.abs(returnedAmt)}\n`;
     }
 
-    text += `[L]GRAND AMT[R]${grandTotalCalculate(netTotal, 0).toFixed(2)}\n` +
+    text += `[L]Pay Mode[R]${paymentMode === "C" ? "Cash" : paymentMode === "R" ? "Credit" : paymentMode === "U" ? "UPI" : "Err"}\n` +
+
+      `[L]GRAND AMT[R]${grandTotalCalculate(netTotal, 0).toFixed(2)}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 
@@ -1936,12 +1938,13 @@ export const useBluetoothPrint = () => {
   ) => {
     let text =
       `[C]PRODUCTWISE SALE\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
       `[C]=============================\n` +
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
       // `[L]RCPT. DATE[R]${new Date().toLocaleDateString("en-GB")}\n` +
-      `[L]Item[C]Qty[R]Catg\n` +
-      `[L]Price[R]Net\n` +
+      `[L]Item[R]Quantity\n` +
+      `[L]Unit Price[R]Net\n` +
       `[C]=============================\n`;
 
     let totQty = 0;
@@ -1952,16 +1955,16 @@ export const useBluetoothPrint = () => {
       totQty += item?.tot_item_qty;
       totNet += item?.tot_item_price;
 
-      text += `[L]${item?.item_name}[C]${item?.tot_item_qty} ${item?.unit_name?.charAt(0)}[R]${item?.category_name}\n` +
+      text += `[L]${item?.item_name}[R]${item?.tot_item_qty} ${item?.unit_name?.charAt(0)}\n` +
         `[L]${item?.unit_price}[R]${item?.tot_item_price}\n` +
         `[C]-----------------------------\n`;
     }
 
     text += `[C]=============================\n` +
       `[L]Total Qty[R]${totQty}\n` +
-      `[L]Total Net[R]${totNet}\n` +
-      `[L]Avg Qty Total[R]${reportData?.length}\n` +
-      `[L]Cash Receive[R]${reportData[0]?.tot_received_cash}\n` +
+      `[L]Total Amt[R]${totNet}\n` +
+      `[L]No of Items[R]${reportData?.length}\n` +
+      // `[L]Cash Receive[R]${reportData[0]?.tot_received_cash}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 
@@ -1987,6 +1990,7 @@ export const useBluetoothPrint = () => {
     // ["SL.", "QTY", "PRC", "DIS", "", "NET"],
     let text =
       `[C]SALE REPORT\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
       `[C]=============================\n` +
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
@@ -2028,6 +2032,7 @@ export const useBluetoothPrint = () => {
     // ["MODE", "RCPTs", "NET", "CNCL"],
     let text =
       `[C]SALE SUMMARY\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
       `[C]=============================\n` +
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
@@ -2037,15 +2042,18 @@ export const useBluetoothPrint = () => {
       `[C]=============================\n`;
 
     let totCashReceive = 0;
+    let totCashReceipts = 0;
     for (const item of reportData) {
       totCashReceive += item?.net_amt
+      totCashReceipts += item?.no_of_rcpt
+
       text += `[L]${item?.pay_mode === "C" ? "Cash" : item?.pay_mode === "U" ? "UPI" : item?.pay_mode === "R" ? "Credit" : "Err"}[C]${item?.no_of_rcpt}[R]${item?.net_amt}\n`;
     }
 
     text += `[C]=============================\n` +
-      `[L]Rows Count[R]${reportData?.length}\n` +
-      `[L]Total Cash Rcvd[R]${totCashReceive}\n` +
-      `[L]Total Sale[R]${totCashReceive}\n` +
+      `[L]Total Rcpts[R]${totCashReceipts}\n` +
+      // `[L]Total Cash Rcvd[R]${totCashReceive}\n` +
+      `[L]Total Net[R]${totCashReceive}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 
@@ -2070,6 +2078,7 @@ export const useBluetoothPrint = () => {
     // ["SL.", "QTY", "PRC", "DIS", "GST", "NET"],
     let text =
       `[C]CANCELLED REPORT\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
       `[C]=============================\n` +
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
@@ -2110,6 +2119,7 @@ export const useBluetoothPrint = () => {
     // ["Rcpt No.", "Amount", "Paid Amt.", "Due Amt."],
     let text =
       `[C]CREDIT REPORT\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
       `[C]=============================\n` +
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
@@ -2145,6 +2155,7 @@ export const useBluetoothPrint = () => {
     // ["R. DT", "PAID", "DUE", "BAL"],
     let text =
       `[C]CUSTOMER LEDGER\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
       `[C]=============================\n` +
       // `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       // `[C]=============================\n` +
@@ -2182,6 +2193,7 @@ export const useBluetoothPrint = () => {
     // ["USER", "RCPTs", "NET", "CNCL"],
     let text =
       `[C]USERWISE REPORT\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
       `[C]=============================\n` +
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
@@ -2218,6 +2230,7 @@ export const useBluetoothPrint = () => {
     // ["Sl.", "NAME", "PH", "DUE"],
     let text =
       `[C]DUE REPORT\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
       `[C]=============================\n` +
       `[C]DATE: ${new Date(date)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
