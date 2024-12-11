@@ -551,16 +551,17 @@ function CategoryProductScreen() {
                         // alignItems: "center",
                     }}>
                         <ButtonPaper mode="elevated" onPress={() => navigation.dispatch(
-                            CommonActions.navigate(
-                                {
-                                    name: navigationRoutes.categoryProductsScreen,
-                                    params: {
-                                        category_id: 0,
-                                        category_name: "All Items",
-                                        category_photo: ""
-                                    }
-                                }
-                            )
+                            // CommonActions.navigate(
+                            //     {
+                            //         name: navigationRoutes.categoryProductsScreen,
+                            //         params: {
+                            //             category_id: 0,
+                            //             category_name: "All Items",
+                            //             category_photo: ""
+                            //         }
+                            //     }
+                            // )
+                            CommonActions.goBack()
                         )} icon="plus-thick" textColor={theme.colors.vanillaSecondary} buttonColor={theme.colors.vanillaSecondaryContainer}>ADD ITEM</ButtonPaper>
                     </View>
 
