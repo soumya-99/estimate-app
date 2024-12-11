@@ -369,6 +369,9 @@ export type ProductwiseSaleReportData = {
   "tot_item_price": number,
   "stock": number
   "category_name": string,
+  "unit_name": string,
+  "selling_price": number,
+  "tot_received_cash": number
 }
 
 // export type ItemReportData = {

@@ -3,9 +3,9 @@ import navigationRoutes from "../../routes/navigationRoutes"
 export const REPORT_SCREEN_DATA = [
   { "text": "Productwise Sale Report", "icon": "billboard", "route": navigationRoutes.productwiseSaleReportScreen },
   // { "text": "Daybook Report", "icon": "billboard", "route": navigationRoutes.daybookReportScreen },
-  { "text": "Sale Report", "icon": "billboard", "route": navigationRoutes.saleReportScreen },
-  { "text": "Cancelled Bills Report", "icon": "billboard", "route": navigationRoutes.cancelledBillsReportScreen },
+  // { "text": "Sale Report", "icon": "billboard", "route": navigationRoutes.saleReportScreen },
   { "text": "Sale Summary", "icon": "billboard", "route": navigationRoutes.saleSummaryScreen },
+  { "text": "Cancelled Bills Report", "icon": "billboard", "route": navigationRoutes.cancelledBillsReportScreen },
   // { "text": "Item Report", "icon": "billboard", "route": navigationRoutes.itemReportScreen },
   // { "text": "Stock Report", "icon": "billboard", "route": navigationRoutes.stockReportScreen },
   { "text": "Userwise Report", "icon": "billboard", "route": navigationRoutes.userwiseReportScreen },

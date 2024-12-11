@@ -27,10 +27,10 @@ export default function ReportsNavigation() {
         name={navigationRoutes.reportsScreen}
         component={ReportsScreen}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.saleReportScreen}
         component={SaleReportScreen}
-      />
+      /> */}
       <Stack.Screen
         name={navigationRoutes.saleSummaryScreen}
         component={SaleSummaryScreen}

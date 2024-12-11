@@ -18,12 +18,13 @@ function ReportsScreen() {
 
   const { receiptSettings } = useContext<AppStoreContext>(AppStore)
 
-  const filteredReportScreenData = REPORT_SCREEN_DATA.filter(item => {
-    if (item.route === navigationRoutes.gstStatementReportScreen || item.route === navigationRoutes.gstSummaryReportScreen) {
-      return receiptSettings?.gst_flag === "Y"
-    }
-    return true
-  })
+  // const filteredReportScreenData = REPORT_SCREEN_DATA.filter(item => {
+  //   if (item.route === navigationRoutes.gstStatementReportScreen || item.route === navigationRoutes.gstSummaryReportScreen) {
+  //     return receiptSettings?.gst_flag === "Y"
+  //   }
+  //   return true
+  // })
+  const filteredReportScreenData = REPORT_SCREEN_DATA
 
   return (
     <SafeAreaView

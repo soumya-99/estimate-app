@@ -212,7 +212,7 @@ function ProductwiseSaleReportScreen() {
               productwiseSaleReport?.map((item, i) => (
                 <List.Item
                   key={i}
-                  title={({ ellipsizeMode }) => <Text>{item?.tot_item_qty}P x {item?.item_name}</Text>}
+                  title={({ ellipsizeMode }) => <Text>{item?.tot_item_qty}{item?.unit_name?.charAt(0)} x {item?.item_name}</Text>}
                   description={<View>
                     <Text style={{
                       color: theme.colors.green

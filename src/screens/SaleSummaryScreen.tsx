@@ -204,7 +204,7 @@ function SaleSummaryScreen() {
               <DataTable.Title textStyle={titleTextStyle}>Pay Mode</DataTable.Title>
               <DataTable.Title textStyle={titleTextStyle} numeric>RCPTs</DataTable.Title>
               <DataTable.Title textStyle={titleTextStyle} numeric>Net Amt.</DataTable.Title>
-              <DataTable.Title textStyle={titleTextStyle} numeric>Cncl Amt.</DataTable.Title>
+              {/* <DataTable.Title textStyle={titleTextStyle} numeric>Cncl Amt.</DataTable.Title> */}
             </DataTable.Header>
 
             {collectionReport?.map((item, i) => {
@@ -229,14 +229,15 @@ function SaleSummaryScreen() {
                   </DataTable.Cell>
                   <DataTable.Cell numeric>{item?.no_of_rcpt}</DataTable.Cell>
                   <DataTable.Cell numeric>{item?.net_amt}</DataTable.Cell>
-                  <DataTable.Cell numeric>{item?.can_amt}</DataTable.Cell>
+                  {/* <DataTable.Cell numeric>{item?.can_amt}</DataTable.Cell> */}
                 </DataTable.Row>
               )
             })}
           </DataTable>
           <View style={{ padding: normalize(10) }}>
             <Text variant="labelMedium" style={{ color: theme.colors.primary }}>
-              TOTAL: {totalBills} Bills ₹{totalSummary?.toFixed(2)} CANCELLED: ₹{totalCancelled}
+              TOTAL: {totalBills} Bills ₹{totalSummary?.toFixed(2)}
+              {/* CANCELLED: ₹{totalCancelled} */}
             </Text>
           </View>
         </SurfacePaper>

@@ -1944,14 +1944,24 @@ export const useBluetoothPrint = () => {
       `[L]Price[R]Net\n` +
       `[C]=============================\n`;
 
+    let totQty = 0;
+    let totNet = 0;
+    let totAvgPrice = 0;
+
     for (const item of reportData) {
-      text += `[L]${item?.item_name}[C]${item?.tot_item_qty}[R]${item?.category_name}\n` +
+      totQty += item?.tot_item_qty;
+      totNet += item?.tot_item_price;
+
+      text += `[L]${item?.item_name}[C]${item?.tot_item_qty} ${item?.unit_name?.charAt(0)}[R]${item?.category_name}\n` +
         `[L]${item?.unit_price}[R]${item?.tot_item_price}\n` +
         `[C]-----------------------------\n`;
     }
 
     text += `[C]=============================\n` +
-      `[L]Total Items[R]${reportData?.length}\n` +
+      `[L]Total Qty[R]${totQty}\n` +
+      `[L]Total Net[R]${totNet}\n` +
+      `[L]Avg Qty Total[R]${reportData?.length}\n` +
+      `[L]Cash Receive[R]${reportData[0]?.tot_received_cash}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 
@@ -2022,16 +2032,20 @@ export const useBluetoothPrint = () => {
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
       // `[L]RCPT. DATE[R]${new Date().toLocaleDateString("en-GB")}\n` +
-      `[L]Mode[C]Rcpts[C]Net[R]Cncl\n` +
+      `[L]Mode[C]Rcpts[R]Net\n` +
       // `[L]Price[R]Total\n` +
       `[C]=============================\n`;
 
+    let totCashReceive = 0;
     for (const item of reportData) {
-      text += `[L]${item?.pay_mode === "C" ? "Cash" : item?.pay_mode === "U" ? "UPI" : item?.pay_mode === "R" ? "Credit" : "Err"}[C]${item?.no_of_rcpt}[C]${item?.net_amt}[R]${item?.can_amt}\n`;
+      totCashReceive += item?.net_amt
+      text += `[L]${item?.pay_mode === "C" ? "Cash" : item?.pay_mode === "U" ? "UPI" : item?.pay_mode === "R" ? "Credit" : "Err"}[C]${item?.no_of_rcpt}[R]${item?.net_amt}\n`;
     }
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
+      `[L]Total Cash Rcvd[R]${totCashReceive}\n` +
+      `[L]Total Sale[R]${totCashReceive}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 
