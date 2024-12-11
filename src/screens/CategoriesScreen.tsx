@@ -7,7 +7,7 @@ import {
     Alert,
     ToastAndroid,
 } from "react-native"
-import { Text } from "react-native-paper"
+import { ActivityIndicator, Text } from "react-native-paper"
 import HeaderImage from "../components/HeaderImage"
 import {
     textureReport,
@@ -23,6 +23,7 @@ import navigationRoutes from "../routes/navigationRoutes"
 import { ItemsData } from "../models/api_types"
 import { AppStoreContext } from "../models/custom_types"
 import SnackBar from "../components/SnackBar"
+import LoadingOverlay from "../components/LoadingOverlay"
 import { clearStates } from "../utils/clearStates"
 import SurfacePaper from "../components/SurfacePaper"
 import AnimatedFABPaper from "../components/AnimatedFABPaper"
@@ -60,6 +61,7 @@ function CategoriesScreen() {
     const [totalPrice, setTotalPrice] = useState(() => 0)
     const [totalDiscountedAmount, setTotalDiscountedAmount] = useState(() => 0)
     const [clear, setClear] = useState(() => false)
+    const [loading, setLoading] = useState(() => false)
 
     useEffect(() => {
         setAddedProducts(itemsStore)
@@ -67,8 +69,14 @@ function CategoriesScreen() {
         setTotalDiscountedAmount(totalDiscountedAmountStore)
     }, [isFocused])
 
+    const getCategories = async () => {
+        setLoading(true)
+        await handleGetCategories()
+        setLoading(false)
+    }
+
     useEffect(() => {
-        handleGetCategories()
+        getCategories()
     }, [])
 
     const onPress = (catgId: number, catgName: string, catgPhoto?: string) => {
@@ -267,6 +275,8 @@ function CategoriesScreen() {
                     </SurfacePaper>
                 }
             </ScrollView>
+
+            {loading && <LoadingOverlay />}
 
             {
                 productStorage?.contains("products-data") && <AnimatedFABPaper
