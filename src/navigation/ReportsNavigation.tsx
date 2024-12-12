@@ -59,10 +59,10 @@ export default function ReportsNavigation() {
         name={navigationRoutes.refundReportScreen}
         component={RefundReportScreen}
       /> */}
-      <Stack.Screen
+      {/* <Stack.Screen
         name={navigationRoutes.creditReportScreen}
         component={CreditReportScreen}
-      />
+      /> */}
       {/* <Stack.Screen
         name={navigationRoutes.daybookReportScreen}
         component={DaybookReportScreen}

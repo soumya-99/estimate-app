@@ -208,7 +208,7 @@ function CancelledBillsReportScreen() {
                 <DataTable.Title textStyle={titleTextStyle}>GST</DataTable.Title>
               )}
               {/* <DataTable.Title textStyle={titleTextStyle}>Dis.</DataTable.Title> */}
-              <DataTable.Title textStyle={titleTextStyle}>Total Amt.</DataTable.Title>
+              <DataTable.Title textStyle={titleTextStyle}>Cancelled</DataTable.Title>
             </DataTable.Header>
 
             {cancelledBillsReport.map(item => {

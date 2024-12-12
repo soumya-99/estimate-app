@@ -1884,7 +1884,7 @@ export const useBluetoothPrint = () => {
     // let totalAmountAfterDiscount: number = 0
 
     let text =
-      `[C]ESTIMATE (DUPLICATE)\n` +
+      `[C]ESTIMATE ${cancelFlag ? "(CANCELLED)" : "(DUPLICATE)"}\n` +
       // `[C]==========DUPLICATE==========\n` +
       `[C]=============================\n` +
       `[L]RCPT. NO.[R]${rcptNo?.toString()}\n` +
@@ -2037,23 +2037,27 @@ export const useBluetoothPrint = () => {
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       `[C]=============================\n` +
       // `[L]RCPT. DATE[R]${new Date().toLocaleDateString("en-GB")}\n` +
-      `[L]Mode[C]Rcpts[R]Net\n` +
-      // `[L]Price[R]Total\n` +
+      `[L]Mode[C]Receipt[R]Net\n` +
+      `[L]Due[R]Recovery\n` +
       `[C]=============================\n`;
 
     let totCashReceive = 0;
     let totCashReceipts = 0;
+    let totDueAmt = 0;
     for (const item of reportData) {
       totCashReceive += item?.net_amt
-      totCashReceipts += item?.no_of_rcpt
+      // totCashReceipts += item?.no_of_rcpt
+      totDueAmt += item?.due_amt
 
-      text += `[L]${item?.pay_mode === "C" ? "Cash" : item?.pay_mode === "U" ? "UPI" : item?.pay_mode === "R" ? "Credit" : "Err"}[C]${item?.no_of_rcpt}[R]${item?.net_amt}\n`;
+      text += `[L]${item?.pay_mode === "C" ? "Cash" : item?.pay_mode === "U" ? "UPI" : item?.pay_mode === "R" ? "Credit" : item?.pay_mode === "Z" ? "Recovery" : "Err"}[C]${item?.pay_mode === "Z" ? "---" : item?.no_of_rcpt}[R]${item?.net_amt}\n` +
+        `[L]${item?.due_amt}[R]${item?.recover_amt}\n` +
+        `-------------------------------\n`;
     }
 
     text += `[C]=============================\n` +
-      `[L]Total Rcpts[R]${totCashReceipts}\n` +
-      // `[L]Total Cash Rcvd[R]${totCashReceive}\n` +
+      `[L]Rows Count[R]${reportData?.length}\n` +
       `[L]Total Net[R]${totCashReceive}\n` +
+      `[L]Total Due[R]${totDueAmt}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 
@@ -2087,14 +2091,17 @@ export const useBluetoothPrint = () => {
       `[C]=============================\n`;
 
     let i = 1
+    let totalNet = 0
     for (const item of reportData) {
-      text += `[L]${i++}[C]${item?.no_of_items}[C]${item?.no_of_items}\n` +
-        `[L]${item?.price}[R]${item?.net_amt}\n` +
+      totalNet += item?.net_amt;
+
+      text += `[L]${i++}[C]${item?.no_of_items}[C]${item?.price}[R]${item?.net_amt}\n` +
         `[C]-----------------------------\n`;
     }
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
+      `[L]Total Cancelled[R]${totalNet}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 
@@ -2120,19 +2127,32 @@ export const useBluetoothPrint = () => {
     let text =
       `[C]CREDIT REPORT\n` +
       `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
-      `[C]=============================\n` +
+      `[C]==============================\n` +
       `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
-      `[C]=============================\n` +
+      `[C]==============================\n` +
       // `[L]RCPT. DATE[R]${new Date().toLocaleDateString("en-GB")}\n` +
       `[L]RCPT[C]Amt[C]Paid[R]Due\n` +
-      `[C]=============================\n`;
+      `[C]==============================\n`;
 
+    let totalNet = 0;
+    let totalPaid = 0;
+    let totalDue = 0;
     for (const item of reportData) {
+
+      totalNet += item?.net_amt;
+      totalPaid += item?.paid_amt;
+      totalDue += item?.due_amt;
+
       text += `[L]${item?.receipt_no?.toString()?.slice(-5)}[C]${item?.net_amt}[C]${item?.paid_amt}[R]${item?.due_amt}\n`;
     }
 
-    text += `[C]=============================\n` +
+
+    text += `[C]==============================\n` +
+      `[L]TOTAL:[C]${totalNet}[C]${totalPaid}[R]${totalDue}\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
+      // `[L]Total Net[R]${totalNet}\n` +
+      // `[L]Total Paid[R]${totalPaid}\n` +
+      // `[L]Total Due[R]${totalDue}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 
@@ -2156,18 +2176,27 @@ export const useBluetoothPrint = () => {
     let text =
       `[C]CUSTOMER LEDGER\n` +
       `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
-      `[C]=============================\n` +
+      `[C]==============================\n` +
       // `[L]FROM: ${new Date(fromDate)?.toLocaleDateString("en-GB")}[R]TO: ${new Date(toDate)?.toLocaleDateString("en-GB")}\n` +
       // `[C]=============================\n` +
       // `[L]RCPT. DATE[R]${new Date().toLocaleDateString("en-GB")}\n` +
       `[L]Rec Dt[C]Paid[C]Due[R]Bal\n` +
-      `[C]=============================\n`;
+      `[C]==============================\n`;
+
+    let totalPaid = 0;
+    let totalDue = 0;
+    let totalbalance = 0;
 
     for (const item of cusLed) {
+      totalPaid += item?.paid_amt
+      totalDue += item?.due_amt
+      totalbalance += item?.balance
+
       text += `[L]${new Date(item?.recover_dt)?.toLocaleDateString("en-GB")}[C]${item?.paid_amt}[C]${item?.due_amt}[R]${item?.balance}\n`;
     }
 
-    text += `[C]=============================\n` +
+    text += `[C]==============================\n` +
+      `[L]TOTAL:[C]${totalPaid}[C]${totalDue}[R]${totalbalance}\n` +
       `[L]Rows Count[R]${cusLed?.length}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
@@ -2201,12 +2230,18 @@ export const useBluetoothPrint = () => {
       `[L]User[C]Rcpts[C]Net[R]Cncl\n` +
       `[C]=============================\n`;
 
+    let totalNet = 0;
+    let totalCan = 0;
+
     for (const item of reportData) {
+      // totalDue += item?.cancelled_amt
+
       text += `[L]${item?.user_name?.slice(0, 5)}[C]${item?.no_of_receipts}[C]${item?.net_amt}[R]${item?.cancelled_amt}\n`;
     }
 
     text += `[C]=============================\n` +
       `[L]Rows Count[R]${reportData?.length}\n` +
+      // `[L]Total Due[R]${totalDue}\n` +
       `[C]==============X===============\n\n\n` +
       `[C]                                \n\n`;
 

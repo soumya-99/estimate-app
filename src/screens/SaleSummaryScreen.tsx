@@ -204,6 +204,8 @@ function SaleSummaryScreen() {
               <DataTable.Title textStyle={titleTextStyle}>Pay Mode</DataTable.Title>
               <DataTable.Title textStyle={titleTextStyle} numeric>RCPTs</DataTable.Title>
               <DataTable.Title textStyle={titleTextStyle} numeric>Net Amt.</DataTable.Title>
+              <DataTable.Title textStyle={titleTextStyle} numeric>Due</DataTable.Title>
+              <DataTable.Title textStyle={titleTextStyle} numeric>Recov.</DataTable.Title>
               {/* <DataTable.Title textStyle={titleTextStyle} numeric>Cncl Amt.</DataTable.Title> */}
             </DataTable.Header>
 
@@ -225,10 +227,13 @@ function SaleSummaryScreen() {
                           ? "Card"
                           : item?.pay_mode === "R"
                             ? "Credit"
-                            : ""}
+                            : item?.pay_mode === "Z"
+                              ? "Recovery" : "Err"}
                   </DataTable.Cell>
-                  <DataTable.Cell numeric>{item?.no_of_rcpt}</DataTable.Cell>
+                  <DataTable.Cell numeric>{item?.pay_mode === "Z" ? "---" : item?.no_of_rcpt}</DataTable.Cell>
                   <DataTable.Cell numeric>{item?.net_amt}</DataTable.Cell>
+                  <DataTable.Cell numeric>{item?.due_amt}</DataTable.Cell>
+                  <DataTable.Cell numeric>{item?.recover_amt}</DataTable.Cell>
                   {/* <DataTable.Cell numeric>{item?.can_amt}</DataTable.Cell> */}
                 </DataTable.Row>
               )

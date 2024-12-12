@@ -421,10 +421,12 @@ export type CollectionReportCredentials = {
 }
 
 export type CollectionReport = {
-  pay_mode: "C" | "D" | "U" | "R"
+  pay_mode: "C" | "D" | "U" | "R" | "Z"
   net_amt: number
   no_of_rcpt: number
   can_amt: number
+  due_amt: number
+  recover_amt: number
 }
 
 export type CollectionReportResponse = {
