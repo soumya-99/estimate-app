@@ -121,7 +121,7 @@ function RecoveryAmountScreen() {
     //     setNetAmt(netAmt)
     // }
 
-    const getDueAmount = async () => {
+    const getDueAmount = async (tnxResponse?: string) => {
         if ((dueAmount > (recoveryDetailsData[0]?.net_amt - recoveryDetailsData[0]?.paid_amt) || dueAmount === 0)) {
             ToastAndroid.show("Please provide valid amount!", ToastAndroid.SHORT)
             return
@@ -133,7 +133,18 @@ function RecoveryAmountScreen() {
             phone_no: search,
             received_amt: dueAmount,
             pay_mode: checked,
-            user_id: loginStore?.user_id
+            user_id: loginStore?.user_id,
+
+            ///////////////////////////////////////////
+
+            customer_mobile: search || "",
+            pay_txn_id: JSON.parse(tnxResponse)?.pay_txn_id || "",
+            pay_amount: JSON.parse(tnxResponse)?.pay_amount || 0,
+            pay_amount_original: JSON.parse(tnxResponse)?.pay_amount_original || 0,
+            currency_code: JSON.parse(tnxResponse)?.currency_code || "",
+            payment_mode: JSON.parse(tnxResponse)?.payment_mode || "",
+            pay_status: JSON.parse(tnxResponse)?.pay_status || "",
+            receipt_url: JSON.parse(tnxResponse)?.receipt_url || "",
         }
 
         await recoveryUpdate(recoverUpdateCreds)
@@ -236,7 +247,7 @@ function RecoveryAmountScreen() {
         }
     }
 
-    const handleSaveBillRazorpay = async (flag?: boolean) => {
+    const handleSaveRecoveryUPI = async () => {
         await initializePaymentRequest()
             .then(async () => {
                 console.log(
@@ -245,6 +256,7 @@ function RecoveryAmountScreen() {
                 )
                 if (JSON.parse(tnxResponse)?.status === "success") {
 
+                    await getDueAmount(tnxResponse)
                     // await handlePrintReceipt(flag)
 
                     // const creds: TxnDetailsCreds = {
@@ -285,12 +297,12 @@ function RecoveryAmountScreen() {
     const handleGetDueAmountUPI = () => {
         Alert.alert("Recover amount?", `Are you sure you want to recover ${dueAmount} ruppees?`, [
             { text: "Cancel", onPress: () => null },
-            { text: "Yes", onPress: async () => await getDueAmount() }
+            { text: "Yes", onPress: async () => await handleSaveRecoveryUPI() }
         ])
     }
 
     const handlePrint = async () => {
-        await printRecoveryAmount(recoveryDetailsData)
+        await printRecoveryAmount(recoveryDetailsData, search)
     }
 
     const cellTextStyle2: TextStyle = {
@@ -517,7 +529,7 @@ function RecoveryAmountScreen() {
                                     Get Due Amount
                                 </ButtonPaper>
                                 : checked === "U" ? <ButtonPaper
-                                    onPress={handleGetDueAmount}
+                                    onPress={handleGetDueAmountUPI}
                                     mode="elevated"
                                     textColor={theme.colors.vanilla}
                                     icon={"arrow-u-down-left"}

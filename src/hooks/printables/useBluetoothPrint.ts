@@ -2296,6 +2296,31 @@ export const useBluetoothPrint = () => {
     })
   }
 
+  const printRecoveryAmount = async (recAmt: RecoveryAmountResponseData[], phone: string) => {
+    let text =
+      `[C]RECOVERY DETAILS\n` +
+      `[C]PRINT AT: ${new Date().toLocaleString("en-GB")}\n` +
+      `[C]=============================\n` +
+
+      `[L]PHONE:[R]${phone}\n` +
+      `[L]TOTAL DUE[R]${recAmt[0]?.net_amt - recAmt[0]?.paid_amt}\n` +
+      `[L]TOTAL PAID[R]${recAmt[0]?.paid_amt}\n` +
+      `[C]==============X===============\n\n\n` +
+      `[C]                                \n\n`;
+
+    await ThermalPrinterModule.printBluetooth({
+      payload: text,
+      printerNbrCharactersPerLine: 32,
+      printerDpi: 120,
+      printerWidthMM: 58,
+      mmFeedPaper: 25,
+    }).then(res => {
+      console.log("RES", res)
+    }).catch(err => {
+      console.log("ERR", err)
+    })
+  }
+
   // async function rePrintWithoutGst(
   //   addedProducts: ShowBillData[],
   //   netTotal: number,
@@ -7578,140 +7603,140 @@ export const useBluetoothPrint = () => {
     }
   }
 
-  async function printRecoveryAmount(recAmt: RecoveryAmountResponseData[]) {
-    const loginStore = JSON.parse(loginStorage.getString("login-data"))
-    const fileStore = fileStorage.getString("file-data")
+  // async function printRecoveryAmount(recAmt: RecoveryAmountResponseData[]) {
+  //   const loginStore = JSON.parse(loginStorage.getString("login-data"))
+  //   const fileStore = fileStorage.getString("file-data")
 
-    const shopName: string = loginStore?.company_name?.toString()
-    const address: string = loginStore?.address?.toString()
-    const location: string = loginStore?.branch_name?.toString()
-    const shopMobile: string = loginStore?.phone_no?.toString()
-    const shopEmail: string = loginStore?.email_id?.toString()
-    // const cashier: string = loginStore?.user_name?.toString()
+  //   const shopName: string = loginStore?.company_name?.toString()
+  //   const address: string = loginStore?.address?.toString()
+  //   const location: string = loginStore?.branch_name?.toString()
+  //   const shopMobile: string = loginStore?.phone_no?.toString()
+  //   const shopEmail: string = loginStore?.email_id?.toString()
+  //   // const cashier: string = loginStore?.user_name?.toString()
 
-    let totalNet: number = 0
-    let totalDue: number = 0
+  //   let totalNet: number = 0
+  //   let totalDue: number = 0
 
-    try {
-      let columnWidths = [11, 1, 18]
-      let columnWidthsHeader = [8, 1, 21]
-      // let columnWidthsProductsHeaderAndBody = [5, 4, 7, 6, 6, 4] // 0 in hand
-      let columnWidthsProductsHeaderAndBody = [11, 8, 6, 7] // 0 in hand
-      // let columnWidthsProductsHeaderAndBody = [18, 3, 4, 3, 4]
-      // let columnWidthsTotals = [15, 15]
-      let columnWidthsTotals = [32]
-      let columnWidthIfNameIsBig = [32]
+  //   try {
+  //     let columnWidths = [11, 1, 18]
+  //     let columnWidthsHeader = [8, 1, 21]
+  //     // let columnWidthsProductsHeaderAndBody = [5, 4, 7, 6, 6, 4] // 0 in hand
+  //     let columnWidthsProductsHeaderAndBody = [11, 8, 6, 7] // 0 in hand
+  //     // let columnWidthsProductsHeaderAndBody = [18, 3, 4, 3, 4]
+  //     // let columnWidthsTotals = [15, 15]
+  //     let columnWidthsTotals = [32]
+  //     let columnWidthIfNameIsBig = [32]
 
-      // let newColumnWidths: number[] = [9, 9, 6, 7]
+  //     // let newColumnWidths: number[] = [9, 9, 6, 7]
 
-      if (fileStore?.length > 0) {
-        await BluetoothEscposPrinter.printerAlign(
-          BluetoothEscposPrinter.ALIGN.CENTER,
-        )
-        const options = {
-          width: 250, // Assuming 58mm paper width with 8 dots/mm resolution (58mm * 8dots/mm = 384 dots)
-          left: 50, // No left padding
-          // align: "CENTER"
-        }
+  //     if (fileStore?.length > 0) {
+  //       await BluetoothEscposPrinter.printerAlign(
+  //         BluetoothEscposPrinter.ALIGN.CENTER,
+  //       )
+  //       const options = {
+  //         width: 250, // Assuming 58mm paper width with 8 dots/mm resolution (58mm * 8dots/mm = 384 dots)
+  //         left: 50, // No left padding
+  //         // align: "CENTER"
+  //       }
 
-        // Print the image
-        await BluetoothEscposPrinter.printPic(fileStore, options)
-      }
+  //       // Print the image
+  //       await BluetoothEscposPrinter.printPic(fileStore, options)
+  //     }
 
-      await BluetoothEscposPrinter.printerAlign(
-        BluetoothEscposPrinter.ALIGN.CENTER,
-      )
-      await BluetoothEscposPrinter.printText(shopName.toUpperCase(), {
-        align: "center",
-        widthtimes: 1.2,
-        heigthtimes: 2,
-      })
-      await BluetoothEscposPrinter.printText("\n", {})
-      // await BluetoothEscposPrinter.printText("hasifughaf", { align: "center" })
+  //     await BluetoothEscposPrinter.printerAlign(
+  //       BluetoothEscposPrinter.ALIGN.CENTER,
+  //     )
+  //     await BluetoothEscposPrinter.printText(shopName.toUpperCase(), {
+  //       align: "center",
+  //       widthtimes: 1.2,
+  //       heigthtimes: 2,
+  //     })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText("hasifughaf", { align: "center" })
 
-      // if (receiptSettings?.on_off_flag1 === "Y") {
-      //     await BluetoothEscposPrinter.printText(receiptSettings?.header1, {})
-      //     await BluetoothEscposPrinter.printText("\n", {})
-      // }
+  //     // if (receiptSettings?.on_off_flag1 === "Y") {
+  //     //     await BluetoothEscposPrinter.printText(receiptSettings?.header1, {})
+  //     //     await BluetoothEscposPrinter.printText("\n", {})
+  //     // }
 
-      // if (receiptSettings?.on_off_flag2 === "Y") {
-      //     await BluetoothEscposPrinter.printText(receiptSettings?.header2, {})
-      // }
-      // await BluetoothEscposPrinter.printText("\n", {})
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
+  //     // if (receiptSettings?.on_off_flag2 === "Y") {
+  //     //     await BluetoothEscposPrinter.printText(receiptSettings?.header2, {})
+  //     // }
+  //     // await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
 
-      await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("\n", {})
 
-      await BluetoothEscposPrinter.printText("RECOVERY", {
-        align: "center",
-      })
+  //     await BluetoothEscposPrinter.printText("RECOVERY", {
+  //       align: "center",
+  //     })
 
-      await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("\n", {})
 
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
 
-      await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("\n", {})
 
-      await BluetoothEscposPrinter.printText(
-        `DATE: ${new Date().toLocaleDateString(
-          "en-GB",
-        )}`,
-        {},
-      )
+  //     await BluetoothEscposPrinter.printText(
+  //       `DATE: ${new Date().toLocaleDateString(
+  //         "en-GB",
+  //       )}`,
+  //       {},
+  //     )
 
-      await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("\n", {})
 
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
 
-      await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("\n", {})
 
-      await BluetoothEscposPrinter.printText(
-        `TOTAL PAID: ${recAmt[0]?.paid_amt}`,
-        {},
-      )
+  //     await BluetoothEscposPrinter.printText(
+  //       `TOTAL PAID: ${recAmt[0]?.paid_amt}`,
+  //       {},
+  //     )
 
-      await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("\n", {})
 
-      await BluetoothEscposPrinter.printText(
-        `TOTAL DUE: ${recAmt[0]?.net_amt - recAmt[0]?.paid_amt}`,
-        {},
-      )
+  //     await BluetoothEscposPrinter.printText(
+  //       `TOTAL DUE: ${recAmt[0]?.net_amt - recAmt[0]?.paid_amt}`,
+  //       {},
+  //     )
 
-      await BluetoothEscposPrinter.printText("\n", {})
-      await BluetoothEscposPrinter.printText("------------------------", {
-        align: "center",
-      })
+  //     await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("------------------------", {
+  //       align: "center",
+  //     })
 
-      // await BluetoothEscposPrinter.printText("\n", {})
+  //     // await BluetoothEscposPrinter.printText("\n", {})
 
-      // if (receiptSettings?.on_off_flag3 === "Y") {
-      //     await BluetoothEscposPrinter.printText(receiptSettings?.footer1, {})
-      //     await BluetoothEscposPrinter.printText("\n", {})
-      // }
-      // if (receiptSettings?.on_off_flag4 === "Y") {
-      //     await BluetoothEscposPrinter.printText(receiptSettings?.footer2, {})
-      // }
-      // await BluetoothEscposPrinter.printText("\n", {})
+  //     // if (receiptSettings?.on_off_flag3 === "Y") {
+  //     //     await BluetoothEscposPrinter.printText(receiptSettings?.footer1, {})
+  //     //     await BluetoothEscposPrinter.printText("\n", {})
+  //     // }
+  //     // if (receiptSettings?.on_off_flag4 === "Y") {
+  //     //     await BluetoothEscposPrinter.printText(receiptSettings?.footer2, {})
+  //     // }
+  //     // await BluetoothEscposPrinter.printText("\n", {})
 
-      // await BluetoothEscposPrinter.printText(
-      //     "THANK YOU, VISIT AGAIN!",
-      //     { align: "center" },
-      // )
+  //     // await BluetoothEscposPrinter.printText(
+  //     //     "THANK YOU, VISIT AGAIN!",
+  //     //     { align: "center" },
+  //     // )
 
-      await BluetoothEscposPrinter.printText("\n", {})
+  //     await BluetoothEscposPrinter.printText("\n", {})
 
-      await BluetoothEscposPrinter.printText("------X------", {})
-      await BluetoothEscposPrinter.printText("\n\r\n\r\n\r", {})
-    } catch (e) {
-      console.log(e.message || "ERROR")
-    }
-  }
+  //     await BluetoothEscposPrinter.printText("------X------", {})
+  //     await BluetoothEscposPrinter.printText("\n\r\n\r\n\r", {})
+  //   } catch (e) {
+  //     console.log(e.message || "ERROR")
+  //   }
+  // }
 
   return {
     // printReceipt,

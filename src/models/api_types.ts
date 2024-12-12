@@ -929,6 +929,15 @@ export type RecoveryUpdateCredentials = {
   "received_amt": number
   "pay_mode": string
   "user_id": string
+
+  customer_mobile: string
+  pay_txn_id: string
+  pay_amount: number
+  pay_amount_original: number
+  currency_code: string
+  payment_mode: string
+  pay_status: string
+  receipt_url: string
 }
 
 // export type RecoveryUpdateResponse = {
@@ -1058,13 +1067,13 @@ export type SaleReportCalculateModeData = {
 }
 
 export type TxnDetailsCreds = {
-  "receipt_no": string,
-  "pay_txn_id": string,
-  "pay_amount": number,
-  "pay_amount_original": number,
-  "currency_code": string,
-  "payment_mode": string,
-  "pay_status": string,
-  "receipt_url": string,
+  "receipt_no": string
+  "pay_txn_id": string
+  "pay_amount": number
+  "pay_amount_original": number
+  "currency_code": string
+  "payment_mode": string
+  "pay_status": string
+  "receipt_url": string
   "created_by": string
 }
