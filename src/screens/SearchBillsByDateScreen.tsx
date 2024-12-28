@@ -243,11 +243,11 @@ function SearchBillsByDateScreen() {
 
   const handleCancelBill = (rcptNo: number) => {
     Alert.alert(
-      "Cancelling Bill",
-      `Are you sure you want to cancel this bill?`,
+      "Cancelling Estimate",
+      `Are you sure you want to cancel this estimate?`,
       [
         { text: "BACK", onPress: () => null },
-        { text: "CANCEL BILL", onPress: () => handleCancellingBill(rcptNo) },
+        { text: "CANCEL ESTIMATE", onPress: () => handleCancellingBill(rcptNo) },
       ],
       { cancelable: false },
     )
@@ -348,7 +348,7 @@ function SearchBillsByDateScreen() {
                 color: theme.colors.vanillaSecondary,
               }}
               key={i}
-              title={`Bill ${item?.receipt_no}`}
+              title={`${item?.receipt_no}`}
               description={`₹${item?.net_amt}`}
               onPress={() => handleBillListClick(item?.receipt_no)}
               left={props => <List.Icon {...props} icon="basket" />}

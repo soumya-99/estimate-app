@@ -312,7 +312,7 @@ function HomeScreen() {
       })
       .catch(err => {
         ToastAndroid.show(
-          "Error during fetching recent bills.",
+          "Error during fetching recent estimates.",
           ToastAndroid.SHORT,
         )
       })
@@ -354,7 +354,7 @@ function HomeScreen() {
         console.log("handleGetBill - HOMESCREEN - fetchBill", res?.data)
       })
       .catch(err => {
-        ToastAndroid.show("Error during fetching old bill", ToastAndroid.SHORT)
+        ToastAndroid.show("Error during fetching old estimate", ToastAndroid.SHORT)
       })
   }
 
@@ -386,7 +386,7 @@ function HomeScreen() {
         setVisible(false)
       }
     }).catch(err => {
-      ToastAndroid.show(`Error occurred during cancelling bill. ${err}`, ToastAndroid.SHORT)
+      ToastAndroid.show(`Error occurred during cancelling estimate. ${err}`, ToastAndroid.SHORT)
       setVisible(false)
     })
 
@@ -396,11 +396,11 @@ function HomeScreen() {
 
   const handleCancelBill = (rcptNo: number) => {
     Alert.alert(
-      "Cancelling Bill",
-      `Are you sure you want to cancel this bill?`,
+      "Cancelling Estimate",
+      `Are you sure you want to cancel this estimate?`,
       [
         { text: "BACK", onPress: () => null },
-        { text: "CANCEL BILL", onPress: () => handleCancellingBill(rcptNo) },
+        { text: "CANCEL ESTIMATE", onPress: () => handleCancellingBill(rcptNo) },
       ],
       { cancelable: false },
     )

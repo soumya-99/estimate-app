@@ -9,7 +9,7 @@ import {
     TextStyle,
     Alert,
 } from "react-native"
-import { IconButton, RadioButton, Searchbar, Text } from "react-native-paper"
+import { RadioButton, Searchbar, Text } from "react-native-paper"
 import HeaderImage from "../components/HeaderImage"
 import {
     textureReport,
@@ -105,8 +105,8 @@ function RecoveryAmountScreen() {
     }
 
     const handleSearchClick = async (mobile: string) => {
-        if (!value || value.length !== 10) {
-            ToastAndroid.show("Choose valid phone number.", ToastAndroid.SHORT)
+        if (!search || search.length !== 10) {
+            ToastAndroid.show("Enter valid phone number.", ToastAndroid.SHORT)
             return
         }
         // setVisible(!visible)
@@ -131,21 +131,21 @@ function RecoveryAmountScreen() {
         const recoverUpdateCreds: RecoveryUpdateCredentials = {
             comp_id: loginStore?.comp_id,
             br_id: loginStore?.br_id,
-            phone_no: value,
+            phone_no: search,
             received_amt: dueAmount,
             pay_mode: checked,
             user_id: loginStore?.user_id,
 
             ///////////////////////////////////////////
 
-            customer_mobile: value || "",
-            pay_txn_id: "",
-            pay_amount: 0,
-            pay_amount_original: 0,
-            currency_code: "",
-            payment_mode: "",
-            pay_status: "",
-            receipt_url: "",
+            customer_mobile: search || "",
+            pay_txn_id: JSON.parse(tnxResponse)?.pay_txn_id || "",
+            pay_amount: JSON.parse(tnxResponse)?.pay_amount || 0,
+            pay_amount_original: JSON.parse(tnxResponse)?.pay_amount_original || 0,
+            currency_code: JSON.parse(tnxResponse)?.currency_code || "",
+            payment_mode: JSON.parse(tnxResponse)?.payment_mode || "",
+            pay_status: JSON.parse(tnxResponse)?.pay_status || "",
+            receipt_url: JSON.parse(tnxResponse)?.receipt_url || "",
         }
 
         await recoveryUpdate(recoverUpdateCreds)
@@ -155,7 +155,7 @@ function RecoveryAmountScreen() {
                 // printRecovery(res.recover_id, netAmt, dueAmount)
 
                 setDueAmount(() => 0)
-                await handleSearchClick(value)
+                await handleSearchClick(search)
             })
             .catch(err => {
                 ToastAndroid.show("Something went wrong while recovering amount.", ToastAndroid.SHORT)
@@ -170,8 +170,140 @@ function RecoveryAmountScreen() {
         ])
     }
 
+
+
+    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////
+
+
+    var tnxResponse
+
+    const handleRazorpayClient = async () => {
+        let json = {
+            username: "9903044748",
+            amount: +dueAmount,
+            externalRefNumber: "",
+        }
+
+        // Convert json object to string
+        let jsonString = JSON.stringify(json)
+
+        // await RNEzetapSdk.initialize(jsonString)
+        //   .then(res => {
+        //     console.log(">>>>>>>>>>>>>>>>>", res)
+        //   })
+        //   .catch(err => {
+        //     console.log("<<<<<<<<<<<<<<<<<", err)
+        //   })
+
+        // var res = await RNEzetapSdk.prepareDevice()
+        // console.log("RAZORPAY===PREPARE DEVICE", res)
+
+        await RNEzetapSdk.pay(jsonString)
+            .then(res => {
+                console.log(">>>>>>>>>>>>>>>>>", res)
+
+                // if (res?.status == "success") {
+                //   handleSave()
+                //   Alert.alert("Txn ID", res?.txnId)
+                // } else {
+                //   Alert.alert("Error in Tnx", res?.error)
+                // }
+                tnxResponse = res
+                // setTnxResponse(res)
+            })
+            .catch(err => {
+                console.log("<<<<<<<<<<<<<<<<<", err)
+            })
+    }
+
+    const initializePaymentRequest = async () => {
+        // var withAppKey =
+        //   '{"userName":' +
+        //   "9903044748" +
+        //   ',"demoAppKey":"a40c761a-b664-4bc6-ab5a-bf073aa797d5","prodAppKey":"a40c761a-b664-4bc6-ab5a-bf073aa797d5","merchantName":"SYNERGIC_SOFTEK_SOLUTIONS","appMode":"DEMO","currencyCode":"INR","captureSignature":false,"prepareDevice":false}'
+        // var response = await RNEzetapSdk.initialize(withAppKey)
+        // console.log(response)
+        // var jsonData = JSON.parse(response)
+
+        let razorpayInitializationJson = JSON.parse(
+            ezetapStorage.getString("ezetap-initialization-json"),
+        )
+
+        console.log("MMMMMMSSSSSSSSSSSS", razorpayInitializationJson)
+
+        if (razorpayInitializationJson.status == "success") {
+            await handleRazorpayClient()
+                .then(async res => {
+                    console.log("###################", res)
+                    // var res = await RNEzetapSdk.close()
+                    // console.log("CLOSEEEEE TNXXXXX", res)
+                    // var json = JSON.parse(res)
+                })
+                .catch(err => {
+                    console.log("==================", err)
+                })
+        } else {
+            console.log("XXXXXXXXXXXXXXXXXXX ELSE PART")
+        }
+    }
+
+    const handleSaveRecoveryUPI = async () => {
+        await initializePaymentRequest()
+            .then(async () => {
+                console.log(
+                    "TRANSACTION RES DATA================",
+                    tnxResponse,
+                )
+                if (JSON.parse(tnxResponse)?.status === "success") {
+
+                    await getDueAmount(tnxResponse)
+                    // await handlePrintReceipt(flag)
+
+                    // const creds: TxnDetailsCreds = {
+                    //   receipt_no: receiptNumber?.toString(),
+                    //   pay_txn_id: JSON.parse(tnxResponse)?.result?.txn?.txnId,
+                    //   pay_amount: +JSON.parse(tnxResponse)?.result?.txn?.amount,
+                    //   pay_amount_original: +JSON.parse(tnxResponse)?.result?.txn?.amountOriginal,
+                    //   currency_code: JSON.parse(tnxResponse)?.result?.txn?.currencyCode,
+                    //   payment_mode: JSON.parse(tnxResponse)?.result?.txn?.paymentMode,
+                    //   pay_status: JSON.parse(tnxResponse)?.result?.txn?.status,
+                    //   receipt_url: JSON.parse(tnxResponse)?.result?.receipt?.receiptUrl,
+                    //   created_by: loginStore?.user_id
+                    // }
+
+                    // console.log("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::", creds)
+
+                    // await sendTxnDetails(creds).then(res => {
+                    //   console.log("Txn details sent done.", res)
+                    // }).catch(err => {
+                    //   console.log("Txn send failed.", err)
+                    // })
+
+                } else {
+                    console.log("tnxResponse value error...")
+                }
+            })
+            .catch(err => {
+                console.error("TNX Response Error!", err)
+
+                //   console.log(
+                //     "PPPPPPPPPPPPKKKKKKKKKKKKK",
+                //     ezetapStorage.contains("ezetap-initialization-json"),
+                //     ezetapStorage.getString("ezetap-initialization-json"),
+                //   )
+            })
+    }
+
+    const handleGetDueAmountUPI = () => {
+        Alert.alert("Recover amount?", `Are you sure you want to recover ${dueAmount} ruppees?`, [
+            { text: "Cancel", onPress: () => null },
+            { text: "Yes", onPress: async () => await handleSaveRecoveryUPI() }
+        ])
+    }
+
     const handlePrint = async () => {
-        await printRecoveryAmount(recoveryDetailsData, value)
+        await printRecoveryAmount(recoveryDetailsData, search)
     }
 
     const cellTextStyle2: TextStyle = {
@@ -216,19 +348,6 @@ function RecoveryAmountScreen() {
         borderRadius: 10,
     }
 
-    const [value, setValue] = useState("")
-
-    const data = [
-        { label: 'Soumyadeep Mondal\n8910792003', value: '8910792003' },
-        { label: 'Rupsha Chatterjee\n6295825458', value: '6295825458' },
-        { label: 'Somnath Thakur\n7563884733', value: '7563884733' },
-        { label: 'Shubham Samanta\n4344244533', value: '4344244533' },
-        { label: 'Item 5', value: '5' },
-        { label: 'Item 6', value: '6' },
-        { label: 'Item 7', value: '7' },
-        { label: 'Item 8', value: '8' },
-    ]
-
     return (
         <SafeAreaView
             style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -239,8 +358,7 @@ function RecoveryAmountScreen() {
                         imgDark={textureReportDark}
                         borderRadius={30}
                         blur={10}
-                        isBackEnabled
-                        showProductSearch={false}>
+                        isBackEnabled>
                         Recovery Amount
                     </HeaderImage>
                 </View>
@@ -255,8 +373,9 @@ function RecoveryAmountScreen() {
                             paddingHorizontal: normalize(10),
                             paddingBottom: normalize(10),
                         }}>
-                        {/* <Searchbar
+                        <Searchbar
                             autoFocus
+                            // placeholder="Search Bills"
                             placeholder="Mobile Number"
                             onChangeText={onChangeSearch}
                             value={search}
@@ -268,31 +387,8 @@ function RecoveryAmountScreen() {
                                 color: theme.colors.onVanillaSecondaryContainer,
                             }}
                             selectionColor={theme.colors.vanilla}
-                        loading={search ? true : false}
-                        /> */}
-
-                        <Dropdown
-                            style={styles.dropdown}
-                            placeholderStyle={styles.placeholderStyle}
-                            selectedTextStyle={styles.selectedTextStyle}
-                            inputSearchStyle={styles.inputSearchStyle}
-                            iconStyle={styles.iconStyle}
-                            data={data}
-                            search
-                            maxHeight={300}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Select Customer"
-                            searchPlaceholder="Search..."
-                            value={value}
-                            onChange={item => {
-                                setValue(item.value);
-                            }}
-                            renderLeftIcon={() => (
-                                <IconButton icon={"account-outline"} />
-                            )}
+                        // loading={search ? true : false}
                         />
-
                     </View>
                     {/* <ButtonPaper onPress={() => handleGetBillsByDate(formattedFromDate, formattedToDate)} mode="contained-tonal">
                         SUBMIT
@@ -302,7 +398,7 @@ function RecoveryAmountScreen() {
                             paddingHorizontal: normalize(10),
                         }}>
                         <ButtonPaper
-                            onPress={() => handleSearchClick(value)}
+                            onPress={() => handleSearchClick(search)}
                             mode="contained-tonal"
                             buttonColor={theme.colors.vanillaContainer}
                             loading={isLoading}
@@ -421,17 +517,33 @@ function RecoveryAmountScreen() {
                             justifyContent: "space-between",
                             gap: 10
                         }}>
-                            <ButtonPaper
-                                onPress={handleGetDueAmount}
-                                mode="elevated"
-                                textColor={theme.colors.vanilla}
-                                icon={"arrow-u-down-left"}
-                                style={{
-                                    backgroundColor: theme.colors.vanillaSurface
-                                }}
-                                disabled={!dueAmount}>
-                                Get Due Amount
-                            </ButtonPaper>
+                            {checked === "C" ?
+                                <ButtonPaper
+                                    onPress={handleGetDueAmount}
+                                    mode="elevated"
+                                    textColor={theme.colors.vanilla}
+                                    icon={"arrow-u-down-left"}
+                                    style={{
+                                        backgroundColor: theme.colors.vanillaSurface
+                                    }}
+                                    disabled={!dueAmount}>
+                                    Get Due Amount
+                                </ButtonPaper>
+                                : checked === "U" ? 
+                                <ButtonPaper
+                                    onPress={handleGetDueAmountUPI}
+                                    mode="elevated"
+                                    textColor={theme.colors.vanilla}
+                                    icon={"arrow-u-down-left"}
+                                    style={{
+                                        backgroundColor: theme.colors.vanillaSurface
+                                    }}
+                                    disabled={!dueAmount}>
+                                    Get Due Amount
+                                </ButtonPaper>
+                                    : 
+                                    <Text>No proper checked flag got. Contact to developer.</Text>
+                            }
                             <ButtonPaper
                                 onPress={handlePrint}
                                 mode="elevated"
@@ -462,29 +574,4 @@ const styles = StyleSheet.create({
     title: {
         textAlign: "center",
     },
-
-    dropdown: {
-        margin: 16,
-        height: 50,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 0.5,
-    },
-    icon: {
-        marginRight: 5,
-    },
-    placeholderStyle: {
-        fontSize: 16,
-    },
-    selectedTextStyle: {
-        fontSize: 16,
-    },
-    iconStyle: {
-        width: 20,
-        height: 20,
-    },
-    inputSearchStyle: {
-        height: 40,
-        fontSize: 16,
-    },
-
 })
